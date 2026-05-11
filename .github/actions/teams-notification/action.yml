@@ -226,6 +226,12 @@ runs:
     - name: Invoke Logic App HTTP Trigger
       shell: bash
       run: |
+        if [ -z "${{ inputs.logic_app_url }}" ]; then
+          echo "Logic App URL is empty; skipping Teams notification."
+          rm -f "${{ steps.build_payload.outputs.payload_file }}"
+          exit 0
+        fi
+
         echo "Invoking Logic App via HTTP trigger..."
         PAYLOAD_FILE="${{ steps.build_payload.outputs.payload_file }}"
         COMPACT_PAYLOAD=$(jq -c . < "$PAYLOAD_FILE")
