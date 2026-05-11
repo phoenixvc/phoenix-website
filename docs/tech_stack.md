@@ -4,7 +4,7 @@ This section provides a summary of the technology stack, architecture, and devel
 
 #### **Overall Architecture**
 
-The project is a modern, decoupled web application built within a monorepo structure managed by npm workspaces. It consists of three primary packages:
+The project is a modern, decoupled web application built within a monorepo structure managed by pnpm workspaces. It consists of three primary packages:
 
 1.  **`@phoenixvc/web`**: A statically-generated frontend application responsible for all user-facing content and interactions.
 2.  **`api`**: A serverless backend powered by Azure Functions, which handles specific business logic such as email processing.
@@ -35,7 +35,7 @@ The project is a modern, decoupled web application built within a monorepo struc
 
 #### **Development & Tooling**
 
-*   **Package Manager**: [npm](https://www.npmjs.com/) (used in a monorepo context)
+*   **Package Manager**: [pnpm](https://pnpm.io/) (used in a monorepo context)
 *   **Linting**: [ESLint](https://eslint.org/)
 *   **Formatting**: [Prettier](https://prettier.io/)
 *   **Git Hooks**: [Husky](https://typicode.github.io/husky/)

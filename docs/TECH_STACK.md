@@ -1,49 +1,49 @@
-# Technology Stack
+### Technology Stack & Architecture Overview
 
-This document provides a comprehensive overview of the technologies, frameworks, and tools used in the Phoenix VC website project.
+This section provides a summary of the technology stack, architecture, and development environment for the Phoenix VC website.
 
-## 1. Frontend
+#### **Overall Architecture**
 
-- **Framework:** [React](https://reactjs.org/) (v18.2.0)
-- **Language:** [TypeScript](https://www.typescriptlang.org/) (v5.3.3)
-- **Build Tool:** [Vite](https://vitejs.dev/) (v5.1.3)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/) (v3.4.17)
-  - **Animation:** [tailwindcss-animate](https://github.com/jamiebuilds/tailwindcss-animate)
-- **UI Components:**
-  - **Headless UI:** [Radix UI](https://www.radix-ui.com/) (e.g., `@radix-ui/react-dropdown-menu`)
-  - **Icons:** [Lucide React](https://lucide.dev/) (v0.475.0)
-- **State Management & Logic:**
-  - **Routing:** [React Router DOM](https://reactrouter.com/) (v7.2.0)
-  - **Forms:** [React Hook Form](https://react-hook-form.com/) (v7.54.2)
-  - **Animation:** [Framer Motion](https://www.framer.com/motion/) (v12.4.7)
-  - **Utilities:** `clsx`, `tailwind-merge` for class name management.
+The project is a modern, decoupled web application built within a monorepo structure managed by pnpm workspaces. It consists of three primary packages:
 
-## 2. Backend
+1.  **`@phoenixvc/web`**: A statically-generated frontend application responsible for all user-facing content and interactions.
+2.  **`api`**: A serverless backend powered by Azure Functions, which handles specific business logic such as email processing.
+3.  **`@phoenixvc/design-system`**: A dedicated package for the UI component library (inferred, to be confirmed).
 
-- **Environment:** [Node.js](https://nodejs.org/) (v20.x)
-- **Framework:** [Azure Functions](https://azure.microsoft.com/en-us/services/functions/) (v4.6.1)
-- **Language:** [TypeScript](https://www.typescriptlang.org/) (v4.0.0)
-- **Email Services:**
-  - `@azure/communication-email` (v1.0.0)
-  - [Nodemailer](https://nodemailer.com/) (v6.10.0)
+#### **Frontend Stack**
 
-## 3. Monorepo & Tooling
+*   **Primary Framework**: [React](https://react.dev/) `v18.2.0`
+*   **Language**: [TypeScript](https://www.typescriptlang.org/) `v5.3.3`
+*   **Build Tool**: [Vite](https://vitejs.dev/) `v5.1.3`
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/) `v3.4.17` with PostCSS and a custom, multi-theme system.
+*   **Component Libraries**:
+    *   [Radix UI](https://www.radix-ui.com/): For accessible, unstyled UI primitives (e.g., Dropdown Menu, Slot).
+    *   A custom component library is likely maintained in the `@phoenixvc/design-system` package.
+*   **Routing**: [React Router](https://reactrouter.com/) `v7.2.0`
+*   **Animation**: [Framer Motion](https://www.framer.com/motion/)
+*   **Forms**: [React Hook Form](https://react-hook-form.com/)
+*   **Icons**: [Lucide React](https://lucide.dev/)
 
-- **Package Manager:** [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces)
-- **Linting:** [ESLint](https://eslint.org/) (v9.21.0)
-- **Formatting:** [Prettier](https://prettier.io/) (v3.2.5)
-- **Git Hooks:** [Husky](https://typicode.github.io/husky/) (v9.1.7)
-- **Commit Linting:** [Commitlint](https://commitlint.js.org/) (v19.0.3)
+#### **Backend Stack**
 
-## 4. Deployment & Infrastructure
+*   **Platform**: [Azure Functions](https://azure.microsoft.com/en-us/products/functions)
+*   **Runtime**: [Node.js](https://nodejs.org/) `v20.x`
+*   **Language**: [TypeScript](https://www.typescriptlang.org/) `v4.0.0`
+*   **Key Dependencies**:
+    *   `@azure/functions`: The core Azure Functions SDK.
+    *   `nodemailer`: For sending emails (e.g., contact form submissions).
 
-- **Hosting:** [Azure Static Web Apps](https://azure.microsoft.com/en-us/services/static-web-apps/)
-- **Infrastructure as Code (IaC):** Bicep (as indicated in `README.md`)
-- **Version Control:** [Git](https://git-scm.com/)
+#### **Development & Tooling**
 
-## 5. Documentation
+*   **Package Manager**: [pnpm](https://pnpm.io/) (used in a monorepo context)
+*   **Linting**: [ESLint](https://eslint.org/)
+*   **Formatting**: [Prettier](https://prettier.io/)
+*   **Git Hooks**: [Husky](https://typicode.github.io/husky/)
+*   **Commit Message Linting**: [Commitlint](https://commitlint.js.org/)
+*   **Documentation Generator**: [Poetry](https://python-poetry.org/) (used to run a Python-based documentation tool like MkDocs or Sphinx, inferred from the `docs` script).
 
-- **Static Site Generator:** Jekyll (as indicated by the `docs` structure)
-- **Python Tooling:** Poetry for managing Python dependencies related to documentation.
+#### **Deployment & Infrastructure**
 
-This stack represents a modern, robust, and scalable architecture for a corporate web presence.
+*   **Frontend Hosting**: [Azure Static Web Apps](https://azure.microsoft.com/en-us/products/app-service/static) (inferred from the `README.md` and the decoupled architecture).
+*   **Backend Hosting**: [Azure Functions](https://azure.microsoft.com/en-us/products/functions) (as noted above).
+*   **Infrastructure-as-Code**: The `infra/` directory suggests the use of an IaC tool, likely [Azure Bicep](https://learn.microsoft.com/en-us/azure/bicep/) or ARM templates, to manage cloud resources.
