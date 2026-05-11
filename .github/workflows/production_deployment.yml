@@ -277,6 +277,8 @@ jobs:
     needs: swa_deploy_production
     if: needs.swa_deploy_production.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      DOCS_DEPLOYMENT_TOKEN: ${{ secrets.DOCS_DEPLOYMENT_TOKEN }}
     outputs:
       docs_url: ${{ steps.deploy_docs_swa.outputs.static_web_app_url }}
     steps:
@@ -308,18 +310,23 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy Docs to Azure Static Web App
+        if: env.DOCS_DEPLOYMENT_TOKEN != ''
         id: deploy_docs_swa
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.DOCS_DEPLOYMENT_TOKEN }}
+          azure_static_web_apps_api_token: ${{ env.DOCS_DEPLOYMENT_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "docs/site"
           skip_app_build: true
           skip_api_build: true
-          skip_deploy_on_missing_secrets: true
+
+      - name: Skip Docs Deploy
+        if: env.DOCS_DEPLOYMENT_TOKEN == ''
+        run: echo "DOCS_DEPLOYMENT_TOKEN is not configured; skipping docs Static Web App deploy."
 
       - name: Configure docs.phoenixvc.tech Custom Domain
+        if: env.DOCS_DEPLOYMENT_TOKEN != ''
         run: |
           RESOURCE_GROUP="prod-${{ env.LOCATION_CODE }}-rg-phoenixvc-website"
           DOCS_SWA_NAME="prod-${{ env.LOCATION_CODE }}-swa-phoenixvc-docs"
