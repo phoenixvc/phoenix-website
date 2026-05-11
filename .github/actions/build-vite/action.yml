@@ -24,24 +24,21 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        run_install: false
+
     - name: Setup Node.js
       uses: actions/setup-node@v4  # Updated from v3
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'npm'
-        cache-dependency-path: |
-          **/package-lock.json
+        cache: 'pnpm'
+        cache-dependency-path: pnpm-lock.yaml
 
     - name: Install Dependencies
       shell: bash
-      working-directory: apps/${{ inputs.app-name }}
-      run: |
-        if [ ! -f "package-lock.json" ]; then
-          echo "Warning: package-lock.json not found in apps/${{ inputs.app-name }}"
-          npm install
-        else
-          npm ci
-        fi
+      run: pnpm install --frozen-lockfile
 
     - name: Retrieve Package Metadata
       id: metadata
@@ -59,4 +56,4 @@ runs:
     - name: Build
       shell: bash
       working-directory: apps/${{ inputs.app-name }}  # Better than cd
-      run: npm run build
+      run: pnpm run build
