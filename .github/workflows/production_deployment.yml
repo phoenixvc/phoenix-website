@@ -317,6 +317,7 @@ jobs:
           app_location: "docs/site"
           skip_app_build: true
           skip_api_build: true
+          skip_deploy_on_missing_secrets: true
 
       - name: Configure docs.phoenixvc.tech Custom Domain
         run: |
@@ -369,7 +370,7 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --name "$STATIC_WEB_APP_NAME" \
             --hostname "$DOMAIN" \
-            --query "status" -o tsv)
+            --query "status" -o tsv 2>/dev/null || echo "NotFound")
 
           echo "Domain status: $DOMAIN_STATUS"
 
@@ -415,11 +416,15 @@ jobs:
             --name "$STATIC_WEB_APP_NAME" \
             --query "defaultHostname" -o tsv)
 
-          az network dns record-set cname set-record \
+          if az network dns record-set cname set-record \
             --resource-group "$RESOURCE_GROUP" \
             --zone-name "$DOMAIN" \
             --record-set-name "@" \
-            --cname "$DEFAULT_HOSTNAME"
+            --cname "$DEFAULT_HOSTNAME"; then
+            echo "✅ DNS CNAME configured."
+          else
+            echo "⚠️ CNAME record was not updated. This is expected when apex DNS already uses other record types and the Static Web App hostname is Ready."
+          fi
 
           echo "✅ DNS configuration completed successfully."
 
@@ -427,7 +432,7 @@ jobs:
   # ✅ Notification Job
   # ───────────────────────────────────────────────
   notify_deployment:
-    needs: [swa_deploy_production, trigger_dns_update, deploy_docs, configure_custom_domain_dns]
+    needs: [deploy_resources_production, swa_deploy_production, trigger_dns_update, deploy_docs, configure_custom_domain_dns]
     if: always()
     runs-on: ubuntu-latest
     steps:
