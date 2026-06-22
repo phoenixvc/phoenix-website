@@ -19,6 +19,10 @@ import {
   EyeOff,
   ArrowRight,
   Bot,
+  Waypoints,
+  Receipt,
+  MessagesSquare,
+  Share2,
   Filter,
   X,
 } from "lucide-react";
@@ -155,6 +159,53 @@ const projects: Project[] = [
     status: "pre-alpha",
     tags: ["DeFi", "Blockchain", "Staking", "Crypto", "Web3"],
     focusArea: "fintech-blockchain",
+  },
+  {
+    id: "sluice",
+    name: "Sluice",
+    description: "OpenAI-compatible AI gateway",
+    longDescription:
+      "Sluice is an OpenAI-compatible AI gateway running on Azure Container Apps. Built on LiteLLM, it gives teams a single endpoint with model routing, provider abstraction, and cost controls across multiple LLM backends.",
+    icon: <Waypoints size={32} />,
+    github: "https://github.com/phoenixvc/sluice",
+    status: "pre-alpha",
+    tags: ["AI", "Gateway", "LiteLLM", "Azure"],
+    focusArea: "ai-ml",
+  },
+  {
+    id: "docket",
+    name: "Docket",
+    description: "LLM cost-operations platform",
+    longDescription:
+      "Docket is an AI cost-operations platform that tracks LLM spend, usage analytics, and cost optimisation across teams and providers, turning opaque token bills into actionable, per-project insight.",
+    icon: <Receipt size={32} />,
+    status: "pre-alpha",
+    tags: ["AI", "Cost Ops", "Analytics", "FinOps"],
+    focusArea: "ai-ml",
+  },
+  {
+    id: "convolens",
+    name: "ConvoLens",
+    description: "AI conversation analyzer",
+    longDescription:
+      "ConvoLens is an AI-powered conversation analyzer for WhatsApp. Upload a chat export to get summaries, sentiment, and insight into group and one-on-one conversations.",
+    icon: <MessagesSquare size={32} />,
+    website: "https://v0-whatsapp-conversation-summarizer.vercel.app",
+    status: "pre-alpha",
+    tags: ["AI", "NLP", "Analytics", "Summarization"],
+    focusArea: "ai-ml",
+  },
+  {
+    id: "omnipost",
+    name: "OmniPost",
+    description: "Multi-channel content distribution",
+    longDescription:
+      "OmniPost is a multi-channel content distribution tool for publishing and syndicating content across social and web channels from a single source.",
+    icon: <Share2 size={32} />,
+    github: "https://github.com/neuralliquid/omnipost",
+    status: "pre-alpha",
+    tags: ["Content", "Distribution", "Automation"],
+    focusArea: "infrastructure",
   },
 ];
 
