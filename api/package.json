@@ -1,0 +1,12 @@
+{
+  "name": "phoenixvc-web-api",
+  "version": "1.0.0",
+  "description": "Managed API for phoenixvc.tech (contact email via Azure Communication Services)",
+  "main": "sendContactEmail/index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@azure/communication-email": "^1.0.0"
+  }
+}
