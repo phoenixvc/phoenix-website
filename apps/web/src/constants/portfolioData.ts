@@ -180,7 +180,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     ],
     skills: ["Multi-Agent", "Enterprise", "Security", "Governance"],
     relatedProjects: ["mystira", "phoenixrooivalk"],
-    product: "https://github.com/justaghost/cognitive-mesh",
+    product: "https://github.com/JustAGhosT/cognitive-mesh",
     focusArea: "ai-ml",
   },
 

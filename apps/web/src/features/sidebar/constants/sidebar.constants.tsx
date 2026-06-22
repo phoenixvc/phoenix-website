@@ -36,7 +36,9 @@ export const SIDEBAR_LINKS: SidebarItemGroup[] = [
 // Create sidebar groups from the links with proper type safety
 export const DEFAULT_SIDEBAR_GROUPS: SidebarGroup[] = [
   {
-    title: "Main Navigation",
+    // No header for the primary nav group — "Main Navigation" over the obvious
+    // top-level links is redundant. Empty title hides the section heading.
+    title: "",
     items:
       (SIDEBAR_LINKS.find(
         (item) => item.label === "Navigation",
@@ -45,7 +47,9 @@ export const DEFAULT_SIDEBAR_GROUPS: SidebarGroup[] = [
       ) as SidebarItemLink[]) || [],
   },
   {
-    title: "Resources",
+    // Header dropped too — a "Resources" heading over a single link reads heavy
+    // once the primary group is unlabeled. Theme Designer shows as a plain link.
+    title: "",
     items:
       (SIDEBAR_LINKS.find(
         (item) => item.label === "Resources",
