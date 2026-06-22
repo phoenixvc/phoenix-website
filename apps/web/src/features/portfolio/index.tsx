@@ -80,17 +80,15 @@ const projects: Project[] = [
     focusArea: "ai-ml",
   },
   {
-    id: "phoenixrooivalk",
-    name: "Phoenix Rooivalk",
-    description: "AI-powered counter-drone defense platform",
+    id: "nexamesh",
+    name: "Nexamesh",
+    description: "AI-powered counter-UAS defense platform",
     longDescription:
-      "Phoenix Rooivalk is a sophisticated counter-drone platform that leverages advanced AI and machine learning for real-time drone detection, classification, and neutralization. Named after the South African Rooivalk attack helicopter, it provides comprehensive airspace protection with automated threat assessment and response capabilities.",
+      "Nexamesh (formerly Phoenix Rooivalk) is a sophisticated counter-UAS defense platform that leverages advanced AI and machine learning for real-time drone detection, classification, and neutralization, providing comprehensive airspace protection with automated threat assessment and response capabilities.",
     icon: <Shield size={32} />,
-    website: "https://phoenixrooivalk.com/",
-    docs: "https://docs.phoenixrooivalk.com/",
-    github: "https://github.com/JustAGhosT/PhoenixRooivalk",
+    github: "https://github.com/Nexamesh/nexamesh-core",
     status: "pre-alpha",
-    tags: ["Counter-Drone", "AI", "Defense", "Security"],
+    tags: ["Counter-UAS", "AI", "Defense", "Security"],
     focusArea: "defense-security",
   },
   {

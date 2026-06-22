@@ -362,7 +362,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     projects: ["Spend Tracking", "Usage Analytics", "Cost Optimisation"],
     skills: ["AI", "Cost Ops", "Analytics", "FinOps"],
     relatedProjects: ["sluice", "autopr", "cognitivemesh"],
-    product: "https://github.com/phoenixvc/docket",
+    product: "",
     focusArea: "ai-ml",
   },
   {

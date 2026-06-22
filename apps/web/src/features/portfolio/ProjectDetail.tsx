@@ -39,7 +39,7 @@ import styles from "./ProjectDetail.module.css";
 // Icon mapping for projects - includes all projects
 const projectIcons: Record<string, React.ReactNode> = {
   mystira: <BookOpen size={48} />,
-  phoenixrooivalk: <Shield size={48} />,
+  nexamesh: <Shield size={48} />,
   cognitivemesh: <Network size={48} />,
   airkey: <Key size={48} />,
   hop: <Car size={48} />,
