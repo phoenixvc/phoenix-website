@@ -1,0 +1,53 @@
+name: Deploy phoenixvc-web
+
+# Clean build-and-deploy to the live phoenixvc.tech SWA (phoenixvc-web).
+# Replaces the broken artifact-promotion flow that targeted a non-existent SWA
+# (prod-euw-swa-phoenixvc-website). Mirrors the verified manual build steps.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "apps/design-system/**"
+      - "packages/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy-phoenixvc-web.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-phoenixvc-web
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.30.3 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build design system
+        run: pnpm --filter @phoenixvc/design-system build
+
+      - name: Build web app
+        run: pnpm --filter @phoenixvc/web build
+
+      - name: Deploy to Azure Static Web Apps (phoenixvc-web)
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PROD }}
+          action: upload
+          app_location: apps/web/dist
+          skip_app_build: true
+          skip_api_build: true
