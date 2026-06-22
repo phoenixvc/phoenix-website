@@ -48,6 +48,10 @@ export interface PortfolioProject {
   expertise?: string;
   projects?: string[];
   bio?: string;
+  /** Short subtitle shown on the /portfolio listing card (falls back to position). */
+  tagline?: string;
+  /** Whether the project appears on the public /portfolio listing. Defaults to true. */
+  listed?: boolean;
   title: string;
   status: ProjectStatus;
   relatedProjects: string[];
@@ -142,7 +146,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Interactive Storytelling",
     mass: 500,
     color: "#9b59b6", // Purple variant - AI & ML focus area (slightly different from pure blue)
-    image: "/themes/mystira-icon.svg",
+    image: "/logos/mystira.svg",
+    tagline: "Interactive storytelling adventures for children and families",
     fullName: "Mystira",
     speed: 0.000025,
     title: "Interactive Storytelling Platform (Alpha)",
@@ -164,7 +169,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "AI Framework",
     mass: 150,
     color: "#3498db", // Blue - AI & ML focus area
-    image: "/themes/cognitivemesh-icon.svg",
+    image: "/logos/cognitivemesh.svg",
+    tagline: "Enterprise-grade AI transformation framework",
     fullName: "Cognitive Mesh",
     speed: 0.000022,
     title: "Enterprise AI Transformation Framework (Pre-Alpha)",
@@ -192,7 +198,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Counter-UAS Platform",
     mass: 200,
     color: "#c0392b", // Darker red variant - Defense & Security focus area
-    image: "/themes/rooivalk-icon.svg", // TODO: replace with nexamesh-branded icon
+    image: "/logos/nexamesh.svg",
+    tagline: "AI-powered counter-UAS defense platform",
     fullName: "Nexamesh",
     speed: 0.00002,
     title: "AI-Powered Counter-UAS Defense Platform (Pre-Alpha)",
@@ -214,7 +221,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Access Management",
     mass: 150,
     color: "#e74c3c", // Red - Defense & Security focus area
-    image: "/themes/airkey-icon.svg",
+    image: "/logos/airkey.svg",
+    tagline: "Digital access management solutions",
     fullName: "Airkey Ltd",
     speed: 0.000019,
     title: "Digital Access Management (Seed)",
@@ -238,7 +246,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "DeFi Platform",
     mass: 80,
     color: "#f39c12", // Orange - Fintech & Blockchain focus area
-    image: "/themes/veritasvault-icon.svg",
+    image: "/logos/veritasvault.svg",
+    tagline: "DeFi staking and treasury-backed rewards platform",
     fullName: "VeritasVault",
     speed: 0.00002,
     title: "DeFi Staking Platform (Pre-Alpha)",
@@ -262,7 +271,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Connectivity Tech",
     mass: 150,
     color: "#27ae60", // Darker green variant - Mobility & Transportation focus area
-    image: "/themes/hop-icon.svg",
+    image: "/logos/hop.svg",
+    tagline: "Innovative connectivity technology",
     fullName: "Hop Pty Ltd",
     speed: 0.000017,
     title: "Innovative Connectivity Technology (Seed)",
@@ -284,7 +294,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Women's Ridehail",
     mass: 180,
     color: "#2ecc71", // Green - Mobility & Transportation focus area
-    image: "/themes/chaufher-icon.svg",
+    image: "/logos/chaufher.svg",
+    tagline: "Women-focused ridehail service",
     fullName: "Chaufher Pty Ltd",
     speed: 0.000016,
     title: "Women-Focused Ridehail Service (Seed)",
@@ -308,7 +319,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "PR Automation",
     mass: 180,
     color: "#5dade2", // Lighter blue variant - AI & ML focus area
-    image: "/themes/codeflow-icon.svg",
+    image: "/logos/autopr.svg",
+    tagline: "AI-powered GitHub PR automation and issue management",
     fullName: "CodeFlow AI",
     speed: 0.000021,
     title: "AI-Powered PR Automation Platform (Pre-Alpha)",
@@ -330,6 +342,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "AI Gateway",
     mass: 120,
     color: "#2980b9", // Darker blue variant - AI & ML focus area
+    image: "/logos/sluice.svg",
+    tagline: "OpenAI-compatible AI gateway",
     fullName: "Sluice",
     speed: 0.00002,
     title: "OpenAI-Compatible AI Gateway (Pre-Alpha)",
@@ -351,6 +365,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "LLM Cost Ops",
     mass: 110,
     color: "#5499c7", // Blue variant - AI & ML focus area
+    image: "/logos/docket.svg",
+    tagline: "LLM cost-operations platform",
     fullName: "Docket",
     speed: 0.000019,
     title: "LLM Cost Operations Platform (Pre-Alpha)",
@@ -372,6 +388,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Conversation AI",
     mass: 120,
     color: "#6c5ce7", // Purple-blue variant - AI & ML focus area
+    image: "/logos/convolens.svg",
+    tagline: "AI conversation analyzer",
     fullName: "ConvoLens",
     speed: 0.000018,
     title: "AI Conversation Analyzer (Pre-Alpha)",
@@ -395,6 +413,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Content Distribution",
     mass: 100,
     color: "#6b7280",
+    image: "/logos/omnipost.svg",
+    tagline: "Multi-channel content distribution",
     fullName: "OmniPost",
     speed: 0.000017,
     title: "Multi-Channel Content Distribution (Pre-Alpha)",
@@ -416,7 +436,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Corporate Website",
     mass: 100,
     color: "#6b7280",
-    image: "/themes/phoenixvc-website-icon.svg",
+    image: "/logos/phoenixvc-website.svg",
+    listed: false,
     fullName: "PhoenixVC Website",
     speed: 0.000015,
     title: "Corporate Website",
@@ -438,7 +459,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     position: "Component Library",
     mass: 80,
     color: "#6b7280",
-    image: "/themes/design-system-icon.svg",
+    image: "/logos/design-system.svg",
+    listed: false,
     fullName: "Phoenix Design System",
     speed: 0.000018,
     title: "Component Library",
