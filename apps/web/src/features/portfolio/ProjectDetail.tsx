@@ -161,7 +161,7 @@ export const ProjectDetail = (): React.ReactElement => {
                 Home
               </Link>
               <ChevronRight size={16} className={styles.breadcrumbSeparator} />
-              <Link to="/#portfolio" className={styles.breadcrumbLink}>
+              <Link to="/portfolio" className={styles.breadcrumbLink}>
                 Portfolio
               </Link>
               <ChevronRight size={16} className={styles.breadcrumbSeparator} />
