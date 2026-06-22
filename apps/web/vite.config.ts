@@ -31,11 +31,18 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        // Use manual chunks to split vendor code
-        manualChunks: {
-          "vendor-react": ["react", "react-dom", "react/jsx-runtime"],
-          "vendor-router": ["react-router", "react-router-dom"],
-          "vendor-motion": ["framer-motion"],
+        // Split vendors AND the heavy Starfield into their own chunks so they
+        // download in parallel with the core bundle instead of one monolith.
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("react-router")) return "vendor-router";
+            if (id.includes("framer-motion")) return "vendor-motion";
+            if (id.includes("lucide-react")) return "vendor-icons";
+            if (id.includes("react")) return "vendor-react";
+            return "vendor";
+          }
+          // The interactive starfield is the single heaviest app module.
+          if (/[\\/]Starfield[\\/]/.test(id)) return "starfield";
         },
       },
     },

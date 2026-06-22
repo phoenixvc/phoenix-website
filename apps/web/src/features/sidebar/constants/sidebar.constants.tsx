@@ -47,7 +47,9 @@ export const DEFAULT_SIDEBAR_GROUPS: SidebarGroup[] = [
       ) as SidebarItemLink[]) || [],
   },
   {
-    title: "Resources",
+    // Header dropped too — a "Resources" heading over a single link reads heavy
+    // once the primary group is unlabeled. Theme Designer shows as a plain link.
+    title: "",
     items:
       (SIDEBAR_LINKS.find(
         (item) => item.label === "Resources",
