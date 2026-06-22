@@ -7,252 +7,66 @@ import {
   ExternalLink,
   Github,
   Cpu,
-  Network,
-  BookOpen,
-  Shield,
   FileText,
-  Key,
-  Car,
-  Users,
-  Vault,
   Eye,
   EyeOff,
   ArrowRight,
-  Bot,
-  Waypoints,
-  Receipt,
-  MessagesSquare,
-  Share2,
   Filter,
   X,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import {
+  PORTFOLIO_PROJECTS,
+  STATUS_CONFIG,
+  FOCUS_AREA_CONFIG,
+  type PortfolioProject,
+  type ProjectStatus,
+  type FocusAreaId,
+} from "@/constants/portfolioData";
+import { getProjectIcon } from "./projectIcons";
 import styles from "./Portfolio.module.css";
 
+// View model for a listing card. Derived from the single source of truth
+// (PORTFOLIO_PROJECTS) so the listing can no longer drift from the starfield
+// and detail page — that drift previously broke the Rooivalk → Nexamesh link.
 interface Project {
   id: string;
   name: string;
   description: string;
   longDescription: string;
-  icon: React.ReactNode;
+  image?: string;
   website?: string;
   github?: string;
   docs?: string;
-  status:
-    | "live"
-    | "development"
-    | "beta"
-    | "alpha"
-    | "pre-alpha"
-    | "seed"
-    | "early-stage"
-    | "growth";
+  status: ProjectStatus;
   tags: string[];
-  focusArea:
-    | "ai-ml"
-    | "fintech-blockchain"
-    | "defense-security"
-    | "mobility-transportation"
-    | "infrastructure";
+  focusArea: FocusAreaId;
 }
 
-const projects: Project[] = [
-  {
-    id: "mystira",
-    name: "Mystira",
-    description:
-      "Interactive storytelling adventures for children and families",
-    longDescription:
-      "Mystira brings the wonder of storytelling to life for children, parents, and group leaders alike. It transforms shared playtime into immersive, interactive adventures filled with imagination, cooperation, and creativity. Each Mystira story is grounded in child development research, fostering emotional growth, problem-solving skills, and meaningful connections.",
-    icon: <BookOpen size={32} />,
-    website: "https://mystira.app",
-    status: "alpha",
-    tags: ["Storytelling", "Children", "Interactive", "Education"],
-    focusArea: "ai-ml",
-  },
-  {
-    id: "autopr",
-    name: "CodeFlow AI",
-    description: "AI-powered GitHub PR automation and issue management",
-    longDescription:
-      "CodeFlow AI is a comprehensive AI-powered automation platform that transforms GitHub pull request workflows through intelligent analysis, issue creation, and multi-agent collaboration. Features CodeRabbit, GitHub Copilot integration, platform detection for 25+ development platforms, and supports Linear, Slack, and other integrations.",
-    icon: <Bot size={32} />,
-    website: "https://autopr.io",
-    github: "https://github.com/JustAGhosT/autopr-engine",
-    status: "pre-alpha",
-    tags: ["AI", "Automation", "GitHub", "DevOps", "Python"],
-    focusArea: "ai-ml",
-  },
-  {
-    id: "nexamesh",
-    name: "Nexamesh",
-    description: "AI-powered counter-UAS defense platform",
-    longDescription:
-      "Nexamesh (formerly Phoenix Rooivalk) is a sophisticated counter-UAS defense platform that leverages advanced AI and machine learning for real-time drone detection, classification, and neutralization, providing comprehensive airspace protection with automated threat assessment and response capabilities.",
-    icon: <Shield size={32} />,
-    github: "https://github.com/Nexamesh/nexamesh-core",
-    status: "pre-alpha",
-    tags: ["Counter-UAS", "AI", "Defense", "Security"],
-    focusArea: "defense-security",
-  },
-  {
-    id: "cognitivemesh",
-    name: "Cognitive Mesh",
-    description: "Enterprise-grade AI transformation framework",
-    longDescription:
-      "Cognitive Mesh is an enterprise-grade AI transformation framework designed to orchestrate multi-agent cognitive systems with institutional-grade security and compliance controls. It features a five-layer hexagonal architecture enabling organizations to build, deploy, and manage advanced AI capabilities with comprehensive governance, NIST AI Risk Management Framework compliance, and Zero-Trust security architecture.",
-    icon: <Network size={32} />,
-    github: "https://github.com/justaghost/cognitive-mesh",
-    status: "pre-alpha",
-    tags: [
-      "Multi-Agent",
-      "Enterprise",
-      "Security",
-      "Governance",
-      "Azure",
-      ".NET",
-    ],
-    focusArea: "ai-ml",
-  },
-  {
-    id: "airkey",
-    name: "Airkey",
-    description: "Digital access management solutions",
-    longDescription:
-      "Airkey Ltd provides innovative digital access management solutions that enable secure, keyless entry systems for various real-world assets. Using advanced cryptography and mobile technology, Airkey transforms how organizations manage physical access control.",
-    icon: <Key size={32} />,
-    status: "seed",
-    tags: ["Access Control", "Security", "IoT", "Mobile"],
-    focusArea: "defense-security",
-  },
-  {
-    id: "hop",
-    name: "Hop",
-    description: "Innovative connectivity technology",
-    longDescription:
-      "Hop (Pty) Ltd is revolutionizing urban mobility with innovative connectivity solutions. Their cutting edge platform and hardware connects commuters with high-speed internet.",
-    icon: <Car size={32} />,
-    status: "seed",
-    tags: ["Connectivity", "Mobility", "Hardware", "Internet"],
-    focusArea: "mobility-transportation",
-  },
-  {
-    id: "chaufher",
-    name: "Chaufher",
-    description: "Women-focused ridehail service",
-    longDescription:
-      "Chaufher (Pty) Ltd is a women-focused ridehail service designed to provide safe, reliable rides for women, by women. The platform prioritizes passenger safety with vetted drivers and specialized features tailored to women's transportation needs.",
-    icon: <Users size={32} />,
-    status: "seed",
-    tags: ["Transportation", "Safety", "Women-Focused", "Ride-Sharing"],
-    focusArea: "mobility-transportation",
-  },
-  {
-    id: "veritasvault",
-    name: "VeritasVault",
-    description: "DeFi staking and treasury-backed rewards platform",
-    longDescription:
-      "VeritasVault is a decentralized finance platform offering transparent, treasury-backed staking rewards with auto-compounding yields. The platform enables users to earn real yield through depositing, staking, and voting mechanisms with no lock-ups and instant withdrawals.",
-    icon: <Vault size={32} />,
-    website: "https://veritasvault.net",
-    github: "https://github.com/justAGhosT/vv",
-    status: "pre-alpha",
-    tags: ["DeFi", "Blockchain", "Staking", "Crypto", "Web3"],
-    focusArea: "fintech-blockchain",
-  },
-  {
-    id: "sluice",
-    name: "Sluice",
-    description: "OpenAI-compatible AI gateway",
-    longDescription:
-      "Sluice is an OpenAI-compatible AI gateway running on Azure Container Apps. Built on LiteLLM, it gives teams a single endpoint with model routing, provider abstraction, and cost controls across multiple LLM backends.",
-    icon: <Waypoints size={32} />,
-    github: "https://github.com/phoenixvc/sluice",
-    status: "pre-alpha",
-    tags: ["AI", "Gateway", "LiteLLM", "Azure"],
-    focusArea: "ai-ml",
-  },
-  {
-    id: "docket",
-    name: "Docket",
-    description: "LLM cost-operations platform",
-    longDescription:
-      "Docket is an AI cost-operations platform that tracks LLM spend, usage analytics, and cost optimisation across teams and providers, turning opaque token bills into actionable, per-project insight.",
-    icon: <Receipt size={32} />,
-    status: "pre-alpha",
-    tags: ["AI", "Cost Ops", "Analytics", "FinOps"],
-    focusArea: "ai-ml",
-  },
-  {
-    id: "convolens",
-    name: "ConvoLens",
-    description: "AI conversation analyzer",
-    longDescription:
-      "ConvoLens is an AI-powered conversation analyzer for WhatsApp. Upload a chat export to get summaries, sentiment, and insight into group and one-on-one conversations.",
-    icon: <MessagesSquare size={32} />,
-    website: "https://v0-whatsapp-conversation-summarizer.vercel.app",
-    status: "pre-alpha",
-    tags: ["AI", "NLP", "Analytics", "Summarization"],
-    focusArea: "ai-ml",
-  },
-  {
-    id: "omnipost",
-    name: "OmniPost",
-    description: "Multi-channel content distribution",
-    longDescription:
-      "OmniPost is a multi-channel content distribution tool for publishing and syndicating content across social and web channels from a single source.",
-    icon: <Share2 size={32} />,
-    github: "https://github.com/neuralliquid/omnipost",
-    status: "pre-alpha",
-    tags: ["Content", "Distribution", "Automation"],
-    focusArea: "infrastructure",
-  },
-];
-
-const statusColors: Record<
-  Project["status"],
-  { bg: string; text: string; label: string }
-> = {
-  live: { bg: "rgba(76, 175, 80, 0.2)", text: "#4caf50", label: "Live" },
-  beta: { bg: "rgba(255, 152, 0, 0.2)", text: "#ff9800", label: "Beta" },
-  alpha: {
-    bg: "rgba(156, 39, 176, 0.2)",
-    text: "#9c27b0",
-    label: "Alpha / Pre-Seed",
-  },
-  "pre-alpha": {
-    bg: "rgba(121, 85, 72, 0.2)",
-    text: "#795548",
-    label: "Angel / Pre-Seed",
-  },
-  seed: { bg: "rgba(46, 204, 113, 0.2)", text: "#27ae60", label: "Seed" },
-  "early-stage": {
-    bg: "rgba(230, 126, 34, 0.2)",
-    text: "#e67e22",
-    label: "Early Stage",
-  },
-  growth: {
-    bg: "rgba(231, 76, 60, 0.2)",
-    text: "#e74c3c",
-    label: "Growth Stage",
-  },
-  development: {
-    bg: "rgba(33, 150, 243, 0.2)",
-    text: "#2196f3",
-    label: "In Development",
-  },
+// Map a canonical PortfolioProject onto the listing card shape. Links are
+// derived from the single `product` field (GitHub vs. website) exactly like
+// the project detail page does, so the two views always agree.
+const toCardProject = (p: PortfolioProject): Project => {
+  const product = p.product?.trim() ?? "";
+  const isGithub = product.includes("github");
+  const tags = Array.isArray(p.skills) ? p.skills : p.skills ? [p.skills] : [];
+  return {
+    id: p.id,
+    name: p.name,
+    description: p.tagline ?? p.position ?? "",
+    longDescription: p.bio ?? "",
+    image: p.image,
+    website: product && !isGithub ? product : undefined,
+    github: product && isGithub ? product : undefined,
+    status: p.status,
+    tags,
+    focusArea: p.focusArea,
+  };
 };
 
-const focusAreaConfig: Record<
-  Project["focusArea"],
-  { label: string; color: string }
-> = {
-  "ai-ml": { label: "AI & ML", color: "#3498db" },
-  "fintech-blockchain": { label: "Fintech", color: "#f39c12" },
-  "defense-security": { label: "Defense", color: "#e74c3c" },
-  "mobility-transportation": { label: "Mobility", color: "#2ecc71" },
-  infrastructure: { label: "Infrastructure", color: "#6b7280" },
-};
+const projects: Project[] = PORTFOLIO_PROJECTS.filter(
+  (p) => p.listed !== false,
+).map(toCardProject);
 
 const animations = {
   container: {
@@ -293,11 +107,11 @@ export const Portfolio = (): React.ReactElement => {
   const { themeMode } = useTheme();
   const isDarkMode = themeMode === "dark";
   const [showComingSoon, setShowComingSoon] = useState(true);
-  const [selectedStatus, setSelectedStatus] = useState<
-    Project["status"] | "all"
-  >("all");
+  const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | "all">(
+    "all",
+  );
   const [selectedFocusArea, setSelectedFocusArea] = useState<
-    Project["focusArea"] | "all"
+    FocusAreaId | "all"
   >("all");
   const navigate = useNavigate();
 
@@ -425,17 +239,19 @@ export const Portfolio = (): React.ReactElement => {
                       onClick={() => setSelectedFocusArea(area)}
                       style={{
                         ...(selectedFocusArea === area && {
-                          backgroundColor: `${focusAreaConfig[area].color}20`,
-                          borderColor: focusAreaConfig[area].color,
-                          color: focusAreaConfig[area].color,
+                          backgroundColor: `${FOCUS_AREA_CONFIG[area].color}20`,
+                          borderColor: FOCUS_AREA_CONFIG[area].color,
+                          color: FOCUS_AREA_CONFIG[area].color,
                         }),
                       }}
                     >
                       <span
                         className={styles.pillDot}
-                        style={{ backgroundColor: focusAreaConfig[area].color }}
+                        style={{
+                          backgroundColor: FOCUS_AREA_CONFIG[area].color,
+                        }}
                       />
-                      {focusAreaConfig[area].label}
+                      {FOCUS_AREA_CONFIG[area].label}
                     </button>
                   ))}
                 </div>
@@ -458,13 +274,13 @@ export const Portfolio = (): React.ReactElement => {
                       onClick={() => setSelectedStatus(status)}
                       style={{
                         ...(selectedStatus === status && {
-                          backgroundColor: statusColors[status].bg,
-                          borderColor: statusColors[status].text,
-                          color: statusColors[status].text,
+                          backgroundColor: STATUS_CONFIG[status].bg,
+                          borderColor: STATUS_CONFIG[status].text,
+                          color: STATUS_CONFIG[status].text,
                         }),
                       }}
                     >
-                      {statusColors[status].label}
+                      {STATUS_CONFIG[status].label}
                     </button>
                   ))}
                 </div>
@@ -522,15 +338,32 @@ export const Portfolio = (): React.ReactElement => {
                 >
                   <div className={styles.cardContent}>
                     <div className={styles.cardHeader}>
-                      <div className={styles.projectIcon}>{project.icon}</div>
+                      <div
+                        className={styles.projectIcon}
+                        style={
+                          project.image
+                            ? { background: "transparent" }
+                            : undefined
+                        }
+                      >
+                        {project.image ? (
+                          <img
+                            src={project.image}
+                            alt=""
+                            className={styles.projectIconImage}
+                          />
+                        ) : (
+                          getProjectIcon(project.id, 32)
+                        )}
+                      </div>
                       <div
                         className={styles.statusBadge}
                         style={{
-                          backgroundColor: statusColors[project.status].bg,
-                          color: statusColors[project.status].text,
+                          backgroundColor: STATUS_CONFIG[project.status].bg,
+                          color: STATUS_CONFIG[project.status].text,
                         }}
                       >
-                        {statusColors[project.status].label}
+                        {STATUS_CONFIG[project.status].label}
                       </div>
                     </div>
 

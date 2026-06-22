@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Hop logo">
+  <defs>
+    <linearGradient id="hop" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#27ae60" />
+      <stop offset="1" stop-color="#1e8449" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#hop)" />
+  <path d="M18 45Q32 14 46 45" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" />
+  <circle cx="18" cy="45" r="4" fill="#fff" />
+  <circle cx="46" cy="45" r="4" fill="#fff" />
+  <g stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".85">
+    <path d="M27 25a7 7 0 0 1 10 0" />
+    <path d="M23 21a13 13 0 0 1 18 0" opacity=".7" />
+  </g>
+  <circle cx="32" cy="28" r="2.4" fill="#fff" />
+</svg>

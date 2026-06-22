@@ -10,23 +10,13 @@ import {
   Calendar,
   Target,
   Layers,
-  Users,
   Zap,
-  BookOpen,
   Shield,
-  Network,
-  Key,
   Car,
   Vault,
   Code,
-  Globe,
   ChevronRight,
   Home,
-  Bot,
-  Waypoints,
-  Receipt,
-  MessagesSquare,
-  Share2,
   X,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
@@ -38,25 +28,8 @@ import {
   type PortfolioProject as _PortfolioProject,
   type FocusAreaId,
 } from "@/constants/portfolioData";
+import { getProjectIcon } from "./projectIcons";
 import styles from "./ProjectDetail.module.css";
-
-// Icon mapping for projects - includes all projects
-const projectIcons: Record<string, React.ReactNode> = {
-  mystira: <BookOpen size={48} />,
-  nexamesh: <Shield size={48} />,
-  cognitivemesh: <Network size={48} />,
-  airkey: <Key size={48} />,
-  hop: <Car size={48} />,
-  chaufher: <Users size={48} />,
-  veritasvault: <Vault size={48} />,
-  autopr: <Bot size={48} />,
-  "phoenixvc-website": <Globe size={48} />,
-  "design-system": <Code size={48} />,
-  sluice: <Waypoints size={48} />,
-  docket: <Receipt size={48} />,
-  convolens: <MessagesSquare size={48} />,
-  omnipost: <Share2 size={48} />,
-};
 
 // Focus area icons (non-serializable, kept local)
 const focusAreaIcons: Record<FocusAreaId, React.ReactNode> = {
@@ -127,7 +100,7 @@ export const ProjectDetail = (): React.ReactElement => {
   const status = STATUS_CONFIG[project.status] || STATUS_CONFIG.active;
   const focusAreaConfig = FOCUS_AREA_CONFIG[project.focusArea];
   const focusAreaIcon = focusAreaIcons[project.focusArea];
-  const icon = projectIcons[project.id] || <Layers size={48} />;
+  const icon = getProjectIcon(project.id, 48);
   const skills = Array.isArray(project.skills) ? project.skills : [];
 
   return (
@@ -192,7 +165,11 @@ export const ProjectDetail = (): React.ReactElement => {
               <div className={styles.heroContent}>
                 <div
                   className={styles.heroIcon}
-                  style={{ backgroundColor: project.color || "#9333ea" }}
+                  style={{
+                    backgroundColor: project.image
+                      ? "transparent"
+                      : project.color || "#9333ea",
+                  }}
                 >
                   {project.image ? (
                     <img
@@ -376,9 +353,7 @@ export const ProjectDetail = (): React.ReactElement => {
                   {relatedProjects.map((related) => {
                     const relatedStatus =
                       STATUS_CONFIG[related.status] || STATUS_CONFIG.active;
-                    const relatedIcon = projectIcons[related.id] || (
-                      <Layers size={24} />
-                    );
+                    const relatedIcon = getProjectIcon(related.id, 24);
                     return (
                       <Link
                         key={related.id}
@@ -388,7 +363,9 @@ export const ProjectDetail = (): React.ReactElement => {
                         <div
                           className={styles.relatedIcon}
                           style={{
-                            backgroundColor: related.color || "#9333ea",
+                            backgroundColor: related.image
+                              ? "transparent"
+                              : related.color || "#9333ea",
                           }}
                         >
                           {related.image ? (

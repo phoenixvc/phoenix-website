@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Docket logo">
+  <defs>
+    <linearGradient id="docket" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5499c7" />
+      <stop offset="1" stop-color="#2e86c1" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#docket)" />
+  <path d="M20 14h24v36l-4-3-4 3-4-3-4 3-4-3-4 3Z" fill="#fff" opacity=".96" />
+  <line x1="25" y1="21" x2="39" y2="21" stroke="#5499c7" stroke-width="2" stroke-linecap="round" opacity=".55" />
+  <g fill="#5499c7">
+    <rect x="25" y="33" width="4" height="9" rx="1.2" />
+    <rect x="31" y="28" width="4" height="14" rx="1.2" />
+    <rect x="37" y="24" width="4" height="18" rx="1.2" />
+  </g>
+</svg>
