@@ -23,6 +23,10 @@ import {
   ChevronRight,
   Home,
   Bot,
+  Waypoints,
+  Receipt,
+  MessagesSquare,
+  Share2,
   X,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
@@ -48,6 +52,10 @@ const projectIcons: Record<string, React.ReactNode> = {
   autopr: <Bot size={48} />,
   "phoenixvc-website": <Globe size={48} />,
   "design-system": <Code size={48} />,
+  sluice: <Waypoints size={48} />,
+  docket: <Receipt size={48} />,
+  convolens: <MessagesSquare size={48} />,
+  omnipost: <Share2 size={48} />,
 };
 
 // Focus area icons (non-serializable, kept local)

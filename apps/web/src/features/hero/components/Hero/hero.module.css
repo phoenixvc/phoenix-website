@@ -203,6 +203,14 @@
   transform: translateY(-2px);
 }
 
+/* 1px marker at the top of the hero; the scroll-to-explore hint is shown only
+   while this is in the viewport (i.e. the page is at the very top). */
+.scrollSentinel {
+  width: 100%;
+  height: 1px;
+  pointer-events: none;
+}
+
 .scrollIndicator {
   position: fixed; /* Changed from absolute to fixed for viewport positioning */
   /* Hug the very bottom edge and stay compact so it overlaps the interactive
