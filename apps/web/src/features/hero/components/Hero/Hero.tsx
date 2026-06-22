@@ -93,14 +93,12 @@ const Hero: FC<ExtendedHeroProps> = memo(
         const currentScrollPosition = window.scrollY;
         setScrollPosition(currentScrollPosition);
 
-        // Hide scroll indicator after scrolling, show return button instead
-        if (currentScrollPosition > 50) {
-          setShowScrollIndicator(false);
-          setShowReturnToStars(true);
-        } else {
-          setShowScrollIndicator(true);
-          setShowReturnToStars(false);
-        }
+        // The "Scroll to Explore" hint is only for the very top of the page —
+        // hide it as soon as the user scrolls at all (small threshold avoids
+        // sub-pixel flicker). Return-to-stars still waits until meaningfully
+        // scrolled away.
+        setShowScrollIndicator(currentScrollPosition <= 4);
+        setShowReturnToStars(currentScrollPosition > 50);
       };
 
       window.addEventListener("scroll", handleScroll);
@@ -337,7 +335,7 @@ const Hero: FC<ExtendedHeroProps> = memo(
             <motion.button
               className={styles.scrollIndicator}
               initial={{ opacity: 0, x: "-50%" }}
-              animate={{ opacity: 1, x: "-50%", y: [0, 10, 0] }}
+              animate={{ opacity: 1, x: "-50%", y: [0, 6, 0] }}
               exit={{ opacity: 0 }}
               transition={{
                 opacity: { duration: 0.5 },
@@ -350,8 +348,8 @@ const Hero: FC<ExtendedHeroProps> = memo(
               aria-label="Scroll to explore content"
             >
               <svg
-                width="18"
-                height="18"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
