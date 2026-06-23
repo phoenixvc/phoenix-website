@@ -34,6 +34,7 @@ import {
   STAR_RENDERING_CONFIG,
   ANIMATION_TIMING_CONFIG,
 } from "../../renderingConfig";
+import { CAMERA_CONFIG } from "../../physicsConfig";
 // Import modular rendering functions
 import { drawMouseEffects } from "./mouseEffects";
 import {
@@ -191,14 +192,31 @@ export const animate = (
     // Use cameraRef for synchronous access (avoids stale state issues)
     // Fall back to props.camera for backward compatibility
     const cameraValues = props.cameraRef?.current ?? props.camera;
-    if (cameraValues && cameraValues.zoom !== 1) {
+    if (cameraValues) {
       ctx.save();
       // Calculate the center point to zoom towards (in canvas coordinates)
       const cameraCenterX = cameraValues.cx * canvas.width;
       const cameraCenterY = cameraValues.cy * canvas.height;
 
-      // Calculate the viewport center
-      const viewportCenterX = canvas.width / 2 + (props.sidebarWidth ?? 0) / 2;
+      // The focused-sun framing shifts the view right by half the sidebar so the
+      // target lands in the centre of the *visible* area (right of the sidebar),
+      // matching the Zoom Out button at left: calc(50% + sidebarWidth/2) (#212).
+      // That offset must FADE OUT as the camera returns to the full view: the
+      // zoom-out target is zoom=1, and the old `zoom !== 1` guard applied the full
+      // shift right up to zoom=1 and then dropped it on the settle frame — snapping
+      // the whole field left by sidebarWidth/2. Ramp the offset from 0 at zoom=1 to
+      // full by minSunFocusZoom, so every focused state keeps #212's centring while
+      // zoom-out settles smoothly. At zoom=1 / cx=cy=0.5 the transform is identity,
+      // so the default view is pixel-unchanged.
+      const sidebarShift = (props.sidebarWidth ?? 0) / 2;
+      const offsetFactor = Math.min(
+        1,
+        Math.max(
+          0,
+          (cameraValues.zoom - 1) / (CAMERA_CONFIG.minSunFocusZoom - 1),
+        ),
+      );
+      const viewportCenterX = canvas.width / 2 + sidebarShift * offsetFactor;
       const viewportCenterY = canvas.height / 2;
 
       // Apply transformation to center the camera target in the visible viewport
@@ -643,10 +661,10 @@ export const animate = (
 
     updateStarActivity(currentStars);
 
-    // Restore canvas context if camera transformation was applied
-    // Must match the save condition: cameraValues && cameraValues.zoom !== 1
+    // Restore canvas context if camera transformation was applied.
+    // Must match the save condition above (any truthy camera → transform applied).
     const cameraForRestore = props.cameraRef?.current ?? props.camera;
-    if (cameraForRestore && cameraForRestore.zoom !== 1) {
+    if (cameraForRestore) {
       ctx.restore();
     }
 
