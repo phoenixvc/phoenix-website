@@ -1,2 +1,13 @@
 packages:
   - "apps/*"
+
+# Force a single copy of the React type packages across the workspace. The root
+# devDeps + Storybook 10 drag in @types/react@19 (whose ReactNode includes bigint),
+# which pnpm public-hoists to the top-level node_modules. Libraries used by the
+# React 18 web app that carry no @types/react of their own (lucide-react,
+# react-router-dom, radix) then resolve those 19 types, and the 18/19 ReactNode
+# definitions won't unify — producing ~128 spurious "X cannot be used as a JSX
+# component" type errors. Both apps run React 18, so pin the types to 18.
+overrides:
+  "@types/react": "^18.3.28"
+  "@types/react-dom": "^18.3.7"
