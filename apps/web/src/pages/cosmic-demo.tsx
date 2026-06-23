@@ -41,11 +41,11 @@ const CosmicDemo: React.FC = () => {
               </div>
             )}
 
-            {navigationState.currentStarSystemId && (
+            {navigationState.currentSunId && (
               <div className={typedStyles.statusItem}>
-                <span className={typedStyles.statusLabel}>Star System:</span>
+                <span className={typedStyles.statusLabel}>Sun:</span>
                 <span className={typedStyles.statusValue}>
-                  {navigationState.currentStarSystemId}
+                  {navigationState.currentSunId}
                 </span>
               </div>
             )}

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { HeaderProps } from "./types";
 import { navItems } from "@/constants/navigation";
-import { useTheme } from "@/theme";
+import { useTheme, type ThemeName } from "@/theme";
 import MobileMenu from "@/features/navigation/components/MobileMenu/MobileMenu";
 
 const Header: FC<HeaderProps> = ({
@@ -116,7 +116,7 @@ const Header: FC<HeaderProps> = ({
   };
 
   const handleThemeSelect = (themeId: string): void => {
-    setThemeName(themeId);
+    setThemeName(themeId as ThemeName);
     setThemeMenuOpen(false);
     setProfileMenuOpen(false);
   };

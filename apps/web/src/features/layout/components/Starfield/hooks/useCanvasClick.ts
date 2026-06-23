@@ -122,7 +122,7 @@ function processCanvasClick(
   isTouchEvent: boolean = false,
 ): void {
   // Get current camera state for coordinate transformation (matches hover detection)
-  const camera = config.cameraRef?.current;
+  const camera = config.cameraRef?.current ?? undefined;
 
   // 1. Check if click was on a sun FIRST (before any physics)
   // Pass camera to ensure click detection uses same coords as hover detection

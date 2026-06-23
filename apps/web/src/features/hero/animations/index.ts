@@ -1,5 +1,5 @@
 // features/hero/animations/index.ts
-import { HeroAnimations } from "../types";
+import { HeroAnimations } from "@/features/layout/components/Starfield/types";
 import { ANIMATION_CONFIG } from "../constants";
 
 export const heroAnimations: HeroAnimations = {

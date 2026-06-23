@@ -7,7 +7,7 @@ export function useTheme(): ThemeContextType & {
   themeName: string;
   setThemeName: (name: ThemeName) => void;
   typography: {
-    get: (element: string) => TypographyScale | undefined;
+    getScale: (element: string) => TypographyScale | undefined;
     getComponentTypography: (
       component: string,
       variant?: string,
@@ -45,7 +45,7 @@ export function useTheme(): ThemeContextType & {
     // Typography helpers
     typography: {
       // Get typography for a specific element
-      get: (element: string): TypographyScale | undefined => {
+      getScale: (element: string): TypographyScale | undefined => {
         return theme.typography?.getScale(element);
       },
 

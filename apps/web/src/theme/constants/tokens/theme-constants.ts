@@ -99,6 +99,10 @@ export const COLOR_SCHEME_CLASSES: Record<
     light: [getThemeClass("cloud", "light")],
     dark: [getThemeClass("cloud", "dark")],
   },
+  "cosmic-frontier": {
+    light: [getThemeClass("cosmic-frontier", "light")],
+    dark: [getThemeClass("cosmic-frontier", "dark")],
+  },
 } as const;
 
 export const THEME_CONSTANTS = {

@@ -169,7 +169,9 @@ export class ComponentMapping {
       },
       placeholder: this.getColor("text.subtle"),
       label: text,
-    };
+      // Includes base state props (background/foreground/border/hover/…) beyond
+      // the InputVariant contract; assert to satisfy the return type unchanged.
+    } as InputVariant;
   }
   private generatePrimaryButton(): ButtonVariant {
     const primary = this.getColor("semantic.primary.base");

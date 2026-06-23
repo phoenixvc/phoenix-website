@@ -18,7 +18,7 @@ const CosmicNavigationUI: React.FC<CosmicNavigationUIProps> = ({
   const {
     currentLevel,
     currentGalaxyId,
-    currentStarSystemId,
+    currentSunId,
     currentPlanetId,
   } = state;
 
@@ -30,20 +30,20 @@ const CosmicNavigationUI: React.FC<CosmicNavigationUIProps> = ({
           isTransitioning: true,
         });
         break;
-      case "starSystem":
+      case "sun":
         setState({
           currentLevel: "galaxy",
           currentGalaxyId,
-          currentStarSystemId: undefined,
+          currentSunId: undefined,
           currentPlanetId: undefined,
           isTransitioning: true,
         });
         break;
       case "planet":
         setState({
-          currentLevel: "starSystem",
+          currentLevel: "sun",
           currentGalaxyId,
-          currentStarSystemId,
+          currentSunId,
           currentPlanetId: undefined,
           isTransitioning: true,
         });
@@ -61,9 +61,9 @@ const CosmicNavigationUI: React.FC<CosmicNavigationUIProps> = ({
   if (currentPlanetId) {
     const planet = getObjectById(currentPlanetId);
     locationName = planet?.name || "Unknown Planet";
-  } else if (currentStarSystemId) {
-    const starSystem = getObjectById(currentStarSystemId);
-    locationName = starSystem?.name || "Unknown Star System";
+  } else if (currentSunId) {
+    const sun = getObjectById(currentSunId);
+    locationName = sun?.name || "Unknown Sun";
   } else if (currentGalaxyId) {
     const galaxy = getObjectById(currentGalaxyId);
     locationName = galaxy?.name || "Unknown Galaxy";

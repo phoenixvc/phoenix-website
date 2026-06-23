@@ -13,7 +13,10 @@ export class StorageValidation {
     const errors: ThemeValidationError[] = [];
 
     // Validate storage type
-    if (storage.type && !this.VALID_STORAGE_TYPES.includes(storage.type)) {
+    if (
+      storage.type &&
+      !(this.VALID_STORAGE_TYPES as readonly string[]).includes(storage.type)
+    ) {
       errors.push(
         new ThemeValidationError(
           `Invalid storage type: ${storage.type}`,
