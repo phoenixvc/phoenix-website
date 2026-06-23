@@ -192,6 +192,21 @@ export const animate = (
     // Use cameraRef for synchronous access (avoids stale state issues)
     // Fall back to props.camera for backward compatibility
     const cameraValues = props.cameraRef?.current ?? props.camera;
+
+    // Read the focused sun from the live ref, NOT the memoised prop. The params
+    // memo that feeds this loop lags focus changes, so `props.focusedSunId` stays
+    // stale after a zoom-out — even though React has already cleared focus and the
+    // camera has recentred. That left the render stuck in "focused mode" (dimmed
+    // background, vignette, only the focused sun's planets), so the field looked
+    // collapsed to the focused sun's side. The ref is synced synchronously on every
+    // focus change (mirroring hoveredSunIdRef), so it reflects the live value.
+    // Use the ref directly when present — its `null` means "no focus" and must NOT
+    // fall through to the stale prop; only fall back to the prop if the ref is
+    // absent (defensive).
+    const liveFocusedSunId = props.focusedSunIdRef
+      ? props.focusedSunIdRef.current
+      : (props.focusedSunId ?? null);
+
     if (cameraValues) {
       ctx.save();
       // Calculate the center point to zoom towards (in canvas coordinates)
@@ -231,7 +246,7 @@ export const animate = (
     // Draw background stars with reduced opacity when focused on a sun
     // This makes the focused area more prominent
     startTiming("drawStars");
-    if (props.focusedSunId) {
+    if (liveFocusedSunId) {
       ctx.save();
       ctx.globalAlpha = STAR_RENDERING_CONFIG.focusedBackgroundAlpha;
       drawStars(ctx, currentStars);
@@ -244,7 +259,7 @@ export const animate = (
 
     // Draw star birthplace indicators at the edges where stars respawn
     // Hide these when focused on a sun for cleaner view
-    if (!props.focusedSunId) {
+    if (!liveFocusedSunId) {
       drawStarBirthplaces(ctx, canvas.width, canvas.height);
     }
 
@@ -316,7 +331,7 @@ export const animate = (
       props.isDarkMode,
       liveHoveredSunId,
       deltaTime,
-      props.focusedSunId,
+      liveFocusedSunId,
       currentPlanets,
     );
     endTiming("drawSuns");
@@ -490,7 +505,7 @@ export const animate = (
     // Adding it here caused double-wrapping and potential oscillation at edges
 
     // Draw black holes if enabled (hide when focused on a sun for cleaner view)
-    if (props.enableBlackHole && !props.focusedSunId) {
+    if (props.enableBlackHole && !liveFocusedSunId) {
       currentBlackHoles.forEach((blackHole: BlackHole) => {
         drawBlackHole(ctx, blackHole, deltaTime, props.particleSpeed * 0.01);
       });
@@ -500,16 +515,16 @@ export const animate = (
     // Filter planets if a sun is focused (show only planets orbiting that sun)
     // Use cached filtered array to avoid allocation every frame
     let planetsToRender: Planet[];
-    if (props.focusedSunId) {
+    if (liveFocusedSunId) {
       // Only recalculate if focusedSunId changed or planets array changed
       if (
-        cachedFocusedSunId !== props.focusedSunId ||
+        cachedFocusedSunId !== liveFocusedSunId ||
         cachedPlanetsLength !== currentPlanets.length
       ) {
         cachedFilteredPlanets = currentPlanets.filter(
-          (planet) => planet.orbitParentId === props.focusedSunId,
+          (planet) => planet.orbitParentId === liveFocusedSunId,
         );
-        cachedFocusedSunId = props.focusedSunId;
+        cachedFocusedSunId = liveFocusedSunId;
         cachedPlanetsLength = currentPlanets.length;
       }
       planetsToRender = cachedFilteredPlanets;
