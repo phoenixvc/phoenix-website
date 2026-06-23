@@ -109,6 +109,7 @@ export interface AnimationProps {
   hoveredObjectId?: string | null;
   hoveredSunIdRef?: MutableRefObject<string | null>; // Ref for synchronous hoveredSunId access
   focusedSunId?: string | null;
+  focusedSunIdRef?: MutableRefObject<string | null>; // Ref for synchronous focusedSunId access (loop reads this, not the memoised prop)
   debugSettings?: DebugSettings; // Add debug settings
   isMouseOverProjectTooltipRef?: MutableRefObject<boolean>; // Track if mouse is over project tooltip
   isMouseOverSunTooltipRef?: MutableRefObject<boolean>; // Track if mouse is over sun tooltip

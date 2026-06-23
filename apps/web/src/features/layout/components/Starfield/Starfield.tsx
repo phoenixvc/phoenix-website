@@ -534,6 +534,7 @@ const InteractiveStarfield = forwardRef<
     const clickBurstsRefLocal = useRef(clickBursts);
     const collisionEffectsRef = useRef(collisionEffects);
     const hoveredSunIdRef = useRef(hoveredSunId);
+    const focusedSunIdRef = useRef(focusedSunId);
 
     // Keep refs in sync with state (but don't trigger useMemo recalculation)
     useEffect(() => {
@@ -551,6 +552,9 @@ const InteractiveStarfield = forwardRef<
     useEffect(() => {
       hoveredSunIdRef.current = hoveredSunId;
     }, [hoveredSunId]);
+    useEffect(() => {
+      focusedSunIdRef.current = focusedSunId;
+    }, [focusedSunId]);
 
     // Memoize animation loop parameters to prevent unnecessary re-renders
     // PERFORMANCE: Only include STATIC dependencies that rarely change
@@ -606,6 +610,7 @@ const InteractiveStarfield = forwardRef<
         fpsValuesRef,
         hoveredSunIdRef, // Use ref for synchronous access in animation loop
         focusedSunId,
+        focusedSunIdRef, // Live ref — loop reads this so focus-mode clears on zoom-out
         camera: internalCamera,
         setCamera: setInternalCamera,
         isMouseOverProjectTooltipRef: tooltipRefs.isMouseOverProjectTooltipRef,
