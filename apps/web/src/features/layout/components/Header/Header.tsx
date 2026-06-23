@@ -202,7 +202,7 @@ const Header: FC<HeaderProps> = ({
           </nav>
 
           <div className={styles.headerControls}>
-            {onGameModeToggle && (
+            {import.meta.env.DEV && onGameModeToggle && (
               <button
                 className={`${styles.controlButton} ${
                   gameMode ? styles.activeControl : ""
@@ -215,7 +215,7 @@ const Header: FC<HeaderProps> = ({
               </button>
             )}
 
-            {onDebugModeToggle && (
+            {import.meta.env.DEV && onDebugModeToggle && (
               <button
                 className={`${styles.controlButton} ${
                   debugMode ? styles.activeControl : ""

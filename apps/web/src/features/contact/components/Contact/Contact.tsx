@@ -42,7 +42,7 @@ const Contact: FC<ContactProps> = memo(() => {
       // Call your Azure Function - use the local URL during development
       const functionUrl =
         process.env.NODE_ENV === "production"
-          ? "https://phoenixvc-api.azurewebsites.net/api/sendContactEmail"
+          ? "/api/sendContactEmail"
           : "http://localhost:7071/api/sendContactEmail";
 
       const response = await fetch(functionUrl, {

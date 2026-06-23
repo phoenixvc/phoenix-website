@@ -44,6 +44,7 @@ const Hero: FC<ExtendedHeroProps> = memo(
       logger.debug(`[Home] Section "${id}" is now visible`);
     });
     const containerRef = useRef<HTMLDivElement>(null);
+    const topSentinelRef = useRef<HTMLDivElement>(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isMouseNearBorder, setIsMouseNearBorder] = useState(false);
 
@@ -92,20 +93,31 @@ const Hero: FC<ExtendedHeroProps> = memo(
       const handleScroll = (): void => {
         const currentScrollPosition = window.scrollY;
         setScrollPosition(currentScrollPosition);
-
-        // Hide scroll indicator after scrolling, show return button instead
-        if (currentScrollPosition > 50) {
-          setShowScrollIndicator(false);
-          setShowReturnToStars(true);
-        } else {
-          setShowScrollIndicator(true);
-          setShowReturnToStars(false);
-        }
+        // Return-to-stars appears once the user has scrolled meaningfully away.
+        setShowReturnToStars(currentScrollPosition > 50);
       };
 
-      window.addEventListener("scroll", handleScroll);
+      window.addEventListener("scroll", handleScroll, { passive: true });
       handleScroll(); // Initial check
       return (): void => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    // The "Scroll to Explore" hint belongs only at the very top of the page.
+    // Drive its visibility from an IntersectionObserver on a 1px sentinel at the
+    // top of the hero rather than window.scrollY — on this layout window.scrollY
+    // wasn't a reliable signal, which left the hint visible far down the page.
+    // The sentinel leaves the viewport the moment the user scrolls at all, and
+    // re-enters when they scroll back to the top.
+    useEffect(() => {
+      const sentinel = topSentinelRef.current;
+      if (!sentinel) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]): void => setShowScrollIndicator(entry.isIntersecting),
+        { threshold: 0 },
+      );
+      observer.observe(sentinel);
+      return (): void => observer.disconnect();
     }, []);
 
     const getThemeStyles = (): {
@@ -146,6 +158,12 @@ const Hero: FC<ExtendedHeroProps> = memo(
           backgroundPosition: `center ${scrollPosition * 0.05}px`,
         }}
       >
+        {/* 1px sentinel at the very top — drives the scroll-hint visibility */}
+        <div
+          ref={topSentinelRef}
+          aria-hidden="true"
+          className={styles.scrollSentinel}
+        />
         <div
           className={
             isDarkMode ? styles.heroOverlayDark : styles.heroOverlayLight
@@ -337,7 +355,7 @@ const Hero: FC<ExtendedHeroProps> = memo(
             <motion.button
               className={styles.scrollIndicator}
               initial={{ opacity: 0, x: "-50%" }}
-              animate={{ opacity: 1, x: "-50%", y: [0, 10, 0] }}
+              animate={{ opacity: 1, x: "-50%", y: [0, 6, 0] }}
               exit={{ opacity: 0 }}
               transition={{
                 opacity: { duration: 0.5 },
@@ -350,8 +368,8 @@ const Hero: FC<ExtendedHeroProps> = memo(
               aria-label="Scroll to explore content"
             >
               <svg
-                width="18"
-                height="18"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"

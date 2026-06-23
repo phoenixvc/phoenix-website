@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Mystira logo">
+  <defs>
+    <linearGradient id="mystira" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9b59b6" />
+      <stop offset="1" stop-color="#7d3c98" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#mystira)" />
+  <path d="M32 21c-5-3.4-12-3.4-17-1.3v25c5-2.1 12-2.1 17 1.3 5-3.4 12-3.4 17-1.3v-25c-5-2.1-12-2.1-17 1.3Z" fill="#fff" opacity=".96" />
+  <path d="M32 21v24.7" stroke="#7d3c98" stroke-width="2" stroke-linecap="round" />
+  <path d="M19 27h8M19 32h8M37 27h8M37 32h8" stroke="#9b59b6" stroke-width="1.6" stroke-linecap="round" opacity=".5" />
+  <path d="M46.5 11l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4Z" fill="#fff" />
+</svg>

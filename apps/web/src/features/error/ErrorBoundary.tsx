@@ -1,6 +1,10 @@
 // features/error/ErrorBoundary.tsx
 import { Component, ErrorInfo, ReactNode } from "react";
 import { logger } from "@/utils/logger";
+import {
+  isChunkLoadError,
+  attemptChunkReload,
+} from "@/utils/chunkErrorRecovery";
 import styles from "./NotFound.module.css";
 
 interface Props {
@@ -13,6 +17,8 @@ interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
+  /** True while a reload is pending to recover from a chunk-load failure. */
+  isReloading: boolean;
 }
 
 interface ErrorReport {
@@ -58,14 +64,32 @@ const reportError = async (report: ErrorReport): Promise<void> => {
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+    this.state = {
+      hasError: false,
+      error: null,
+      errorInfo: null,
+      isReloading: false,
+    };
   }
 
   static getDerivedStateFromError(error: Error): Partial<State> {
-    return { hasError: true, error };
+    // Optimistically suppress the error UI for chunk-load failures — they are
+    // recovered by a reload in componentDidCatch (or shown gracefully if the
+    // reload cap is reached).
+    return { hasError: true, error, isReloading: isChunkLoadError(error) };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    // A failed code-split chunk (stale deploy, network blip) is recoverable by
+    // reloading for a fresh index.html — do that before showing any error UI.
+    if (isChunkLoadError(error)) {
+      if (attemptChunkReload()) {
+        return; // page is about to reload
+      }
+      // Reload cap reached: fall through and show the graceful fallback.
+      this.setState({ isReloading: false });
+    }
+
     // Update state with error info
     this.setState({ errorInfo });
 
@@ -99,11 +123,22 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   handleReset = (): void => {
-    this.setState({ hasError: false, error: null, errorInfo: null });
+    this.setState({
+      hasError: false,
+      error: null,
+      errorInfo: null,
+      isReloading: false,
+    });
   };
 
   render(): ReactNode {
     if (this.state.hasError) {
+      // A reload is pending to recover from a chunk-load failure — render
+      // nothing rather than flashing the error screen.
+      if (this.state.isReloading) {
+        return null;
+      }
+
       if (this.props.fallback) {
         return this.props.fallback;
       }
@@ -117,8 +152,8 @@ export class ErrorBoundary extends Component<Props, State> {
               We encountered an unexpected error. Please try refreshing the page
               or going back to the home page.
             </p>
-            {/* Show error details for debugging - BIG AND OBVIOUS */}
-            {this.state.error && (
+            {/* Raw error/stack is dev-only — never shown to end users in prod */}
+            {import.meta.env.DEV && this.state.error && (
               <div style={{
                 marginTop: "30px",
                 padding: "20px",

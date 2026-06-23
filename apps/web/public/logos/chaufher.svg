@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Chaufher logo">
+  <defs>
+    <linearGradient id="chaufher" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2ecc71" />
+      <stop offset="1" stop-color="#239b56" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#chaufher)" />
+  <circle cx="32" cy="32" r="18" fill="none" stroke="#fff" stroke-width="3.4" />
+  <circle cx="32" cy="32" r="5" fill="#fff" />
+  <g stroke="#fff" stroke-width="3.2" stroke-linecap="round">
+    <line x1="32" y1="37" x2="32" y2="49" />
+    <line x1="27.7" y1="29.5" x2="18" y2="27" />
+    <line x1="36.3" y1="29.5" x2="46" y2="27" />
+  </g>
+</svg>

@@ -101,8 +101,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       <div className={styles.sidebarContent}>
         {DEFAULT_SIDEBAR_GROUPS.map((group) => (
-          <div key={group.title} className={styles.sidebarSection}>
-            <h3 className={styles.sidebarSectionTitle}>{group.title}</h3>
+          <div
+            key={group.title || "primary"}
+            className={styles.sidebarSection}
+          >
+            {group.title && (
+              <h3 className={styles.sidebarSectionTitle}>{group.title}</h3>
+            )}
             <nav className={styles.sidebarNav}>
               {group.items.map((item) => (
                 <a

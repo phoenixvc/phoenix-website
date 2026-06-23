@@ -70,12 +70,21 @@ export function useCameraAnimation({
   const cameraAnimationRef = useRef<number | null>(null);
 
   // Store current camera state in a ref for animation loop access
-  // This ref holds the ANIMATED camera position (not the target)
-  const cameraStateRef = useRef({
+  // This ref holds the ANIMATED camera position (not the target).
+  // Annotate explicitly so the ref widens to `number` — without it useRef infers
+  // the literal types from CAMERA_CONFIG and every per-frame assignment fails.
+  const cameraStateRef = useRef<{ cx: number; cy: number; zoom: number }>({
     cx: CAMERA_CONFIG.defaultCenterX,
     cy: CAMERA_CONFIG.defaultCenterY,
     zoom: CAMERA_CONFIG.defaultZoom,
   });
+
+  // Mirror focusedSunId into a ref so the rAF animation loop can read the live
+  // focus each frame without the loop being torn down on every focus change.
+  const focusedSunIdRef = useRef<string | null>(focusedSunId);
+  useEffect(() => {
+    focusedSunIdRef.current = focusedSunId;
+  }, [focusedSunId]);
 
   /**
    * Zoom the camera to focus on a specific sun
@@ -196,12 +205,17 @@ export function useCameraAnimation({
       cameraAnimationRef.current = null;
     }
 
-    // Sync cameraStateRef with current camera position before starting new animation
-    syncCameraStateRef();
+    // NOTE: we intentionally do NOT copy internalCamera -> cameraStateRef here.
+    // cameraStateRef holds the authoritative live animated position (the canvas
+    // reads it every frame). During steady focused-sun tracking React state lags
+    // the ref on purpose, so seeding the lerp from state would snap the camera
+    // back to a stale position. Start each lerp from wherever the ref already is.
 
-    // Store the target for this animation cycle
-    const targetCx = internalCamera.target.cx;
-    const targetCy = internalCamera.target.cy;
+    // Snapshot the target for this animation cycle. While a sun is focused the
+    // position component is overridden each frame by the sun's LIVE position
+    // below; the zoom component (and the zoom-out target) stay fixed.
+    const snapshotTargetCx = internalCamera.target.cx;
+    const snapshotTargetCy = internalCamera.target.cy;
     const targetZoom = internalCamera.target.zoom;
 
     const animateCamera = (): void => {
@@ -212,22 +226,37 @@ export function useCameraAnimation({
         zoom: currentZoom,
       } = cameraStateRef.current;
 
+      // While a sun is focused, follow its LIVE orbiting position instead of the
+      // stale snapshot captured when it was clicked. Suns orbit continuously, so
+      // a static target would settle where the sun *was* and let it drift away.
+      const trackedSunId = focusedSunIdRef.current;
+      let targetCx = snapshotTargetCx;
+      let targetCy = snapshotTargetCy;
+      if (trackedSunId !== null) {
+        const livePosition = getSunPosition(trackedSunId);
+        if (livePosition) {
+          targetCx = livePosition.x;
+          targetCy = livePosition.y;
+        }
+      }
+
       const smoothing = CAMERA_CONFIG.cameraSmoothingFactor;
       const newCx = currentCx + (targetCx - currentCx) * smoothing;
       const newCy = currentCy + (targetCy - currentCy) * smoothing;
       const newZoom = currentZoom + (targetZoom - currentZoom) * smoothing;
 
-      // Update the ref with the new animated position (for next frame)
+      // Update the ref with the new animated position (canvas reads this each frame)
       cameraStateRef.current = { cx: newCx, cy: newCy, zoom: newZoom };
 
-      // Check if we're close enough to target
-      const isCloseEnough =
+      const positionSettled =
         Math.abs(newCx - targetCx) < CAMERA_CONFIG.positionConvergenceThreshold &&
-        Math.abs(newCy - targetCy) < CAMERA_CONFIG.positionConvergenceThreshold &&
+        Math.abs(newCy - targetCy) < CAMERA_CONFIG.positionConvergenceThreshold;
+      const zoomSettled =
         Math.abs(newZoom - targetZoom) < CAMERA_CONFIG.zoomConvergenceThreshold;
 
-      if (isCloseEnough) {
-        // Reached target, set final values and clear target
+      // Non-tracking transitions (zoom-out / unfocused pans) settle and stop so
+      // the loop goes idle once the camera reaches its resting target.
+      if (trackedSunId === null && positionSettled && zoomSettled) {
         cameraStateRef.current = {
           cx: targetCx,
           cy: targetCy,
@@ -243,14 +272,19 @@ export function useCameraAnimation({
         return;
       }
 
-      // Update React state to trigger re-render for visual updates
-      // (The animation loop reads from cameraStateRef, not React state)
-      setInternalCamera((prev) => ({
-        cx: newCx,
-        cy: newCy,
-        zoom: newZoom,
-        target: prev.target, // Keep the target
-      }));
+      // During the zoom-in transition keep React state in sync (parity with the
+      // previous behaviour). Once the zoom has settled and we are merely tracking
+      // the orbiting sun, drive the camera purely through cameraStateRef to avoid
+      // 60fps React re-renders for as long as a sun stays focused.
+      const steadyTracking = trackedSunId !== null && zoomSettled;
+      if (!steadyTracking) {
+        setInternalCamera((prev) => ({
+          cx: newCx,
+          cy: newCy,
+          zoom: newZoom,
+          target: prev.target, // Keep the target
+        }));
+      }
 
       // Continue animation for next frame
       cameraAnimationRef.current = requestAnimationFrame(animateCamera);
