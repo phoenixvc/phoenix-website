@@ -206,6 +206,13 @@
 /* 1px marker at the top of the hero; the scroll-to-explore hint is shown only
    while this is in the viewport (i.e. the page is at the very top). */
 .scrollSentinel {
+  /* Out of flow: the hero section is a flex row, so an in-flow sentinel would
+     claim half the row and shove the hero content off-centre to the right.
+     Absolute-pinned at the section top, it still drives the scroll-hint
+     IntersectionObserver without affecting layout. */
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 1px;
   pointer-events: none;
@@ -343,20 +350,29 @@
 }
 
 .minimized {
-  padding: 0.75rem 1rem;
-  /* Wide enough for the full title on one line on desktop; caps at 92vw on
-     narrow screens where the title wraps instead of clipping. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  /* Hug the icon + title as a compact chip instead of stretching to a fixed
+     width (which stranded the corner-pinned toggle far from the centered
+     title). The parent flex keeps the chip centred on screen. Still caps at
+     92vw on narrow screens so a long title wraps rather than overflowing. */
+  width: fit-content;
   max-width: min(92vw, 520px);
+  padding: 0.75rem 1rem;
+}
+
+/* In the minimized chip the toggle flows inline right before the title rather
+   than pinning to the card's top-left corner. */
+.minimized .minimizeButton {
+  position: static;
+  flex-shrink: 0;
 }
 
 .minimizedContent {
   display: flex;
   align-items: center;
-  justify-content: center;
-  /* Add left margin to account for minimize button (28px + 0.75rem gap) */
-  margin-left: calc(28px + 0.5rem);
-  /* Balance with equal right margin for symmetric centering */
-  margin-right: calc(28px + 0.5rem);
 }
 
 .minimizedTitle {
@@ -380,12 +396,6 @@
   .minimized {
     max-width: min(92vw, 360px);
     padding: 0.5rem 0.75rem;
-  }
-
-  .minimizedContent {
-    /* Smaller margin on mobile to account for smaller button (24px) */
-    margin-left: calc(24px + 0.5rem);
-    margin-right: calc(24px + 0.5rem);
   }
 
   .minimizedTitle {
