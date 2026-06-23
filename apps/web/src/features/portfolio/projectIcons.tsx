@@ -7,6 +7,7 @@
 // listing and the project detail page from drifting apart — that dual-source
 // drift is what previously broke the Rooivalk → Nexamesh link.
 import React from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
   Network,
@@ -25,7 +26,7 @@ import {
   Layers,
 } from "lucide-react";
 
-const ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
+const ICONS: Record<string, LucideIcon> = {
   mystira: BookOpen,
   cognitivemesh: Network,
   nexamesh: Shield,

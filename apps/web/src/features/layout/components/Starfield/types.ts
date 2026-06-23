@@ -3,6 +3,9 @@
 import { Variants } from "framer-motion";
 import React from "react";
 import { Camera, CosmicNavigationState } from "./cosmos/types";
+// Re-export cosmos navigation types so consumers can import them from the
+// Starfield types barrel (Layout, cosmic-demo page).
+export type { CosmicNavigationState } from "./cosmos/types";
 
 // Basic types
 export interface Point {
@@ -16,19 +19,11 @@ export interface CenterPosition {
 }
 
 // Portfolio project types - re-exported from centralized source
-// Local type kept for backward compatibility with optional fields
-export type ProjectStatus =
-  | "alpha"
-  | "pre-alpha"
-  | "early-stage"
-  | "growth"
-  | "active";
-export type FocusAreaId =
-  | "ai-ml"
-  | "fintech-blockchain"
-  | "defense-security"
-  | "mobility-transportation"
-  | "infrastructure";
+// Re-export the canonical project enums from the single source of truth.
+// These were previously duplicated here and had drifted (the local copy was
+// missing the "seed" status), which broke PortfolioProject assignability.
+import type { ProjectStatus, FocusAreaId } from "@/constants/portfolioData";
+export type { ProjectStatus, FocusAreaId };
 
 export interface PortfolioProject {
   id: string;
@@ -535,11 +530,13 @@ declare global {
       ) => number;
       getStarsCount: () => number;
       createExplosion: (x: number, y: number) => boolean;
-      checkHover: (x: number, y: number) => string | null;
-      getPinnedCount: () => number;
-      getHoveredSunId: () => string | null;
-      getCamera: () => Camera;
-      pinProject: (id: string) => void;
+      // Optional extended API — declared for future use; only the three
+      // methods above are currently wired up by useStarfieldAPI.
+      checkHover?: (x: number, y: number) => string | null;
+      getPinnedCount?: () => number;
+      getHoveredSunId?: () => string | null;
+      getCamera?: () => Camera;
+      pinProject?: (id: string) => void;
     };
   }
 }

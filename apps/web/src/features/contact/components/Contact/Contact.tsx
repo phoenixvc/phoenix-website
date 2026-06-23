@@ -40,10 +40,9 @@ const Contact: FC<ContactProps> = memo(() => {
 
     try {
       // Call your Azure Function - use the local URL during development
-      const functionUrl =
-        process.env.NODE_ENV === "production"
-          ? "/api/sendContactEmail"
-          : "http://localhost:7071/api/sendContactEmail";
+      const functionUrl = import.meta.env.PROD
+        ? "/api/sendContactEmail"
+        : "http://localhost:7071/api/sendContactEmail";
 
       const response = await fetch(functionUrl, {
         method: "POST",
@@ -100,7 +99,6 @@ const Contact: FC<ContactProps> = memo(() => {
           <ContactHeader
             title={DEFAULT_CONTACT_CONTENT.title}
             subtitle={DEFAULT_CONTACT_CONTENT.subtitle}
-            isDarkMode={isDarkMode}
           />
 
           {state.error && (
@@ -125,7 +123,6 @@ const Contact: FC<ContactProps> = memo(() => {
             onSubmit={handleSubmitWrapper}
             isLoading={state.isLoading}
             isSuccess={state.success}
-            isDarkMode={isDarkMode}
           />
         </motion.div>
       </div>

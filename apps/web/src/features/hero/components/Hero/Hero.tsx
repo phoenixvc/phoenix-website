@@ -307,14 +307,26 @@ const Hero: FC<ExtendedHeroProps> = memo(
                             >
                               <Button
                                 aria-label={`Navigate to ${primaryCta.text} section`}
-                                onClick={() => scrollTo(primaryCta.href)}
+                                onClick={() =>
+                                  scrollTo(
+                                    "href" in primaryCta
+                                      ? primaryCta.href
+                                      : primaryCta.url,
+                                  )
+                                }
                               >
                                 {primaryCta.text}
                               </Button>
                               <Button
                                 variant="secondary"
                                 aria-label={`Navigate to ${secondaryCta.text} section`}
-                                onClick={() => scrollTo(secondaryCta.href)}
+                                onClick={() =>
+                                  scrollTo(
+                                    "href" in secondaryCta
+                                      ? secondaryCta.href
+                                      : secondaryCta.url,
+                                  )
+                                }
                               >
                                 {secondaryCta.text}
                               </Button>

@@ -15,16 +15,7 @@ import { useEffect, MutableRefObject } from "react";
 import { Star } from "../types";
 import { applyClickForce, createClickExplosion } from "../stars";
 
-// Extend Window interface for TypeScript
-declare global {
-  interface Window {
-    starfieldAPI?: {
-      applyForce: (x: number, y: number, radius: number, force: number) => number;
-      getStarsCount: () => number;
-      createExplosion: (x: number, y: number) => boolean;
-    };
-  }
-}
+// The Window.starfieldAPI global is declared canonically in ../types.ts.
 
 export interface StarfieldAPIConfig {
   /** Ref to stars array */

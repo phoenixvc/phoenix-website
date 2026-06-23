@@ -60,10 +60,15 @@ export const generateThemeVariables = (
     // Build computed colors using HSL values
     // Use the direct color values instead of looking for [500]
     const computedColors = {
-      primary: scheme.base.primary.hsl || scheme.base.primary.hex,
-      secondary: scheme.base.secondary.hsl || scheme.base.secondary.hex,
+      // scheme.base.primary is a ColorShades map whose hsl/hex are reached via
+      // its index signature (typed as a wide union); assert string to satisfy
+      // the ThemeVariables.computed.colors contract without changing behaviour.
+      primary: (scheme.base.primary.hsl || scheme.base.primary.hex) as string,
+      secondary: (scheme.base.secondary.hsl ||
+        scheme.base.secondary.hex) as string,
       background: modeColors.background.hsl,
-      text: modeColors.text.hsl,
+      // modeColors.text is a { primary, secondary } pair, not a single color.
+      text: modeColors.text.primary.hsl,
       border: modeColors.border.hsl,
     };
 

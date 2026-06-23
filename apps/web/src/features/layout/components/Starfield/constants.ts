@@ -1,7 +1,10 @@
 // components/Layout/Starfield/constants.ts
 // Re-exports from centralized portfolioData.ts for backward compatibility
-import { BlackHoleData, PortfolioProject } from "./types";
-import { PORTFOLIO_PROJECTS } from "@/constants/portfolioData";
+import { BlackHoleData } from "./types";
+import {
+  PORTFOLIO_PROJECTS,
+  type PortfolioProject,
+} from "@/constants/portfolioData";
 import { getDailySeededRandom } from "./utils";
 import { BLACK_HOLE_PHYSICS } from "./physicsConfig";
 import { preloadProjectImages } from "./starRendering";

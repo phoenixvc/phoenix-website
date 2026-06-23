@@ -3,6 +3,17 @@
 
 type LogLevel = "debug" | "info" | "warn" | "error";
 
+interface ChildLogger {
+  debug: (...args: unknown[]) => void;
+  log: (...args: unknown[]) => void;
+  info: (...args: unknown[]) => void;
+  warn: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+  group: (groupLabel: string) => void;
+  groupEnd: () => void;
+  table: (data: unknown) => void;
+}
+
 interface LoggerConfig {
   enabled: boolean;
   level: LogLevel;
@@ -80,6 +91,19 @@ export const logger = {
       console.table(data);
     }
   },
+
+  // Create a labelled child logger that prefixes every message with [label].
+  createChild: (label: string): ChildLogger => ({
+    debug: (...args: unknown[]): void => logger.debug(`[${label}]`, ...args),
+    log: (...args: unknown[]): void => logger.log(`[${label}]`, ...args),
+    info: (...args: unknown[]): void => logger.info(`[${label}]`, ...args),
+    warn: (...args: unknown[]): void => logger.warn(`[${label}]`, ...args),
+    error: (...args: unknown[]): void => logger.error(`[${label}]`, ...args),
+    group: (groupLabel: string): void =>
+      logger.group(`[${label}] ${groupLabel}`),
+    groupEnd: (): void => logger.groupEnd(),
+    table: (data: unknown): void => logger.table(data),
+  }),
 };
 
 export default logger;

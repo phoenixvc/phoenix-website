@@ -3,6 +3,7 @@ import {
   SemanticColors,
   ValidationResult,
   ValidationError,
+  ColorDefinition,
 } from "@/theme/types";
 import { validateHexOnly } from "./utils/color-hex-validation";
 import { REQUIRED_BASE_COLORS, REQUIRED_MODE_COLORS } from "./constants";
@@ -38,7 +39,10 @@ export class ThemeInitialValidation {
             path: `base.${color}`,
           });
         } else {
-          const result = validateHexOnly(theme.base[color], `base.${color}`);
+          const result = validateHexOnly(
+            theme.base[color] as ColorDefinition,
+            `base.${color}`,
+          );
           if (!result.isValid) {
             errors.push(...result.errors!);
           }
@@ -65,7 +69,7 @@ export class ThemeInitialValidation {
             });
           } else {
             const result = validateHexOnly(
-              modeColors[color],
+              modeColors[color] as ColorDefinition,
               `${mode}.${color}`,
             );
             if (!result.isValid) {
