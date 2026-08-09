@@ -52,7 +52,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^5.1.0",
-    "eslint-plugin-storybook": "^10.1.4",
+    "eslint-plugin-storybook": "10.5.7",
     "framer-motion": "^12.4.3",
     "glob": "^10.3.10",
     "globals": "^13.24.0",
