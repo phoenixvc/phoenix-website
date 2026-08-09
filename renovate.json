@@ -1,6 +1,54 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    ":dependencyDashboardApproval",
+    "group:storybookMonorepo"
+  ],
+  "automerge": false,
+  "dependencyDashboard": true,
+  "labels": [
+    "dependencies"
+  ],
+  "prHourlyLimit": 2,
+  "rebaseWhen": "behind-base-branch",
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "dependencyDashboardApproval": false,
+    "labels": [
+      "dependencies",
+      "security"
+    ]
+  },
+  "packageRules": [
+    {
+      "description": "Keep the Storybook package family atomic and exactly aligned.",
+      "matchPackageNames": [
+        "storybook",
+        "eslint-plugin-storybook",
+        "@storybook/**"
+      ],
+      "groupName": "storybook monorepo",
+      "rangeStrategy": "pin"
+    },
+    {
+      "description": "Group the documentation toolchain for one strict MkDocs verification.",
+      "matchPackageNames": [
+        "mkdocs",
+        "mkdocs-*",
+        "pymdown-extensions"
+      ],
+      "groupName": "MkDocs ecosystem",
+      "groupSlug": "mkdocs-ecosystem"
+    },
+    {
+      "description": "Flag breaking upgrades for explicit review.",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "addLabels": [
+        "breaking-change"
+      ]
+    }
   ]
 }

@@ -7,6 +7,7 @@ This folder contains all the documentation related to local development, coding 
 - [Overview](#overview)
 - [Development Setup](#development-setup)
 - [Code Style](#code-style)
+- [Dependency Updates](#dependency-updates)
 - [Dev Containers](#dev-containers)
 - [Search Functionality](#search-functionality)
 - [Additional Resources](#additional-resources)
@@ -23,6 +24,10 @@ Here you’ll find everything you need to get started contributing to the codeba
 ## Code Style {: #code-style}
 - **[code-style.md](./code-style.md)**
   Outlines our conventions for writing clean, maintainable JavaScript/TypeScript code, React components, Node.js services, and more. This guide also details linting (ESLint), formatting (Prettier), and testing conventions.
+
+## Dependency Updates {: #dependency-updates}
+- **[dependency-updates.md](./dependency-updates.md)**
+  Defines Renovate as the sole dependency-update pull request authority, while retaining Dependabot alerts for vulnerability detection.
 
 ## Dev Containers {: #dev-containers}
 - **[dev-containers.md](./dev-containers.md)**
