@@ -11,3 +11,10 @@ packages:
 overrides:
   "@types/react": "^18.3.28"
   "@types/react-dom": "^18.3.7"
+
+  # Security floors for transitives that cannot be upgraded from a direct
+  # workspace dependency without pulling in unrelated major-version changes.
+  "@babel/core@<=7.29.0": "7.29.6"
+  "picomatch@<2.3.2": "2.3.2"
+  "picomatch@>=4.0.0 <4.0.4": "4.0.5"
+  "postcss@<=8.5.22": "8.5.26"
