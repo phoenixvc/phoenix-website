@@ -131,6 +131,8 @@ nav:
           - Colors: design/tokens/colors.md
           - Spacing: design/tokens/spacing.md
           - Typography: design/tokens/typography.md
+      - Themes:
+          - System Audit (August 2026): main/design/themes/system-audit-2026-08.md
 
 # Enhanced Markdown Extensions
 markdown_extensions:

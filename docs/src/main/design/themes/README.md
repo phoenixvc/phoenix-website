@@ -6,6 +6,10 @@
 **Status:** Active
 **Tags:** themes, dark-mode, color-schemes, customization
 
+> **Implementation status:** This page describes the intended API. The current
+> runtime and completeness gaps are documented in the
+> [August 2026 theme system audit](./system-audit-2026-08.md).
+
 **Quick Links**
 | 📚 Documentation | 🛠️ Development | 🔍 More |
 |-----------------|----------------|----------|
