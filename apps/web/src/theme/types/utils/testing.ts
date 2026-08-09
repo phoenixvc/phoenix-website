@@ -1,6 +1,7 @@
 // src/types/theme/testing.ts
 import type { ThemeConfig } from "../core/config";
 import type { DeepPartial } from "./utils";
+import { DEFAULT_THEME_NAME } from "../../constants/themes/catalog";
 
 /**
  * Creates a base theme configuration with defaults.
@@ -10,7 +11,7 @@ export const createTheme = (config?: Partial<ThemeConfig>): ThemeConfig => {
   return {
     name: config?.name ?? config?.themeName ?? "default",
     mode: config?.mode ?? "light",
-    themeName: config?.themeName ?? "classic",
+    themeName: config?.themeName ?? DEFAULT_THEME_NAME,
     useSystem: config?.useSystem ?? true,
     direction: config?.direction,
     version: config?.version,

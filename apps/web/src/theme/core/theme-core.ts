@@ -11,6 +11,7 @@ import {
   TransitionOptions,
 } from "../types";
 import { ComponentRegistryManager } from "../registry/component-registry-manager";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 import { ComponentManager } from "../managers/component-manager";
 import type { ThemeStateManager } from "../managers/theme-state-manager";
 import { ThemeStyleManager } from "../managers/theme-style-manager";
@@ -220,7 +221,7 @@ export class ThemeCore {
       colorScheme ||
         (this.stateManager
           ? this.stateManager.getState().themeName
-          : "classic"),
+          : DEFAULT_THEME_NAME),
     );
   }
 

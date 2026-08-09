@@ -14,6 +14,7 @@ import {
 import { HeaderProps } from "./types";
 import { navItems } from "@/constants/navigation";
 import { useTheme, type ThemeName } from "@/theme";
+import { THEME_CATALOG_ENTRIES } from "@/theme/constants/themes/catalog";
 import MobileMenu from "@/features/navigation/components/MobileMenu/MobileMenu";
 
 const Header: FC<HeaderProps> = ({
@@ -40,15 +41,6 @@ const Header: FC<HeaderProps> = ({
   const { themeName, setThemeName } = useTheme();
   const _currentPath =
     typeof window !== "undefined" ? window.location.pathname : "";
-
-  // Available themes with "coming soon" labels
-  const availableThemes = [
-    { id: "cosmic-frontier", name: "Cosmic Frontier", comingSoon: false },
-    { id: "classic", name: "Classic", comingSoon: true },
-    { id: "neon-city", name: "Neon City", comingSoon: true },
-    { id: "forest-calm", name: "Forest Calm", comingSoon: true },
-    { id: "ocean-depths", name: "Ocean Depths", comingSoon: true },
-  ];
 
   // Handle scroll event to add transparency
   useEffect(() => {
@@ -115,8 +107,8 @@ const Header: FC<HeaderProps> = ({
     return activePath.startsWith(href) && !activePath.includes("#");
   };
 
-  const handleThemeSelect = (themeId: string): void => {
-    setThemeName(themeId as ThemeName);
+  const handleThemeSelect = (themeId: ThemeName): void => {
+    setThemeName(themeId);
     setThemeMenuOpen(false);
     setProfileMenuOpen(false);
   };
@@ -290,20 +282,21 @@ const Header: FC<HeaderProps> = ({
                   {/* Theme Selection Submenu */}
                   {themeMenuOpen && (
                     <div className={styles.themeSubmenu}>
-                      {availableThemes.map((theme) => (
+                      {THEME_CATALOG_ENTRIES.map((theme) => (
                         <div
                           key={theme.id}
                           className={`${styles.themeOption} ${themeName === theme.id ? styles.activeTheme : ""}`}
                           onClick={() =>
-                            !theme.comingSoon && handleThemeSelect(theme.id)
+                            theme.availability === "available" &&
+                            handleThemeSelect(theme.id)
                           }
                         >
                           <div
                             className={styles.themeColorIndicator}
                             data-theme={theme.id}
                           ></div>
-                          <span>{theme.name}</span>
-                          {theme.comingSoon && (
+                          <span>{theme.displayName}</span>
+                          {theme.availability === "coming-soon" && (
                             <span className={styles.comingSoonBadge}>
                               Coming Soon
                             </span>

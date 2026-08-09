@@ -1,11 +1,13 @@
 // constants/tokens/theme-constants.ts
 
 import { ThemeName, ThemeMode } from "@/theme/types";
+import { AVAILABLE_THEME_NAMES, DEFAULT_THEME_NAME } from "../themes/catalog";
+import { THEME_STORAGE_CONSTANTS } from "../storage/theme-storage-constants";
 
 // Theme constants
 export const THEME_STORAGE_KEY = "app-theme-preferences";
-export const DEFAULT_THEME: ThemeName = "classic";
-export const DEFAULT_MODE: ThemeMode = "light";
+export const DEFAULT_THEME: ThemeName = DEFAULT_THEME_NAME;
+export const DEFAULT_MODE: ThemeMode = "dark";
 
 // Z-index values
 export const zIndices = {
@@ -107,19 +109,8 @@ export const COLOR_SCHEME_CLASSES: Record<
 
 export const THEME_CONSTANTS = {
   STORAGE: {
-    KEYS: {
-      THEME_NAME: "theme_name",
-      THEME_MODE: "theme_mode",
-      CUSTOM_THEMES: "custom_themes",
-    },
+    KEYS: THEME_STORAGE_CONSTANTS.KEYS,
   },
-  COLOR_SCHEMES: [
-    "classic",
-    "forest",
-    "ocean",
-    "phoenix",
-    "lavender",
-    "cloud",
-  ] as ThemeName[],
+  COLOR_SCHEMES: [...AVAILABLE_THEME_NAMES] as ThemeName[],
   MODES: ["light", "dark"] as ThemeMode[],
 };

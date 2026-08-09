@@ -2,6 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { ThemeProvider } from "@/theme";
+import { DEFAULT_THEME_NAME } from "@/theme/constants/themes/catalog";
+import { createBuiltInThemeRegistry } from "@/theme/constants/themes/registry";
 import "./theme/theme.css";
 import { logger } from "@/utils/logger";
 import { initWebVitals } from "@/utils/performance";
@@ -12,6 +14,8 @@ import {
 } from "@/utils/chunkErrorRecovery";
 
 logger.debug("Index file is running");
+
+const builtInThemeRegistry = createBuiltInThemeRegistry();
 
 // Recover from transient/stale dynamic-import (chunk/CSS preload) failures by
 // reloading once for a fresh index.html, instead of letting React.lazy trip the
@@ -39,13 +43,13 @@ initWebVitals();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider
+      themeRegistry={builtInThemeRegistry}
       config={{
-        defaultThemeName: "classic",
+        defaultThemeName: DEFAULT_THEME_NAME,
         defaultMode: "dark",
         useSystem: false,
         storage: {
           type: "localStorage",
-          prefix: "my-app-theme",
         },
         transition: {
           duration: 300,

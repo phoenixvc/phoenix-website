@@ -1,6 +1,7 @@
 // src/constants/storage/theme-storage-constants.ts
 
 import { ThemeMode, ThemeName } from "@/theme/types";
+import { AVAILABLE_THEME_NAMES, DEFAULT_THEME_NAME } from "../themes/catalog";
 
 export const THEME_STORAGE_CONSTANTS = {
   KEYS: {
@@ -11,18 +12,11 @@ export const THEME_STORAGE_CONSTANTS = {
     THEME_DATA_PREFIX: "theme_data_",
   },
   DEFAULTS: {
-    THEME_NAME: "classic" as ThemeName,
+    THEME_NAME: DEFAULT_THEME_NAME,
     THEME_MODE: "dark" as ThemeMode,
     USE_SYSTEM: false,
   },
-  VALID_THEMES: [
-    "classic",
-    "forest",
-    "ocean",
-    "phoenix",
-    "lavender",
-    "cloud",
-  ] as ThemeName[],
+  VALID_THEMES: [...AVAILABLE_THEME_NAMES] as ThemeName[],
   VALID_MODES: ["light", "dark"] as ThemeMode[],
 
   // Added missing constants

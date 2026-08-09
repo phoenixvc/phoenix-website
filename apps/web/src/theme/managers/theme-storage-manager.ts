@@ -1,5 +1,6 @@
 // theme-storage.ts
-import { THEME_CONSTANTS } from "../constants";
+import { AVAILABLE_THEME_NAMES } from "../constants/themes/catalog";
+import { THEME_STORAGE_CONSTANTS } from "../constants/storage/theme-storage-constants";
 import { ThemeMode, ThemeName, ThemeColors, StorageOptions } from "../types";
 import { themeValidationManager } from "./theme-validation-manager";
 
@@ -8,15 +9,11 @@ import { themeValidationManager } from "./theme-validation-manager";
  */
 export class ThemeStorageManager {
   static readonly KEYS = {
-    THEME_NAME: THEME_CONSTANTS.STORAGE.KEYS.THEME_NAME,
-    THEME_MODE: THEME_CONSTANTS.STORAGE.KEYS.THEME_MODE,
-    CUSTOM_THEMES: THEME_CONSTANTS.STORAGE.KEYS.CUSTOM_THEMES,
-    USE_SYSTEM: "use_system_theme", // Adding this explicitly since it's missing from THEME_CONSTANTS
-    THEME_DATA_PREFIX: "theme_data_",
+    ...THEME_STORAGE_CONSTANTS.KEYS,
   };
 
-  private static readonly VALID_THEMES = THEME_CONSTANTS.COLOR_SCHEMES;
-  private static readonly VALID_MODES = THEME_CONSTANTS.MODES;
+  private static readonly VALID_THEMES = AVAILABLE_THEME_NAMES;
+  private static readonly VALID_MODES = THEME_STORAGE_CONSTANTS.VALID_MODES;
   private static readonly MAX_THEME_SIZE = 100 * 1024; // 100KB max theme size
 
   /**
@@ -290,7 +287,7 @@ export class ThemeStorageManager {
   private static isValidThemeName(value: unknown): value is ThemeName {
     return (
       typeof value === "string" &&
-      this.VALID_THEMES.includes(value as ThemeName)
+      (this.VALID_THEMES as readonly ThemeName[]).includes(value as ThemeName)
     );
   }
 

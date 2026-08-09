@@ -7,6 +7,7 @@ import {
   ThemeSchemeInitial,
   ThemeMetadata,
 } from "../types";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 
 /**
  * Theme Registry for managing and storing themes
@@ -35,7 +36,7 @@ export class ThemeRegistry {
     this.metadata =
       initialData?.metadata || ({} as Record<ThemeName, ThemeMetadata>);
     this.defaults = {
-      themeName: initialData?.defaults?.themeName || "classic",
+      themeName: initialData?.defaults?.themeName || DEFAULT_THEME_NAME,
       mode: initialData?.defaults?.mode || "dark",
     };
     this.versions =

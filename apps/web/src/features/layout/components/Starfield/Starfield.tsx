@@ -43,7 +43,7 @@ import {
   resetAnimationModuleState,
   resetAnimateModuleCaches,
 } from "./hooks/animation/animate";
-import { getSunStates, resetSunSystem } from "./sunSystem";
+import { getSunStates, resetSunSystem, setSunSystemSeed } from "./sunSystem";
 import SunTooltip from "./sunTooltip";
 // CAMERA_CONFIG is used internally by useCameraAnimation hook
 
@@ -67,6 +67,7 @@ const InteractiveStarfield = forwardRef<
       enableFlowEffect = false,
       enableBlackHole = true,
       enableMouseInteraction = true,
+      enablePlanets,
       enableEmployeeStars = true,
       starDensity = 1.0,
       colorScheme = "white",
@@ -92,6 +93,11 @@ const InteractiveStarfield = forwardRef<
       debugMode = false,
       maxVelocity = 0.5,
       animationSpeed = 1.0,
+      paused = false,
+      reducedMotion = false,
+      qualityTier,
+      randomSeed,
+      fixedTimestamp,
       drawDebugInfo: externalDrawDebugInfo,
     },
     ref,
@@ -120,7 +126,7 @@ const InteractiveStarfield = forwardRef<
 
     // Performance tier management (adaptive FPS-based quality)
     const {
-      performanceTier,
+      performanceTier: adaptivePerformanceTier,
       currentFps,
       timestamp,
       isStarfieldReady,
@@ -128,7 +134,18 @@ const InteractiveStarfield = forwardRef<
       setShowPerformancePanel,
       updateFpsData,
       fpsValuesRef,
-    } = usePerformanceTier();
+    } = usePerformanceTier({
+      initialTier: qualityTier ?? "low",
+      adaptive: qualityTier === undefined,
+    });
+    const performanceTier = qualityTier ?? adaptivePerformanceTier;
+    const effectiveEnablePlanets = enablePlanets ?? enableEmployeeStars;
+
+    useEffect(() => {
+      setSunSystemSeed(randomSeed);
+      resetSunSystem();
+      return (): void => setSunSystemSeed(undefined);
+    }, [randomSeed]);
 
     // Project and sun hover state management
     const {
@@ -217,8 +234,9 @@ const InteractiveStarfield = forwardRef<
       enableBlackHole,
       blackHoleSize,
       particleSpeed,
-      enableEmployeeStars,
+      enablePlanets: effectiveEnablePlanets,
       employeeStarSize,
+      randomSeed,
       debugSettings,
       cancelAnimation: () => cancelAnimationRef.current(),
     });
@@ -571,7 +589,7 @@ const InteractiveStarfield = forwardRef<
         enableFlowEffect: performanceTier !== "low" && enableFlowEffect, // Disable heavy flow in low tier
         enableBlackHole,
         enableMouseInteraction,
-        enablePlanets: enableEmployeeStars,
+        enablePlanets: effectiveEnablePlanets,
         flowStrength: debugSettings.flowStrength,
         gravitationalPull: debugSettings.gravitationalPull,
         particleSpeed: debugSettings.particleSpeed,
@@ -582,7 +600,8 @@ const InteractiveStarfield = forwardRef<
         hoverInfo: hoverInfoRef.current, // Read from ref
         setHoverInfo,
         colorScheme,
-        lineConnectionDistance: performanceTier === "low" ? 0 : debugSettings.lineConnectionDistance, // Disable connections in low tier
+        lineConnectionDistance:
+          performanceTier === "low" ? 0 : debugSettings.lineConnectionDistance, // Disable connections in low tier
         lineOpacity: debugSettings.lineOpacity,
         mouseEffectRadius: debugSettings.mouseEffectRadius,
         mouseEffectColor,
@@ -621,6 +640,8 @@ const InteractiveStarfield = forwardRef<
         sidebarWidth,
         sunTooltipElementRef: tooltipRefs.sunTooltipElementRef,
         projectTooltipElementRef: tooltipRefs.projectTooltipElementRef,
+        paused,
+        fixedTimestamp,
       }),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [
@@ -628,7 +649,7 @@ const InteractiveStarfield = forwardRef<
         enableFlowEffect,
         enableBlackHole,
         enableMouseInteraction,
-        enableEmployeeStars,
+        effectiveEnablePlanets,
         heroMode,
         gameMode,
         debugSettings.isDebugMode,
@@ -649,6 +670,8 @@ const InteractiveStarfield = forwardRef<
         focusedSunId,
         sidebarWidth,
         performanceTier, // Add performance tier as dep
+        paused,
+        fixedTimestamp,
       ],
     );
 
@@ -691,7 +714,7 @@ const InteractiveStarfield = forwardRef<
           cameraAnimationRef.current = null;
         }
       };
-    }, []);
+    }, [cameraAnimationRef]);
 
     // NOTE: Starfield initialization delay is now handled by usePerformanceTier hook
     // NOTE: _handleEmployeeOrbitSpeedChange removed - unused debug handler
@@ -744,7 +767,14 @@ const InteractiveStarfield = forwardRef<
     return (
       <>
         {/* Background elements with positive z-index */}
-        <div className={styles.starfieldWrapper} data-starfield>
+        <div
+          className={styles.starfieldWrapper}
+          data-starfield
+          data-motion={reducedMotion ? "reduced" : "full"}
+          data-quality-tier={performanceTier}
+          data-seed={randomSeed ?? "adaptive"}
+          data-time={fixedTimestamp ?? "realtime"}
+        >
           <div
             className={`${styles.starfieldBackground} ${isDarkMode ? "" : styles.light}`}
           ></div>
@@ -774,131 +804,139 @@ const InteractiveStarfield = forwardRef<
               e.stopPropagation();
               handleTouchEnd(e);
             }}
-        />
-      </div>
-
-      {/* Only render debug controls when debug mode is active */}
-      {debugSettings.isDebugMode && (
-        <DebugControlsOverlay
-          debugSettings={debugSettings}
-          updateDebugSetting={updateDebugSetting}
-          resetStars={resetStars}
-          sidebarWidth={sidebarWidth}
-          stars={stars}
-          mousePosition={mousePosition}
-          fps={currentFps}
-          timestamp={timestamp}
-          setMousePosition={setMousePosition}
-          isDarkMode={isDarkMode}
-          onTogglePerformancePanel={() => setShowPerformancePanel(prev => !prev)}
-          showPerformancePanel={showPerformancePanel}
-        />
-      )}
-
-      {/* Performance Debug Panel */}
-      {showPerformancePanel && (
-        <PerformanceDebugPanel
-          isVisible={true}
-          onClose={() => setShowPerformancePanel(false)}
-          sidebarWidth={sidebarWidth}
-          isDarkMode={isDarkMode}
-        />
-      )}
-
-      {/* Pinned Projects Dock */}
-      {pinnedProjects.length > 0 && (
-        <div className={styles.pinnedDock} data-starfield-passthrough="true">
-          {pinnedProjects.length > 1 && (
-            <button
-              className={styles.closeAllButton}
-              onClick={handleUnpinAll}
-            >
-              Close All
-            </button>
-          )}
-          {pinnedProjects.map((project) => (
-            <ProjectTooltip
-              key={project.id}
-              project={project}
-              x={0}
-              y={0}
-              isPinned={true}
-              isDocked={true}
-              isDarkMode={isDarkMode}
-              onUnpin={() => handleUnpinProject(project.id)}
-            />
-          ))}
+          />
         </div>
-      )}
 
-      {/* Hover Tooltip - now allowed even if projects are pinned */}
-      {hoverInfo.show && hoverInfo.project && (
-        <ProjectTooltip
-          ref={tooltipRefs.projectTooltipElementRef}
-          project={hoverInfo.project}
-          x={hoverInfo.x}
-          y={hoverInfo.y}
-          isDarkMode={isDarkMode}
-          onPin={handlePinProject}
-          onMouseEnter={tooltipRefs.handleProjectTooltipMouseEnter}
-          onMouseLeave={tooltipRefs.handleProjectTooltipMouseLeave}
-        />
-      )}
+        {/* Only render debug controls when debug mode is active */}
+        {debugSettings.isDebugMode && (
+          <DebugControlsOverlay
+            debugSettings={debugSettings}
+            updateDebugSetting={updateDebugSetting}
+            resetStars={resetStars}
+            sidebarWidth={sidebarWidth}
+            stars={stars}
+            mousePosition={mousePosition}
+            fps={currentFps}
+            timestamp={timestamp}
+            setMousePosition={setMousePosition}
+            isDarkMode={isDarkMode}
+            onTogglePerformancePanel={() =>
+              setShowPerformancePanel((prev) => !prev)
+            }
+            showPerformancePanel={showPerformancePanel}
+          />
+        )}
 
-      {/* Sun tooltip when hovering over a focus area sun - only show if no project tooltip is visible */}
-      {hoveredSun && !hoverInfo.show && (
-        <SunTooltip
-          ref={tooltipRefs.sunTooltipElementRef}
-          sun={hoveredSun}
-          isDarkMode={isDarkMode}
-          onClick={(sunId): void => zoomToSun(sunId)}
-          onMouseEnter={tooltipRefs.handleSunTooltipMouseEnter}
-          onMouseLeave={tooltipRefs.handleSunTooltipMouseLeave}
-        />
-      )}
+        {/* Performance Debug Panel */}
+        {showPerformancePanel && (
+          <PerformanceDebugPanel
+            isVisible={true}
+            onClose={() => setShowPerformancePanel(false)}
+            sidebarWidth={sidebarWidth}
+            isDarkMode={isDarkMode}
+          />
+        )}
 
-      {/* Vignette overlay when focused on a sun */}
-      {focusedSunId && (
-        <div className={`${styles.cameraVignette} ${!isDarkMode ? styles.cameraVignetteLight : ""}`} />
-      )}
-
-      {/* Focus area indicator when zoomed into a sun */}
-      {focusedSunId && ((): React.ReactElement | null => {
-        const sunState = getSunStates().find(s => s.id === focusedSunId);
-        return sunState ? (
-          <div className={`${styles.focusAreaIndicator} ${!isDarkMode ? styles.focusAreaIndicatorLight : ""}`}>
-            <div className={styles.focusAreaLabel}>
-              <span className={styles.focusAreaIcon}>🔍</span>
-              <span className={styles.focusAreaName}>{sunState.name}</span>
-            </div>
+        {/* Pinned Projects Dock */}
+        {pinnedProjects.length > 0 && (
+          <div className={styles.pinnedDock} data-starfield-passthrough="true">
+            {pinnedProjects.length > 1 && (
+              <button
+                className={styles.closeAllButton}
+                onClick={handleUnpinAll}
+              >
+                Close All
+              </button>
+            )}
+            {pinnedProjects.map((project) => (
+              <ProjectTooltip
+                key={project.id}
+                project={project}
+                x={0}
+                y={0}
+                isPinned={true}
+                isDocked={true}
+                isDarkMode={isDarkMode}
+                onUnpin={() => handleUnpinProject(project.id)}
+              />
+            ))}
           </div>
-        ) : null;
-      })()}
+        )}
 
-      {/* Zoom out button when focused on a sun */}
-      {focusedSunId && (
-        <button
-          className={`${styles.zoomOutButton} ${!isDarkMode ? styles.zoomOutButtonLight : ""}`}
-          onClick={(): void => zoomToSun(focusedSunId)}
-          style={{
-            left: `calc(50% + ${sidebarWidth / 2}px)`
-          }}
-        >
-          <span className={styles.zoomOutIcon}>←</span>
-          Zoom Out
-        </button>
-      )}
+        {/* Hover Tooltip - now allowed even if projects are pinned */}
+        {hoverInfo.show && hoverInfo.project && (
+          <ProjectTooltip
+            ref={tooltipRefs.projectTooltipElementRef}
+            project={hoverInfo.project}
+            x={hoverInfo.x}
+            y={hoverInfo.y}
+            isDarkMode={isDarkMode}
+            onPin={handlePinProject}
+            onMouseEnter={tooltipRefs.handleProjectTooltipMouseEnter}
+            onMouseLeave={tooltipRefs.handleProjectTooltipMouseLeave}
+          />
+        )}
 
-      {/* Add score overlay if in game mode */}
-      {gameMode && (
-        <ScoreOverlay
-          remainingClicks={gameState.remainingClicks}
-          currentScore={gameState.score}
-          highScores={gameState.highScores}
-        />
-      )}
-    </>
-  );
-});
+        {/* Sun tooltip when hovering over a focus area sun - only show if no project tooltip is visible */}
+        {hoveredSun && !hoverInfo.show && (
+          <SunTooltip
+            ref={tooltipRefs.sunTooltipElementRef}
+            sun={hoveredSun}
+            isDarkMode={isDarkMode}
+            onClick={(sunId): void => zoomToSun(sunId)}
+            onMouseEnter={tooltipRefs.handleSunTooltipMouseEnter}
+            onMouseLeave={tooltipRefs.handleSunTooltipMouseLeave}
+          />
+        )}
+
+        {/* Vignette overlay when focused on a sun */}
+        {focusedSunId && (
+          <div
+            className={`${styles.cameraVignette} ${!isDarkMode ? styles.cameraVignetteLight : ""}`}
+          />
+        )}
+
+        {/* Focus area indicator when zoomed into a sun */}
+        {focusedSunId &&
+          ((): React.ReactElement | null => {
+            const sunState = getSunStates().find((s) => s.id === focusedSunId);
+            return sunState ? (
+              <div
+                className={`${styles.focusAreaIndicator} ${!isDarkMode ? styles.focusAreaIndicatorLight : ""}`}
+              >
+                <div className={styles.focusAreaLabel}>
+                  <span className={styles.focusAreaIcon}>🔍</span>
+                  <span className={styles.focusAreaName}>{sunState.name}</span>
+                </div>
+              </div>
+            ) : null;
+          })()}
+
+        {/* Zoom out button when focused on a sun */}
+        {focusedSunId && (
+          <button
+            className={`${styles.zoomOutButton} ${!isDarkMode ? styles.zoomOutButtonLight : ""}`}
+            onClick={(): void => zoomToSun(focusedSunId)}
+            style={{
+              left: `calc(50% + ${sidebarWidth / 2}px)`,
+            }}
+          >
+            <span className={styles.zoomOutIcon}>←</span>
+            Zoom Out
+          </button>
+        )}
+
+        {/* Add score overlay if in game mode */}
+        {gameMode && (
+          <ScoreOverlay
+            remainingClicks={gameState.remainingClicks}
+            currentScore={gameState.score}
+            highScores={gameState.highScores}
+          />
+        )}
+      </>
+    );
+  },
+);
 
 export default InteractiveStarfield;

@@ -281,6 +281,15 @@ importers:
       '@playwright/test':
         specifier: ^1.49.0
         version: 1.57.0
+      '@storybook/addon-a11y':
+        specifier: 10.5.7
+        version: 10.5.7(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))
+      '@storybook/addon-docs':
+        specifier: 10.5.7
+        version: 10.5.7(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))
+      '@storybook/react-vite':
+        specifier: 10.5.7
+        version: 10.5.7(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(esbuild@0.25.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(typescript@5.9.3)(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))
       '@types/node':
         specifier: ^22.13.5
         version: 22.13.5
@@ -296,6 +305,9 @@ importers:
       postcss:
         specifier: 8.5.26
         version: 8.5.26
+      storybook:
+        specifier: 10.5.7
+        version: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.19
@@ -383,20 +395,12 @@ packages:
     resolution: {integrity: sha512-QdxmAo/ikZqqRGA8s43ww8lcql6naWRvEz0FFrl6MIlc7Gi6TroXnSdWa5U/kq6fzcpqpHesicQxFZIieZbyIA==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/generator@7.28.5':
-    resolution: {integrity: sha512-3EwLFhZ38J4VyIP6WNtt2kUdW9dokXA9Cr4IVIFHuCpZ3H8/YFOl5JjZHisrn1fATPBmKKqXzDFvh9fUwHz6CQ==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/generator@7.29.8':
     resolution: {integrity: sha512-gZbepsdh3WDtgZKWL+vTPh71LSBrm/Y4/QDZBVCcYfmeTEEuoOYwlSy+G1StfJg+/Zy550u/3TATbm7qDbbMtg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-compilation-targets@7.29.7':
     resolution: {integrity: sha512-wem6WaBj4NaVYVdNhLPPVacES6ZJ+KBBfSkTMD3YZxbP3rm3Di85tJU5ljaUNhaOynt+Aj0xruhYuzQBt8n71g==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/helper-globals@7.28.0':
-    resolution: {integrity: sha512-+W6cISkXFa1jXsDEdYA8HeevQT/FULhxzR99pxphltZcVaugps53THCeiWA8SguxxpSp3gKPiuYfSWopkLQ4hw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-globals@7.29.7':
@@ -472,16 +476,8 @@ packages:
     resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/template@7.27.2':
-    resolution: {integrity: sha512-LPDZ85aEJyYSd18/DkjNh4/y1ntkE5KwUHWTiqgRxruuZL2F1yuHligVHLvcHY2vMHXttKFpJn6LwfI7cw7ODw==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/template@7.29.7':
     resolution: {integrity: sha512-puq+Gf35oI24FeN11LkoUQFqv9uwNeWpxXZi/Ji3rRIoKAzKnxRaZ+Gkj0vKS9ZCiTESfng1N9LyOyXvo+m+Gg==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/traverse@7.28.5':
-    resolution: {integrity: sha512-TCCj4t55U90khlYkVV/0TfkJkAkUg3jZFA3Neb7unZT8CPok7iiRfaX0F+WnqWqt7OxhOn0uBKXCw4lbL8W0aQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/traverse@7.29.8':
@@ -4632,7 +4628,7 @@ snapshots:
 
   '@babel/code-frame@7.27.1':
     dependencies:
-      '@babel/helper-validator-identifier': 7.28.5
+      '@babel/helper-validator-identifier': 7.29.7
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
@@ -4664,14 +4660,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/generator@7.28.5':
-    dependencies:
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
-      '@jridgewell/gen-mapping': 0.3.13
-      '@jridgewell/trace-mapping': 0.3.31
-      jsesc: 3.1.0
-
   '@babel/generator@7.29.8':
     dependencies:
       '@babel/parser': 7.29.8
@@ -4687,8 +4675,6 @@ snapshots:
       browserslist: 4.28.2
       lru-cache: 5.1.1
       semver: 6.3.1
-
-  '@babel/helper-globals@7.28.0': {}
 
   '@babel/helper-globals@7.29.7': {}
 
@@ -4749,29 +4735,11 @@ snapshots:
 
   '@babel/runtime@7.29.7': {}
 
-  '@babel/template@7.27.2':
-    dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
-
   '@babel/template@7.29.7':
     dependencies:
       '@babel/code-frame': 7.29.7
       '@babel/parser': 7.29.8
       '@babel/types': 7.29.8
-
-  '@babel/traverse@7.28.5':
-    dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.5
-      '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.28.5
-      '@babel/template': 7.27.2
-      '@babel/types': 7.28.5
-      debug: 4.4.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@babel/traverse@7.29.8':
     dependencies:
@@ -5193,6 +5161,14 @@ snapshots:
       glob: 13.0.6
       react-docgen-typescript: 2.4.0(typescript@5.9.3)
       vite: 6.4.3(@types/node@22.13.5)(jiti@1.21.7)(terser@5.47.1)
+    optionalDependencies:
+      typescript: 5.9.3
+
+  '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0(typescript@5.9.3)(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))':
+    dependencies:
+      glob: 13.0.6
+      react-docgen-typescript: 2.4.0(typescript@5.9.3)
+      vite: 6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1)
     optionalDependencies:
       typescript: 5.9.3
 
@@ -5678,7 +5654,7 @@ snapshots:
 
   '@rollup/pluginutils@5.3.0(rollup@4.62.3)':
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
       estree-walker: 2.0.2
       picomatch: 4.0.5
     optionalDependencies:
@@ -5825,6 +5801,25 @@ snapshots:
       - vite
       - webpack
 
+  '@storybook/addon-docs@10.5.7(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))':
+    dependencies:
+      '@mdx-js/react': 3.1.1(@types/react@18.3.28)(react@18.3.1)
+      '@storybook/csf-plugin': 10.5.7(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))
+      '@storybook/icons': 2.1.0(react@18.3.1)
+      '@storybook/react-dom-shim': 10.5.7(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      storybook: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
+      ts-dedent: 2.2.0
+    optionalDependencies:
+      '@types/react': 18.3.28
+    transitivePeerDependencies:
+      - '@types/react-dom'
+      - esbuild
+      - rollup
+      - vite
+      - webpack
+
   '@storybook/addon-onboarding@10.5.7(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))':
     dependencies:
       storybook: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
@@ -5853,6 +5848,17 @@ snapshots:
       - rollup
       - webpack
 
+  '@storybook/builder-vite@10.5.7(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))':
+    dependencies:
+      '@storybook/csf-plugin': 10.5.7(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))
+      storybook: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
+      ts-dedent: 2.2.0
+      vite: 6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1)
+    transitivePeerDependencies:
+      - esbuild
+      - rollup
+      - webpack
+
   '@storybook/csf-plugin@10.5.7(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@1.21.7)(terser@5.47.1))':
     dependencies:
       storybook: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
@@ -5861,6 +5867,15 @@ snapshots:
       esbuild: 0.25.12
       rollup: 4.62.3
       vite: 6.4.3(@types/node@22.13.5)(jiti@1.21.7)(terser@5.47.1)
+
+  '@storybook/csf-plugin@10.5.7(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))':
+    dependencies:
+      storybook: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
+      unplugin: 2.3.11
+    optionalDependencies:
+      esbuild: 0.25.12
+      rollup: 4.62.3
+      vite: 6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1)
 
   '@storybook/global@5.0.0': {}
 
@@ -5896,6 +5911,31 @@ snapshots:
       storybook: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
       tsconfig-paths: 4.2.0
       vite: 6.4.3(@types/node@22.13.5)(jiti@1.21.7)(terser@5.47.1)
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+      - esbuild
+      - rollup
+      - supports-color
+      - webpack
+
+  '@storybook/react-vite@10.5.7(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(esbuild@0.25.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(typescript@5.9.3)(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))':
+    dependencies:
+      '@joshwooding/vite-plugin-react-docgen-typescript': 0.7.0(typescript@5.9.3)(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))
+      '@rollup/pluginutils': 5.3.0(rollup@4.62.3)
+      '@storybook/builder-vite': 10.5.7(esbuild@0.25.12)(rollup@4.62.3)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(vite@6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1))
+      '@storybook/react': 10.5.7(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1))(typescript@5.9.3)
+      empathic: 2.0.1
+      magic-string: 0.30.21
+      react: 18.3.1
+      react-docgen: 8.0.3
+      react-dom: 18.3.1(react@18.3.1)
+      resolve: 1.22.12
+      storybook: 10.5.7(@types/react@18.3.28)(prettier@3.7.4)(react@18.3.1)
+      tsconfig-paths: 4.2.0
+      vite: 6.4.3(@types/node@22.13.5)(jiti@2.4.2)(terser@5.47.1)
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -7159,7 +7199,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
 
   esutils@2.0.3: {}
 
@@ -8133,8 +8173,8 @@ snapshots:
   react-docgen@8.0.3:
     dependencies:
       '@babel/core': 7.29.6
-      '@babel/traverse': 7.28.5
-      '@babel/types': 7.29.0
+      '@babel/traverse': 7.29.8
+      '@babel/types': 7.29.8
       '@types/babel__core': 7.20.5
       '@types/babel__traverse': 7.28.0
       '@types/doctrine': 0.0.9

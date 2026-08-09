@@ -1,5 +1,11 @@
 // theme/providers/ThemeProviderInner.tsx
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import { useCssVariables } from "../hooks/useCssVariables";
 import {
   ThemeName,
@@ -31,10 +37,11 @@ import { createThemeRegistry } from "../registry/theme-registry";
 import { createComponentRegistry } from "../registry/component-theme-registry";
 import { ThemeStateManager } from "../core";
 import { logger } from "@/utils/logger";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 
 const defaultState: ThemeState = {
   name: "Default Theme",
-  themeName: "classic",
+  themeName: DEFAULT_THEME_NAME,
   mode: "dark",
   useSystem: false,
   systemMode: "light",
@@ -43,7 +50,7 @@ const defaultState: ThemeState = {
   direction: "ltr",
   version: "1.0.0",
   previous: {
-    themeName: "classic",
+    themeName: DEFAULT_THEME_NAME,
     mode: "light",
   },
 };
@@ -62,6 +69,8 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
   const [state, setState] = useState<ThemeState>({
     ...defaultState,
     ...config,
+    themeName: config.defaultThemeName ?? defaultState.themeName,
+    mode: config.defaultMode ?? defaultState.mode,
   });
   const [error, setError] = useState<Error | null>(null);
   const [loadingTheme, setLoadingTheme] = useState<boolean>(false);
@@ -74,6 +83,12 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
   const [components, _setComponents] = useState(() =>
     createComponentRegistry(componentRegistry),
   );
+
+  // Acquisition is a singleton used by ThemeStateManager. Give it the same
+  // registry before passive initialization effects can request a theme.
+  useLayoutEffect(() => {
+    ThemeAcquisitionManager.getInstance().setThemeRegistry(themes);
+  }, [themes]);
 
   // Get systemMode from context instead of using useSystemMode hook
   const {
@@ -643,7 +658,7 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
     ): React.CSSProperties => {
       return themeCore.getComponentStyle(component, variant, state);
     },
-    [themeCore]
+    [themeCore],
   );
 
   const resetTheme = useCallback(async (): Promise<void> => {

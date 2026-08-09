@@ -2,9 +2,10 @@
 import { useContext } from "react";
 import { TypographyScale } from "../mappings";
 import { ThemeContext, ThemeContextType, ThemeName } from "../types";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 
 export function useTheme(): ThemeContextType & {
-  themeName: string;
+  themeName: ThemeName;
   setThemeName: (name: ThemeName) => void;
   typography: {
     getScale: (element: string) => TypographyScale | undefined;
@@ -31,7 +32,7 @@ export function useTheme(): ThemeContextType & {
     ...theme,
 
     // Theme name getter and setter
-    themeName: theme.themeName || "cosmic-frontier", // Default to cosmic-frontier if not set
+    themeName: theme.themeName || DEFAULT_THEME_NAME,
     setThemeName: (name: ThemeName): void => {
       if (theme.setTheme) {
         theme.setTheme(name);
