@@ -72,8 +72,10 @@ objects. Their implementation is uneven:
 - only `ocean.css` contains theme-specific rules in the secondary CSS tree;
 - the active `theme.css` duplicates many theme variables and class mappings;
 - Cosmic Frontier is missing from the active CSS variable mappings;
-- public `forest.json` and `ocean.json` files exist, but no website source
-  references them.
+- public `forest.json` and `ocean.json` files are inputs to the dormant remote
+  loader: with external loading enabled, its default `/themes` base URL fetches
+  `/themes/{themeName}.json`. The active provider does not reach that path while
+  external loading remains disabled.
 
 Forest and Phoenix currently vary palette, fonts, border radius, and shadows.
 They do not define environmental SVG layers, particles, scene behaviour,
