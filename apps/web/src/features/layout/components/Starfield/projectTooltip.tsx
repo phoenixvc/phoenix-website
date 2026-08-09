@@ -80,7 +80,9 @@ const ProjectTooltip = forwardRef<HTMLDivElement, ProjectTooltipProps>(({
   const formatStatus = (status?: string): string => {
     const statusMap: Record<string, string> = {
       alpha: "Alpha",
+      "private-preview": "Private Preview",
       "pre-alpha": "Pre-Alpha",
+      seed: "Seed",
       "early-stage": "Early Stage",
       growth: "Growth Stage",
       active: "Active",

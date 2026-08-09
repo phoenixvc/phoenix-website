@@ -21,6 +21,8 @@ import {
   Receipt,
   MessagesSquare,
   Share2,
+  House,
+  ListChecks,
   Globe,
   Code,
   Layers,
@@ -39,6 +41,8 @@ const ICONS: Record<string, LucideIcon> = {
   docket: Receipt,
   convolens: MessagesSquare,
   omnipost: Share2,
+  "house-of-veritas": House,
+  baton: ListChecks,
   "phoenixvc-website": Globe,
   "design-system": Code,
 };

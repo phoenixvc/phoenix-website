@@ -1,80 +1,60 @@
-📄 /docs/documentation-roadmap.md
-
 # Documentation Roadmap {: #documentation-roadmap}
-## Overview {: #overview}
-This document outlines our planned improvements and future enhancements for our documentation set. It serves as a living roadmap to track upcoming changes, new features, and ongoing improvements—ensuring that our documentation remains clear, comprehensive, and user-friendly.
 
-> **Objectives:**  
-> - **Improve Clarity:** Enhance internal linking, navigation, and readability.  
-> - **Expand Coverage:** Fill gaps in existing documentation and consolidate redundant content.  
-> - **Increase Accessibility:** Introduce clear tables of contents, version metadata, and update logs.  
-> - **Implement Feedback:** Integrate suggestions from contributors and maintainers.
+**Current as of:** 9 August 2026
 
-## Planned Improvements {: #planned-improvements}
-### Short Term (Next 1–3 Months) {: #short-term-next-13-months}
-- **Internal Linking Updates:**  
-  - Add clear relative links within all documents.
-  - Update cross‑references to align with the new folder structure.
-- **TOC Implementation:**  
-  - Insert dynamic tables of contents in major documents.
-- **Metadata Additions:**  
-  - Include “Last Updated” dates and version numbers in document headers.
+This is a directional product-documentation roadmap. Baton is the operational
+task graph for owners, status, sequencing, and closeout evidence.
 
-### Medium Term (3–6 Months) {: #medium-term-36-months}
-- **Content Consolidation:**  
-  - Merge overlapping sections (e.g., similar Azure environment setup details) into dedicated documents.
-  - Create separate documents for recurring topics (e.g., SPN management).
-- **Accessibility Enhancements:**  
-  - Add descriptive alt text to diagrams.
-  - Revise headings and subheadings for improved readability.
-- **Contributor Guidelines:**  
-  - Update CONTRIBUTING.md with specific instructions for documentation changes.
-  - Provide a template for new documentation contributions.
+## Principles {: #principles}
 
-### Long Term (6–12 Months) {: #long-term-612-months}
-- **Documentation Website:**  
-  - Evaluate using a static site generator (e.g., Docusaurus or MkDocs) to build a searchable documentation site.
-- **Feedback Mechanism:**  
-  - Implement a process for users to submit suggestions or report issues directly within the docs.
-- **Ongoing Maintenance:**  
-  - Schedule regular reviews of the entire documentation set.
-  - Integrate markdown linters in our CI/CD pipeline to enforce consistency.
+- Document the repository and deployed architecture that exist now.
+- Keep build, deployment, live health, authentication, and authentic user-flow
+  acceptance as separate claims.
+- Prefer one canonical page per topic and retain small redirect pages only when
+  an existing link must remain stable.
+- Validate links and a strict MkDocs build before publishing documentation.
+- Never include credentials, cookies, sessions, or private operational data.
 
-## Roadmap Timeline {: #roadmap-timeline}
-```gantt
-gantt
-    title Documentation Roadmap Timeline
-    dateFormat  YYYY-MM-DD
-    section Short Term
-    Internal Linking Updates     :active, a1, 2025-02-15, 30d
-    TOC Implementation           :a2, after a1, 20d
-    Metadata Additions           :a3, after a2, 15d
-    section Medium Term
-    Content Consolidation        :b1, 2025-03-20, 45d
-    Accessibility Enhancements   :b2, after b1, 30d
-    Contributor Guidelines       :b3, after b2, 15d
-    section Long Term
-    Documentation Website        :c1, 2025-06-01, 60d
-    Feedback Mechanism           :c2, after c1, 30d
-    Ongoing Maintenance          :milestone, c3, 2025-08-31, 0d
-```
+## Now {: #now}
 
-> **Note:** The dates in the Roadmap Timeline are estimates for planning purposes and are subject to change as priorities evolve.
+1. Reconcile the root README, TODO, setup commands, repository naming, workflow
+   badges, Storybook guidance, and deployment claims.
+2. Replace expired 2025 planning text and remove placeholders that imply MkDocs
+   is still under evaluation.
+3. Document the corrected portfolio stages and canonical project links.
+4. Capture exact verification expectations for the blocked security dependency
+   updates and repository-policy approval.
+5. Close documentation work that is already satisfied, including the existing
+   devcontainer, without erasing the historical GitHub record.
 
-## How to Contribute {: #how-to-contribute}
-- **Submit Suggestions:**  
-  Use our issue tracker to propose improvements or new sections for the documentation.
-- **Review the Roadmap:**  
-  Regularly review this document during team meetings to update priorities.
-- **Collaborate:**  
-  Reference this roadmap in your pull requests for documentation enhancements to ensure alignment with planned improvements.
+## Next {: #next}
 
-## Version History {: #version-history}
-| Version | Date       | Changes                               |
-|---------|------------|---------------------------------------|
-| 0.1     | 2025-02-14 | Initial roadmap draft                 |
+1. Add strict MkDocs link/build validation to CI.
+2. Add missing web and design-system build/type-check gates to pull-request CI.
+3. Reconcile deployment and operator runbooks against current Azure resources
+   and current workflow behavior.
+4. Audit the theme runtime and Theme Designer, then document the chosen reusable
+   theme architecture only after the investigation is complete.
+5. Publish contributor guidance for the pinned pnpm workflow and Commitlint
+   enforcement once the Husky hook is implemented.
 
-> **Note:** This section records actual revisions made to the roadmap. Future improvements are detailed in the Roadmap Timeline above.
+## Later {: #later}
 
-## Final Remarks {: #final-remarks}
-This roadmap is a living document that will be revised as new priorities emerge and feedback is received. Regular reviews will ensure that our documentation remains clear, comprehensive, and useful for all users.
+1. Establish a lightweight documentation review cadence and ownership model.
+2. Add release notes or changelog conventions tied to shipped behavior.
+3. Document cross-repository theme adoption after the website proof and first
+   sibling pilot are complete.
+4. Consolidate overlapping legacy deployment and DNS pages as their live
+   replacements are verified.
+
+## Definition of done {: #definition-of-done}
+
+Documentation work is complete when the content matches current source and
+runtime evidence, links resolve, `mkdocs build --strict` succeeds, and the Baton
+task records the PR or commit plus any acceptance that remains operator-held.
+
+## History {: #history}
+
+The previous roadmap used a fully expired February-August 2025 timeline and
+proposed evaluating MkDocs even though MkDocs was already the active platform.
+It was replaced with this evidence-based rolling roadmap on 9 August 2026.
