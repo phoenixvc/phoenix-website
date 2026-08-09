@@ -188,6 +188,11 @@ export const useAnimationLoop = (
 
     // Start animation with a small delay to ensure everything is ready
     setTimeout(() => {
+      if (latestPropsRef.current.paused) {
+        isRestartingRef.current = false;
+        return;
+      }
+
       if (props.canvasRef.current) {
         isRestartingRef.current = false;
         isAnimatingRef.current = true;

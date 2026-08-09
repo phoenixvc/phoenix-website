@@ -222,25 +222,25 @@
     --theme-cloud-dark-active: 217.2 32.6% 15%;
 
     /* Cosmic Frontier Theme */
-    --theme-cosmic-light-primary: 245 58% 51%;
-    --theme-cosmic-light-secondary: 262 52% 47%;
-    --theme-cosmic-light-accent: 198 88% 48%;
-    --theme-cosmic-light-background: 216 57% 97%;
-    --theme-cosmic-light-text: 226 43% 16%;
-    --theme-cosmic-light-muted: 228 20% 49%;
-    --theme-cosmic-light-border: 228 43% 89%;
-    --theme-cosmic-light-hover: 245 58% 94%;
-    --theme-cosmic-light-active: 262 52% 90%;
+    --theme-cosmic-light-primary: 258 84.20454907965677% 64.88340192043897%;
+    --theme-cosmic-light-secondary: 239 78.55660453481802% 64.88340192043897%;
+    --theme-cosmic-light-accent: 199 83.38548174805483% 64.88340192043897%;
+    --theme-cosmic-light-background: 218 57.14285714285723% 97.25490196078432%;
+    --theme-cosmic-light-text: 225 43.20987654320989% 15.88235294117647%;
+    --theme-cosmic-light-muted: 225 19.678714859437754% 48.82352941176471%;
+    --theme-cosmic-light-border: 224 46.428571428571416% 89.01960784313725%;
+    --theme-cosmic-light-hover: 233 100% 96.66666666666667%;
+    --theme-cosmic-light-active: 254 68.75% 93.72549019607843%;
 
-    --theme-cosmic-dark-primary: 258 90% 76%;
-    --theme-cosmic-dark-secondary: 239 84% 72%;
-    --theme-cosmic-dark-accent: 193 95% 68%;
-    --theme-cosmic-dark-background: 230 50% 6%;
-    --theme-cosmic-dark-text: 220 100% 98%;
-    --theme-cosmic-dark-muted: 227 28% 65%;
-    --theme-cosmic-dark-border: 228 33% 24%;
-    --theme-cosmic-dark-hover: 258 52% 22%;
-    --theme-cosmic-dark-active: 239 48% 28%;
+    --theme-cosmic-dark-primary: 258 84.20454907965677% 64.88340192043897%;
+    --theme-cosmic-dark-secondary: 239 78.55660453481802% 64.88340192043897%;
+    --theme-cosmic-dark-accent: 199 83.38548174805483% 64.88340192043897%;
+    --theme-cosmic-dark-background: 229 50% 6.2745098039215685%;
+    --theme-cosmic-dark-text: 224 100% 97.84313725490196%;
+    --theme-cosmic-dark-muted: 225 25.96685082872929% 64.50980392156863%;
+    --theme-cosmic-dark-border: 227 32.78688524590164% 23.921568627450977%;
+    --theme-cosmic-dark-hover: 249 37.86407766990291% 20.19607843137255%;
+    --theme-cosmic-dark-active: 215 53.06122448979591% 19.215686274509807%;
   }
 }
 

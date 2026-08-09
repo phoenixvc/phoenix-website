@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useState, type ReactElement } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { ThemeProvider } from "@/theme";
@@ -14,8 +14,6 @@ import {
 } from "@/utils/chunkErrorRecovery";
 
 logger.debug("Index file is running");
-
-const builtInThemeRegistry = createBuiltInThemeRegistry();
 
 // Recover from transient/stale dynamic-import (chunk/CSS preload) failures by
 // reloading once for a fresh index.html, instead of letting React.lazy trip the
@@ -40,10 +38,13 @@ window.setTimeout(resetChunkReloadCounter, 5000);
 
 // Initialize Core Web Vitals monitoring
 initWebVitals();
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+
+function PhoenixApp(): ReactElement {
+  const [themeRegistry] = useState(createBuiltInThemeRegistry);
+
+  return (
     <ThemeProvider
-      themeRegistry={builtInThemeRegistry}
+      themeRegistry={themeRegistry}
       config={{
         defaultThemeName: DEFAULT_THEME_NAME,
         defaultMode: "dark",
@@ -63,5 +64,11 @@ createRoot(document.getElementById("root")!).render(
     >
       <App />
     </ThemeProvider>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <PhoenixApp />
   </StrictMode>,
 );

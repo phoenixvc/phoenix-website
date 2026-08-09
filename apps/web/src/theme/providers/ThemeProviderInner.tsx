@@ -118,6 +118,7 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
             themeName: prev.themeName,
             mode: prev.mode,
           },
+          initialized: false,
           timestamp: Date.now(),
         }));
         return;
@@ -139,6 +140,7 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
                 themeName: prev.themeName,
                 mode: prev.mode,
               },
+              initialized: false,
               timestamp: Date.now(),
             };
           });

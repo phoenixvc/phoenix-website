@@ -69,15 +69,13 @@ export interface SunState {
  */
 function generateRandomSunPositions(
   count: number,
+  random: () => number = getDailySeededRandom(2000),
 ): Array<{ x: number; y: number }> {
   const positions: Array<{ x: number; y: number }> = [];
   const maxAttempts = SUN_PHYSICS.maxPositionAttempts;
   const edgePadding = SUN_PHYSICS.edgePadding;
   const minDistance = SUN_PHYSICS.minDistance;
   const sidebarOffset = SUN_PHYSICS.sidebarOffset;
-
-  // Use seeded random for consistent daily layouts (offset 2000 for suns)
-  const random = getDailySeededRandom(2000);
 
   for (let i = 0; i < count; i++) {
     let attempts = 0;
@@ -143,9 +141,16 @@ export function initializeSunStates(): void {
     deterministicSeed === undefined
       ? Math.random
       : createSeededRandom(deterministicSeed + 3000);
+  const initialPositions =
+    deterministicSeed === undefined
+      ? INITIAL_SUN_POSITIONS
+      : generateRandomSunPositions(
+          focusAreaSuns.length,
+          createSeededRandom(deterministicSeed + 2000),
+        );
 
   sunStates = focusAreaSuns.map((sun, index) => {
-    const pos = INITIAL_SUN_POSITIONS[index % INITIAL_SUN_POSITIONS.length];
+    const pos = initialPositions[index % initialPositions.length];
 
     // Create unique drift parameters for each sun so they move independently
     const driftPhaseX = random() * TWO_PI; // Random starting phase

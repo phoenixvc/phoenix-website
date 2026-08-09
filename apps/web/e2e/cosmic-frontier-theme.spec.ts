@@ -141,4 +141,62 @@ test.describe("Cosmic Frontier theme contract", () => {
     await expect(environment).toHaveAttribute("data-lifecycle", "paused");
     await expect(page.locator("[data-starfield] canvas")).toBeVisible();
   });
+
+  test("reapplies the canonical color aliases when mode changes", async ({
+    page,
+  }) => {
+    await page.goto("/?cosmic-fixture=static", {
+      waitUntil: "domcontentloaded",
+    });
+
+    const provider = page.locator(".theme-wrapper");
+    await expect(provider).toHaveAttribute("data-mode", "dark");
+
+    const readAliases = (): Promise<{
+      background: string;
+      namespacedBackground: string;
+      hover: string;
+      active: string;
+      fallbackBackground: string;
+      fallbackHover: string;
+      fallbackActive: string;
+    }> =>
+      page.evaluate(() => {
+        const provider = document.querySelector<HTMLElement>(".theme-wrapper");
+        const fallback = getComputedStyle(provider!);
+        return {
+          background:
+            document.documentElement.style.getPropertyValue(
+              "--color-background",
+            ),
+          namespacedBackground: document.documentElement.style.getPropertyValue(
+            "--theme-colors-background",
+          ),
+          hover:
+            document.documentElement.style.getPropertyValue("--color-hover"),
+          active:
+            document.documentElement.style.getPropertyValue("--color-active"),
+          fallbackBackground: fallback.getPropertyValue("--color-background"),
+          fallbackHover: fallback.getPropertyValue("--color-hover"),
+          fallbackActive: fallback.getPropertyValue("--color-active"),
+        };
+      });
+
+    const darkAliases = await readAliases();
+    await page.getByRole("button", { name: "Toggle theme" }).click();
+
+    await expect(provider).toHaveAttribute("data-mode", "light");
+    await expect.poll(readAliases).toEqual({
+      background: "218 57.14285714285723% 97.25490196078432%",
+      namespacedBackground: "218 57.14285714285723% 97.25490196078432%",
+      hover: "233 100% 96.66666666666667%",
+      active: "254 68.75% 93.72549019607843%",
+      fallbackBackground: "218 57.14285714285723% 97.25490196078432%",
+      fallbackHover: "233 100% 96.66666666666667%",
+      fallbackActive: "254 68.75% 93.72549019607843%",
+    });
+    expect(darkAliases.background).not.toBe(
+      "218 57.14285714285723% 97.25490196078432%",
+    );
+  });
 });

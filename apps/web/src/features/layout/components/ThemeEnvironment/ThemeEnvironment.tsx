@@ -29,7 +29,7 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
       COSMIC_FRONTIER_ENVIRONMENT;
     const motionMode =
       fixture?.motionMode ?? (prefersReducedMotion ? "reduced" : "full");
-    const paused = (fixture?.paused ?? !pageVisible) || prefersReducedMotion;
+    const paused = fixture?.paused ?? (!pageVisible || prefersReducedMotion);
 
     return (
       <div

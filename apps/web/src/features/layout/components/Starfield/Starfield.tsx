@@ -102,6 +102,7 @@ const InteractiveStarfield = forwardRef<
     },
     ref,
   ) => {
+    const effectivePaused = paused || reducedMotion;
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const dimensionsRef = useRef({ width: 0, height: 0 });
     const containerBoundsRef = useRef({
@@ -640,7 +641,7 @@ const InteractiveStarfield = forwardRef<
         sidebarWidth,
         sunTooltipElementRef: tooltipRefs.sunTooltipElementRef,
         projectTooltipElementRef: tooltipRefs.projectTooltipElementRef,
-        paused,
+        paused: effectivePaused,
         fixedTimestamp,
       }),
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -670,7 +671,7 @@ const InteractiveStarfield = forwardRef<
         focusedSunId,
         sidebarWidth,
         performanceTier, // Add performance tier as dep
-        paused,
+        effectivePaused,
         fixedTimestamp,
       ],
     );

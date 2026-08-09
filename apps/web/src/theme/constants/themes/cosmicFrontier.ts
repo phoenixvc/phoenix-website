@@ -1,18 +1,5 @@
-import {
-  ComponentVariants,
-  Theme,
-  ThemeBorders,
-  ThemeBreakpoints,
-  ThemeColors,
-  ThemeConfig,
-  ThemeScheme,
-  ThemeShadows,
-  ThemeSpacing,
-  ThemeTransitions,
-  ThemeTypography,
-  ThemeVariables,
-  ThemeZIndex,
-} from "@/theme/types";
+import { Theme, ThemeColors, ThemeScheme } from "@/theme/types";
+import { createTheme } from "@/theme/core/theme";
 import {
   createColor,
   grayPalette,
@@ -22,20 +9,6 @@ import {
 } from "./colors";
 import indigoPalette from "./colors/indigo";
 import skyPalette from "./colors/sky";
-import { defaultTheme } from "./default";
-
-const typedDefaultTheme = defaultTheme as Omit<Theme, "colors"> & {
-  typography: ThemeTypography;
-  spacing: ThemeSpacing;
-  borders: ThemeBorders;
-  shadows: ThemeShadows;
-  breakpoints: ThemeBreakpoints;
-  transitions: ThemeTransitions;
-  zIndex: ThemeZIndex;
-  variables: ThemeVariables;
-  components: ComponentVariants;
-  config: ThemeConfig;
-};
 
 /**
  * Cosmic Frontier is the website's first complete environmental theme.
@@ -92,11 +65,21 @@ export const cosmicFrontierColors: ThemeColors = {
   },
 };
 
+const cosmicFrontierBaseTheme = createTheme(
+  {
+    name: "Cosmic Frontier",
+    themeName: "cosmic-frontier",
+    mode: "dark",
+    useSystem: false,
+    version: "1.0.0",
+  },
+  cosmicFrontierColors,
+);
+
 export const cosmicFrontierTheme: Theme = {
-  ...typedDefaultTheme,
-  colors: cosmicFrontierColors,
+  ...cosmicFrontierBaseTheme,
   typography: {
-    ...typedDefaultTheme.typography,
+    ...cosmicFrontierBaseTheme.typography,
     fontFamily: {
       base: "'Outfit', system-ui, sans-serif",
       heading: "'Space Grotesk', 'Outfit', system-ui, sans-serif",
@@ -104,7 +87,7 @@ export const cosmicFrontierTheme: Theme = {
     },
   },
   shadows: {
-    ...typedDefaultTheme.shadows,
+    ...cosmicFrontierBaseTheme.shadows,
     md: "0 12px 32px rgba(76, 29, 149, 0.22)",
     lg: "0 20px 52px rgba(49, 46, 129, 0.3)",
     xl: "0 28px 80px rgba(8, 11, 24, 0.48)",

@@ -267,9 +267,12 @@ const Header: FC<HeaderProps> = ({
                   <div className={styles.dropdownDivider}></div>
 
                   {/* Theme Selection Option */}
-                  <div
+                  <button
+                    type="button"
                     className={styles.dropdownItem}
                     onClick={() => setThemeMenuOpen(!themeMenuOpen)}
+                    aria-expanded={themeMenuOpen}
+                    aria-controls="theme-selection-submenu"
                   >
                     <Palette size={18} className={styles.dropdownItemIcon} />
                     <span>Theme Selection</span>
@@ -277,31 +280,33 @@ const Header: FC<HeaderProps> = ({
                       size={16}
                       className={`${styles.dropdownItemChevron} ${themeMenuOpen ? styles.open : ""}`}
                     />
-                  </div>
+                  </button>
 
                   {/* Theme Selection Submenu */}
                   {themeMenuOpen && (
-                    <div className={styles.themeSubmenu}>
+                    <div
+                      id="theme-selection-submenu"
+                      className={styles.themeSubmenu}
+                    >
                       {THEME_CATALOG_ENTRIES.map((theme) => (
-                        <div
+                        <button
+                          type="button"
                           key={theme.id}
                           className={`${styles.themeOption} ${themeName === theme.id ? styles.activeTheme : ""}`}
-                          onClick={() =>
-                            theme.availability === "available" &&
-                            handleThemeSelect(theme.id)
-                          }
+                          disabled={theme.availability !== "available"}
+                          onClick={() => handleThemeSelect(theme.id)}
                         >
                           <div
                             className={styles.themeColorIndicator}
                             data-theme={theme.id}
-                          ></div>
+                          />
                           <span>{theme.displayName}</span>
                           {theme.availability === "coming-soon" && (
                             <span className={styles.comingSoonBadge}>
                               Coming Soon
                             </span>
                           )}
-                        </div>
+                        </button>
                       ))}
                     </div>
                   )}

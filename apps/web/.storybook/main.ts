@@ -10,10 +10,16 @@ const config: StorybookConfig = {
   framework: "@storybook/react-vite",
   async viteFinal(viteConfig) {
     viteConfig.resolve = viteConfig.resolve ?? {};
-    viteConfig.resolve.alias = {
-      ...(viteConfig.resolve.alias as Record<string, string> | undefined),
-      "@": path.resolve(directory, "../src"),
-    };
+    const alias = viteConfig.resolve.alias;
+    viteConfig.resolve.alias = Array.isArray(alias)
+      ? [
+          ...alias,
+          { find: "@", replacement: path.resolve(directory, "../src") },
+        ]
+      : {
+          ...alias,
+          "@": path.resolve(directory, "../src"),
+        };
     return viteConfig;
   },
 };
