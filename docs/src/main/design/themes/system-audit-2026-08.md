@@ -98,12 +98,18 @@ and components. There is also an older simple `ThemeContext.tsx` that is not
 exported by its directory index.
 
 The active provider initializes the theme system in both its outer and inner
-components. When a theme is not in the empty runtime registry, acquisition uses
-an `import.meta.glob("../themes/*.js")` path that does not match the actual
-`constants/themes/*.ts` location. It then falls back to a generated default
-theme.
+components. When a theme is absent from the provider registry, it calls the
+acquisition manager. That manager defaults `allowExternalLoading` to `false`,
+and the provider does not override it, so a theme missing from the registry,
+cache, and storage skips local and remote loading and falls back to the default
+theme. This is the active production path.
 
-The deployed site confirmed this path rather than merely suggesting it:
+The local loader also contains an `import.meta.glob("../themes/*.js")` path that
+does not match the actual `constants/themes/*.ts` location. That mismatch is a
+latent defect rather than the cause of the current warnings because the loader
+is unreachable while external loading remains disabled.
+
+The deployed site confirmed the active fallback behaviour:
 
 - `ThemeAcquisitionManager` warned that it was using the default theme for
   Classic;
