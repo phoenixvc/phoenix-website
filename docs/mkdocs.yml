@@ -79,6 +79,7 @@ nav:
           - Development:
               - Overview: main/guides/development/README.md
               - Code Style: main/guides/development/code-style.md
+              - Dependency Updates: main/guides/development/dependency-updates.md
               - Dev Containers: main/guides/development/dev-containers.md
               - Development Setup: main/guides/development/development-setup.md
               - Search Functionality: main/guides/development/search-functionality.md
