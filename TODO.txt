@@ -1,30 +1,40 @@
-# Project TODOs
+# Current repository follow-ups
 
-## Configuration
-- [ ] Fix/Setup Husky git hooks
-- [ ] Configure and verify Commitlint
-- [ ] Verify Dev Container configuration after move to .config/
+This file is a compact repository-local checklist. Baton is the operational
+task graph and should contain ownership, sequencing, evidence, and closeout.
 
-## Documentation UI/UX Enhancements
-- [ ] Add visual indicators in navigation to distinguish between main docs and design system
-- [ ] Implement header section switcher for quick navigation
-- [ ] Configure section-specific color schemes using CSS overrides
-- [ ] Add section tags to search results for better context
-- [ ] Create and document CSS implementation for section styling
+## Quality gates
 
-## Next Steps
-- [ ] Continue repository restructuring
-- [ ] Setup proper CI/CD pipeline
-- [ ] Document configuration setup process
+- [ ] Add build and website/design-system type-check jobs to pull-request CI.
+- [ ] Define and add the appropriate automated test gates, including focused
+      Playwright coverage where browser behavior is material.
+- [ ] Add a Husky `commit-msg` hook for the existing Commitlint configuration.
+- [ ] Update the existing pre-commit hook from npm commands to the pinned pnpm
+      workflow and keep it fast enough for local use.
 
-## Documentation Structure
-- [ ] Reorganize docs into main/ and design/ subdirectories
-- [ ] Update all internal documentation links
-- [ ] Create unified landing page
-- [ ] Verify navigation structure works with new organization
+## Documentation
 
-## Testing & Verification
-- [ ] Test search functionality across both documentation sections
-- [ ] Verify all internal links after restructuring
-- [ ] Test responsive design with new navigation elements
-- [ ] Validate documentation build process with new structure
+- [ ] Validate all internal links and the strict MkDocs build in CI.
+- [ ] Reconcile deployment and operator runbooks with current Azure resources.
+- [ ] Add durable release notes or a changelog policy.
+
+## Product and design system
+
+- [ ] Complete the portfolio private-preview content/status correction.
+- [ ] Investigate the current theme runtime and Theme Designer before choosing
+      the reusable architecture.
+- [ ] Review potentially relevant older theme and particle-effects repositories
+      for applicability, maintenance, licensing, and security.
+- [ ] Polish Cosmic Frontier/starfield, then complete the Forest and Phoenix
+      experiences before choosing the final reusable architecture.
+- [ ] Create Highveld as the first new theme after those existing-theme proofs.
+- [ ] Before adopting shared selection in any sibling repository, convert its
+      current look and feel into a complete benchmark theme and prove parity.
+
+## Maintenance
+
+- [ ] Verify and disposition the five blocked security dependency PRs.
+- [ ] Triage the routine Renovate backlog after security updates.
+- [ ] Re-scope the legacy AgentKit issue to current AGENTS.md and Retort
+      conventions.
+- [ ] Visually confirm stale starfield branch behavior before branch cleanup.
