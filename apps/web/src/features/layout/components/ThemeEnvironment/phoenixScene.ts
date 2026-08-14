@@ -139,6 +139,7 @@ export interface DrawPhoenixSceneOptions {
   hoveredNode?: PhoenixNode | null;
   dragSparks?: PhoenixDragSpark[];
   scrollY?: number;
+  modeProgress?: number; // 0.0 (full light) -> 1.0 (full dark)
 }
 
 const createRng = (seed: number): (() => number) => {
@@ -150,6 +151,59 @@ const createRng = (seed: number): (() => number) => {
     state = (state * 16807) % 2147483647;
     return (state - 1) / 2147483646;
   };
+};
+
+interface RGB {
+  r: number;
+  g: number;
+  b: number;
+  a?: number;
+}
+
+const parseColor = (color: string): RGB => {
+  if (color.startsWith("#")) {
+    const hex = color.slice(1);
+    if (hex.length === 3) {
+      return {
+        r: parseInt(hex[0] + hex[0], 16),
+        g: parseInt(hex[1] + hex[1], 16),
+        b: parseInt(hex[2] + hex[2], 16),
+        a: 1,
+      };
+    }
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+      a: 1,
+    };
+  }
+  const match = color.match(
+    /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/,
+  );
+  if (match) {
+    return {
+      r: parseInt(match[1], 10),
+      g: parseInt(match[2], 10),
+      b: parseInt(match[3], 10),
+      a: match[4] !== undefined ? parseFloat(match[4]) : 1,
+    };
+  }
+  return { r: 0, g: 0, b: 0, a: 1 };
+};
+
+const lerpColor = (c1: string, c2: string, t: number): string => {
+  const clampedT = Math.max(0, Math.min(1, t));
+  const a = parseColor(c1);
+  const b = parseColor(c2);
+  const r = Math.round(a.r + (b.r - a.r) * clampedT);
+  const g = Math.round(a.g + (b.g - a.g) * clampedT);
+  const bl = Math.round(a.b + (b.b - a.b) * clampedT);
+  const alpha = (a.a ?? 1) + ((b.a ?? 1) - (a.a ?? 1)) * clampedT;
+  if (alpha < 0.999) {
+    return `rgba(${r}, ${g}, ${bl}, ${alpha.toFixed(3)})`;
+  }
+  return `rgb(${r}, ${g}, ${bl})`;
 };
 
 export const resolvePhoenixDayPhase = (timeMs: number): PhoenixDayPhase => {
@@ -170,40 +224,49 @@ export const createPhoenixPalette = (
   isDarkMode: boolean,
   phase: PhoenixDayPhase,
   atmosphere: PhoenixAtmosphere,
+  modeProgress?: number,
+  timeMs: number = 0,
 ): PhoenixPalette => {
-  if (!isDarkMode) {
-    return {
-      skyTop: "#fef3c7",
-      skyMid: "#fed7aa",
-      skyBottom: "#fdba74",
-      ridgeFar: "#7c2d12",
-      ridgeMid: "#9a3412",
-      ridgeNear: "#c2410c",
-      magmaGlow:
-        atmosphere === "radiant"
-          ? "rgba(249, 115, 22, 0.32)"
-          : "rgba(239, 68, 68, 0.22)",
-      auroraFlare: "rgba(251, 146, 60, 0.16)",
-      emberCore: "#ffffff",
-      emberA: "#d97706",
-      emberB: "#ea580c",
-      emberC: "#b91c1c",
-      ashA: "rgba(120, 86, 69, 0.35)",
-      ashB: "rgba(168, 110, 85, 0.25)",
-      vignette: "rgba(90, 36, 12, 0.12)",
-      heatShimmer: "rgba(254, 215, 170, 0.4)",
-      nodeGlow: "rgba(234, 88, 12, 0.25)",
-      nodeRing: "rgba(249, 115, 22, 0.45)",
-      nodeText: "#1c130d",
-    };
-  }
+  const darkTarget = isDarkMode ? 1.0 : 0.0;
+  const darkT = modeProgress !== undefined ? modeProgress : darkTarget;
 
-  const isHearth = phase === "hearth-rebirth";
-  const isZenith = phase === "zenith-blaze";
-  return {
-    skyTop: isHearth ? "#050304" : isZenith ? "#120606" : "#0a0405",
-    skyMid: isHearth ? "#14070a" : isZenith ? "#220a0b" : "#1a0808",
-    skyBottom: isHearth ? "#2b0a0a" : isZenith ? "#380f08" : "#280b06",
+  // Continuous sinusoidal diurnal wave (0 to 1) for seamless atmospheric cycling
+  const cycleWave = (Math.sin((timeMs / PHOENIX_DAY_CYCLE_MS) * Math.PI * 2) + 1) / 2;
+
+  const lightPalette: PhoenixPalette = {
+    skyTop: "#fef3c7",
+    skyMid: "#fed7aa",
+    skyBottom: "#fdba74",
+    ridgeFar: "#7c2d12",
+    ridgeMid: "#9a3412",
+    ridgeNear: "#c2410c",
+    magmaGlow:
+      atmosphere === "radiant"
+        ? "rgba(249, 115, 22, 0.32)"
+        : "rgba(239, 68, 68, 0.22)",
+    auroraFlare: "rgba(251, 146, 60, 0.16)",
+    emberCore: "#ffffff",
+    emberA: "#d97706",
+    emberB: "#ea580c",
+    emberC: "#b91c1c",
+    ashA: "rgba(120, 86, 69, 0.35)",
+    ashB: "rgba(168, 110, 85, 0.25)",
+    vignette: "rgba(90, 36, 12, 0.12)",
+    heatShimmer: "rgba(254, 215, 170, 0.4)",
+    nodeGlow: "rgba(234, 88, 12, 0.25)",
+    nodeRing: "rgba(249, 115, 22, 0.45)",
+    nodeText: "#1c130d",
+  };
+
+  // Smooth dark palette with cycleWave modulation
+  const darkSkyTop = lerpColor("#050304", "#120606", cycleWave);
+  const darkSkyMid = lerpColor("#14070a", "#220a0b", cycleWave);
+  const darkSkyBottom = lerpColor("#2b0a0a", "#380f08", cycleWave);
+
+  const darkPalette: PhoenixPalette = {
+    skyTop: darkSkyTop,
+    skyMid: darkSkyMid,
+    skyBottom: darkSkyBottom,
     ridgeFar: "#180608",
     ridgeMid: "#250a0a",
     ridgeNear: "#340e0b",
@@ -213,16 +276,42 @@ export const createPhoenixPalette = (
         : "rgba(239, 68, 68, 0.32)",
     auroraFlare: "rgba(251, 191, 36, 0.18)",
     emberCore: "#fffbeb",
-    emberA: "#fbbf24",
+    emberA: "#f59e0b",
     emberB: "#f97316",
     emberC: "#ef4444",
-    ashA: "rgba(92, 75, 75, 0.65)",
-    ashB: "rgba(135, 110, 105, 0.45)",
-    vignette: "rgba(3, 1, 2, 0.52)",
-    heatShimmer: "rgba(249, 115, 22, 0.15)",
-    nodeGlow: "rgba(251, 146, 60, 0.35)",
-    nodeRing: "rgba(245, 158, 11, 0.55)",
-    nodeText: "#fff5ee",
+    ashA: "rgba(255, 255, 255, 0.45)",
+    ashB: "rgba(245, 158, 11, 0.35)",
+    vignette: "rgba(0, 0, 0, 0.42)",
+    heatShimmer: "rgba(245, 158, 11, 0.22)",
+    nodeGlow: "rgba(245, 158, 11, 0.4)",
+    nodeRing: "rgba(251, 191, 36, 0.6)",
+    nodeText: "#fffbeb",
+  };
+
+  if (darkT <= 0.001) return lightPalette;
+  if (darkT >= 0.999) return darkPalette;
+
+  // Fully interpolated smooth palette
+  return {
+    skyTop: lerpColor(lightPalette.skyTop, darkPalette.skyTop, darkT),
+    skyMid: lerpColor(lightPalette.skyMid, darkPalette.skyMid, darkT),
+    skyBottom: lerpColor(lightPalette.skyBottom, darkPalette.skyBottom, darkT),
+    ridgeFar: lerpColor(lightPalette.ridgeFar, darkPalette.ridgeFar, darkT),
+    ridgeMid: lerpColor(lightPalette.ridgeMid, darkPalette.ridgeMid, darkT),
+    ridgeNear: lerpColor(lightPalette.ridgeNear, darkPalette.ridgeNear, darkT),
+    magmaGlow: lerpColor(lightPalette.magmaGlow, darkPalette.magmaGlow, darkT),
+    auroraFlare: lerpColor(lightPalette.auroraFlare, darkPalette.auroraFlare, darkT),
+    emberCore: lerpColor(lightPalette.emberCore, darkPalette.emberCore, darkT),
+    emberA: lerpColor(lightPalette.emberA, darkPalette.emberA, darkT),
+    emberB: lerpColor(lightPalette.emberB, darkPalette.emberB, darkT),
+    emberC: lerpColor(lightPalette.emberC, darkPalette.emberC, darkT),
+    ashA: lerpColor(lightPalette.ashA, darkPalette.ashA, darkT),
+    ashB: lerpColor(lightPalette.ashB, darkPalette.ashB, darkT),
+    vignette: lerpColor(lightPalette.vignette, darkPalette.vignette, darkT),
+    heatShimmer: lerpColor(lightPalette.heatShimmer, darkPalette.heatShimmer, darkT),
+    nodeGlow: lerpColor(lightPalette.nodeGlow, darkPalette.nodeGlow, darkT),
+    nodeRing: lerpColor(lightPalette.nodeRing, darkPalette.nodeRing, darkT),
+    nodeText: lerpColor(lightPalette.nodeText, darkPalette.nodeText, darkT),
   };
 };
 
@@ -545,9 +634,16 @@ export const drawPhoenixScene = ({
   hoveredNode,
   dragSparks,
   scrollY = 0,
+  modeProgress,
 }: DrawPhoenixSceneOptions): void => {
   const phase = resolvePhoenixDayPhase(timeMs);
-  const palette = createPhoenixPalette(isDarkMode, phase, scene.atmosphere);
+  const palette = createPhoenixPalette(
+    isDarkMode,
+    phase,
+    scene.atmosphere,
+    modeProgress,
+    timeMs,
+  );
   const limits = PHOENIX_SCENE_LIMITS[qualityTier];
   const pointerX = pointer ? (pointer.x / width - 0.5) * 2 : 0;
   const pointerY = pointer ? (pointer.y / height - 0.5) * 2 : 0;

@@ -81,7 +81,9 @@ export const PhoenixEnvironment = ({
   const hoveredNodeRef = useRef<PhoenixNode | null>(null);
   const cameraRef = useRef<PhoenixCamera>({ ...PHOENIX_OVERVIEW_CAMERA });
   const scrollYRef = useRef<number>(0);
+  const modeProgressRef = useRef<number>(isDarkMode ? 1.0 : 0.0);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+  const [pinnedNodes, setPinnedNodes] = useState<PhoenixNode[]>([]);
 
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? PHOENIX_DEFAULT_SEED;
@@ -94,6 +96,24 @@ export const PhoenixEnvironment = ({
     [seed, resolvedQuality],
   );
   const nodes = useMemo(() => createPhoenixNodes(), []);
+
+  const handleTogglePin = (node: PhoenixNode): void => {
+    setPinnedNodes((prev) => {
+      const exists = prev.some((p) => p.id === node.id);
+      if (exists) {
+        return prev.filter((p) => p.id !== node.id);
+      }
+      return [...prev, node];
+    });
+  };
+
+  const handleUnpin = (nodeId: string): void => {
+    setPinnedNodes((prev) => prev.filter((p) => p.id !== nodeId));
+  };
+
+  const handleCloseAllPinned = (): void => {
+    setPinnedNodes([]);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -143,6 +163,16 @@ export const PhoenixEnvironment = ({
       lastTimestamp = timestamp;
       const timeMs = fixedTimestamp ?? timestamp - start;
 
+      // Smooth continuous mode transition (lerp towards target mode)
+      const targetMode = isDarkMode ? 1.0 : 0.0;
+      if (reducedMotion || fixedTimestamp !== undefined) {
+        modeProgressRef.current = targetMode;
+      } else {
+        modeProgressRef.current +=
+          (targetMode - modeProgressRef.current) *
+          Math.min(deltaSeconds * 4.5, 1.0);
+      }
+
       if (!reducedMotion && !paused && fixedTimestamp === undefined) {
         cameraRef.current = lerpPhoenixCamera(cameraRef.current);
         updateSparks(deltaSeconds);
@@ -163,6 +193,7 @@ export const PhoenixEnvironment = ({
         hoveredNode: hoveredNodeRef.current,
         dragSparks: dragSparksRef.current,
         scrollY: scrollYRef.current,
+        modeProgress: modeProgressRef.current,
       });
     };
 
@@ -177,9 +208,15 @@ export const PhoenixEnvironment = ({
       }
     };
 
-    const spawnDragSpark = (x: number, y: number, vx: number, vy: number): void => {
+    const spawnDragSpark = (
+      x: number,
+      y: number,
+      vx: number,
+      vy: number,
+    ): void => {
       if (reducedMotion || paused || dragSparksRef.current.length > 45) return;
-      const color = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
+      const color =
+        SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
       dragSparksRef.current.push({
         x: x + (Math.random() - 0.5) * 8,
         y: y + (Math.random() - 0.5) * 8,
@@ -197,6 +234,28 @@ export const PhoenixEnvironment = ({
     };
 
     const handleGlobalPointerDown = (event: PointerEvent): void => {
+      // Don't drag if clicking an interactive element
+      const target = event.target as HTMLElement | null;
+      if (target?.closest(`.${styles.nodeTooltip}`) || target?.closest(`.${styles.pinnedDock}`)) {
+        return;
+      }
+
+      const canvasEl = canvasRef.current;
+      if (canvasEl) {
+        const picked = pickPhoenixNode(
+          event.clientX,
+          event.clientY,
+          nodes,
+          cameraRef.current,
+          canvasEl.clientWidth,
+          canvasEl.clientHeight,
+        );
+        if (picked) {
+          handleTogglePin(picked);
+          return;
+        }
+      }
+
       isDraggingRef.current = true;
       lastPointerRef.current = { x: event.clientX, y: event.clientY };
       spawnDragSpark(event.clientX, event.clientY, 0, -2);
@@ -320,6 +379,49 @@ export const PhoenixEnvironment = ({
       >
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
 
+        {/* Pinned Projects Dock */}
+        {pinnedNodes.length > 0 && (
+          <div className={styles.pinnedDock}>
+            {pinnedNodes.length > 1 && (
+              <button
+                className={styles.closeAllButton}
+                onClick={handleCloseAllPinned}
+              >
+                Close All ({pinnedNodes.length})
+              </button>
+            )}
+            {pinnedNodes.map((node) => (
+              <div key={node.id} className={styles.pinnedCard}>
+                <div className={styles.tooltipHeader}>
+                  <span className={styles.tooltipBadge}>
+                    {node.kind === "sanctuary"
+                      ? "Solar Sanctuary"
+                      : node.kind === "altar"
+                        ? "Focus Altar"
+                        : "Portfolio Beacon"}
+                  </span>
+                  <button
+                    className={styles.unpinButton}
+                    onClick={() => handleUnpin(node.id)}
+                    aria-label={`Unpin ${node.name}`}
+                    title="Unpin project"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <h4 className={styles.tooltipTitle}>{node.name}</h4>
+                <p className={styles.tooltipDesc}>{node.description}</p>
+                {node.href && (
+                  <a href={node.href} className={styles.tooltipLink}>
+                    Explore Sector &rarr;
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Hover Tooltip */}
         {tooltip && (
           <div
             className={styles.nodeTooltip}
@@ -328,12 +430,27 @@ export const PhoenixEnvironment = ({
               top: `${tooltip.y}px`,
             }}
           >
-            <div className={styles.tooltipBadge}>
-              {tooltip.node.kind === "sanctuary"
-                ? "Solar Sanctuary"
-                : tooltip.node.kind === "altar"
-                  ? "Focus Altar"
-                  : "Portfolio Beacon"}
+            <div className={styles.tooltipHeader}>
+              <span className={styles.tooltipBadge}>
+                {tooltip.node.kind === "sanctuary"
+                  ? "Solar Sanctuary"
+                  : tooltip.node.kind === "altar"
+                    ? "Focus Altar"
+                    : "Portfolio Beacon"}
+              </span>
+              <button
+                className={styles.pinButton}
+                onClick={() => handleTogglePin(tooltip.node)}
+                title={
+                  pinnedNodes.some((p) => p.id === tooltip.node.id)
+                    ? "Unpin project"
+                    : "Pin to screen"
+                }
+              >
+                {pinnedNodes.some((p) => p.id === tooltip.node.id)
+                  ? "Pinned \u2713"
+                  : "Pin \u25c6"}
+              </button>
             </div>
             <h4 className={styles.tooltipTitle}>{tooltip.node.name}</h4>
             <p className={styles.tooltipDesc}>{tooltip.node.description}</p>
