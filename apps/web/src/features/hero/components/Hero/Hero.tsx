@@ -38,7 +38,7 @@ const Hero: FC<ExtendedHeroProps> = memo(
     enableMouseTracking = false,
     sidebarWidth = 0,
   }): React.ReactElement => {
-    const { themeMode } = useTheme();
+    const { themeMode, themeName } = useTheme();
     const isDarkMode = themeMode === "dark";
     const sectionRef = useSectionObserver("home", (id) => {
       logger.debug(`[Home] Section "${id}" is now visible`);
@@ -125,6 +125,18 @@ const Hero: FC<ExtendedHeroProps> = memo(
       gradientColors: string;
     } => {
       const textColor = isDarkMode ? "text-white" : "text-gray-900";
+      if (themeName === "phoenix") {
+        return {
+          textColor,
+          gradientColors: "from-amber-300 via-orange-500 to-red-600",
+        };
+      }
+      if (themeName === "forest") {
+        return {
+          textColor,
+          gradientColors: "from-emerald-300 via-green-500 to-teal-700",
+        };
+      }
       const gradientColors = accentColor
         ? `from-${accentColor} to-${accentColor}`
         : colorScheme === "purple"

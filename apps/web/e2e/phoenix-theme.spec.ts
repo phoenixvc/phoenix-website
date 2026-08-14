@@ -56,9 +56,6 @@ test.describe("Phoenix theme contract", () => {
       .toBeGreaterThan(10);
     await expect(phoenixEnv.locator("canvas")).toBeVisible();
     await expect(phoenixEnv.locator("svg").first()).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Portfolio Hearth" }),
-    ).toBeVisible();
 
     const headerBackground = await page.locator("header").evaluate((element) =>
       getComputedStyle(element).backgroundColor,
@@ -184,15 +181,11 @@ test.describe("Phoenix theme contract", () => {
     });
   });
 
-  test("zooms into a sanctuary from the phoenix navigation HUD", async ({ page }) => {
+  test("renders hero title with phoenix fiery gradient styling", async ({ page }) => {
     await page.goto(phoenixFixtureUrl, { waitUntil: "domcontentloaded" });
-    const phoenixEnv = page.locator("[data-phoenix-environment]");
-    await page.getByRole("button", { name: "Portfolio Hearth" }).click();
-    await expect(phoenixEnv).toHaveAttribute("data-phoenix-focus", "portfolio-hearth");
-    await expect(phoenixEnv).toHaveAttribute("data-phoenix-zoom", "2.40");
-    await page.getByRole("button", { name: "Whole Realm" }).click();
-    await expect(phoenixEnv).toHaveAttribute("data-phoenix-focus", "overview");
-    await expect(phoenixEnv).toHaveAttribute("data-phoenix-zoom", "1.00");
+    const heroTitle = page.locator("main h1, [class*='minimizedTitle']").first();
+    await expect(heroTitle).toBeVisible();
+    await expect(page.locator(".theme-wrapper")).toHaveAttribute("data-theme", "phoenix");
   });
 
   test("can be selected from the header theme menu", async ({ page }) => {

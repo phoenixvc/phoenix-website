@@ -380,3 +380,69 @@
     font-size: 2.5rem;
   }
 }
+
+/* Phoenix Theme Overrides */
+:global([data-theme="phoenix"]) .heading {
+  background-image: linear-gradient(90deg, #fffbeb, #f59e0b, #ea580c) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.45) !important;
+}
+
+:global([data-theme="phoenix"]) .lightMode .heading {
+  background-image: linear-gradient(90deg, #7c2d12, #c2410c, #ea580c) !important;
+  text-shadow: 0 2px 8px rgba(194, 65, 12, 0.25) !important;
+}
+
+:global([data-theme="phoenix"]) .darkMode .heading::after {
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.5), transparent);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+:global([data-theme="phoenix"]) .lightMode .heading::after {
+  background: linear-gradient(90deg, transparent, rgba(234, 88, 12, 0.4), transparent);
+}
+
+:global([data-theme="phoenix"]) .section.darkMode::before,
+:global([data-theme="phoenix"]) .section.darkMode::after {
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.3), transparent);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+:global([data-theme="phoenix"]) .section.lightMode::before,
+:global([data-theme="phoenix"]) .section.lightMode::after {
+  background: linear-gradient(90deg, transparent, rgba(234, 88, 12, 0.25), transparent);
+}
+
+:global([data-theme="phoenix"]) .modal.darkMode {
+  background: linear-gradient(145deg, rgba(20, 11, 14, 0.98), rgba(30, 15, 20, 0.98));
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.2);
+}
+
+:global([data-theme="phoenix"]) .modalTitle {
+  background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+:global([data-theme="phoenix"]) .highlightsTitle {
+  color: #f59e0b;
+}
+
+:global([data-theme="phoenix"]) .highlightTag {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+:global([data-theme="phoenix"]) .modalCta {
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+}
+
+:global([data-theme="phoenix"]) .modalCta:hover {
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+}

@@ -523,22 +523,7 @@ export const drawPhoenixScene = ({
   ctx.fillRect(0, height - magmaHeight, width, magmaHeight);
   ctx.restore();
 
-  // 5. Interactive World Nodes (Solar Sanctuaries, Altars, Beacons)
-  if (nodes && camera) {
-    drawNodes(
-      ctx,
-      nodes,
-      camera,
-      width,
-      height,
-      timeMs,
-      palette,
-      hoveredNode,
-      reducedMotion,
-    );
-  }
-
-  // 6. Ash Flakes Simulation
+  // 5. Ash Flakes Simulation
   scene.ashFlakes.forEach((ash) => {
     const travel = reducedMotion
       ? ash.y
