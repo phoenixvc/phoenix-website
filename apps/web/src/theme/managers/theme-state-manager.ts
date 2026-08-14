@@ -13,6 +13,7 @@ import { ThemeAcquisitionManager } from "./theme-acquisition-manager";
 import { ThemeCacheService } from "../services/theme-cache-service";
 import { THEME_STORAGE_CONSTANTS } from "../constants/storage/theme-storage-constants";
 import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
+import { resolveInitialThemeName } from "../utils/resolve-initial-theme";
 
 /**
  * Manages the global theme state using the Singleton pattern.
@@ -122,8 +123,9 @@ export class ThemeStateManager {
    * Uses defaults and then updates asynchronously
    */
   private initializeState(): void {
-    // Set defaults initially
-    this.currentThemeName = THEME_STORAGE_CONSTANTS.DEFAULTS.THEME_NAME;
+    this.currentThemeName = resolveInitialThemeName(
+      THEME_STORAGE_CONSTANTS.DEFAULTS.THEME_NAME,
+    );
     this.currentMode = "dark";
     this.systemMode = this.getInitialSystemMode();
     this.useSystem = false;

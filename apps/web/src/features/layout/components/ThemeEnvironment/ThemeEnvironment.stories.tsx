@@ -38,3 +38,23 @@ export const DeterministicStaticFrame: Story = {
 };
 
 export const InteractiveAdaptive: Story = {};
+
+export const ForestDeterministicStaticFrame: Story = {
+  args: {
+    themeName: "forest",
+    fixture: {
+      seed: 20260809,
+      timeMs: 12000,
+      qualityTier: "low",
+      motionMode: "reduced",
+      paused: true,
+    },
+  },
+};
+
+export const ForestInteractiveAdaptive: Story = {
+  args: {
+    themeName: "forest",
+    isDarkMode: true,
+  },
+};

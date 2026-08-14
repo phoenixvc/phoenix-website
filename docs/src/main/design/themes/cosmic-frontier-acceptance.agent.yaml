@@ -1,0 +1,21 @@
+schema: md-agent/v1
+source: docs/src/main/design/themes/cosmic-frontier-acceptance.md
+title: "Cosmic Frontier acceptance contract"
+purpose: "Runtime contract for Cosmic Frontier as the first supported Phoenix website theme. Later immersive themes must meet this bar without choosing a shared package or Theme Designer architecture."
+audience:
+  - agent
+  - human
+facts:
+  - "Status is an implementation slice, not a final architecture ADR."
+  - "The starfield is the full-viewport environmental layer behind website content in light and dark modes."
+  - "Registered Cosmic palette values own runtime CSS color variables; theme CSS is a pre-hydration fallback only."
+  - "The representative fixture is seed 20260809, time 12000ms, low quality, reduced motion, and paused."
+  - "Full motion must keep existing pointer hover, focus, zoom, and portfolio navigation."
+  - "One typed catalogue owns IDs, display names, availability, default theme, validation, persistence, and both selectors."
+  - "Selectable persistable themes are cosmic-frontier (default) and forest. Other reserved identities stay coming-soon and cannot enter runtime state."
+  - "The trusted environment registry owns renderer code. Theme data stays serializable and must not import renderers."
+  - "Environment inputs are deterministic seed/time, quality tier, motion policy, visibility pause/resume, resize, pointer input, and unmount dispose."
+  - "Reduced motion draws one representative static frame and disables ambient, black-hole, flow, and pointer-driven motion."
+  - "Storybook and browser tests cover ownership, lifecycle, deterministic inputs, persistence fallback, token propagation, and no supported-path theme warnings."
+  - "Theme Designer state, import/export, asset picking, and cross-repo packaging are later work. AnimatedLogo and designer-draft are references only."
+last_synced: "2026-08-14"

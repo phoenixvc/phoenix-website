@@ -29,8 +29,9 @@ export const THEME_CATALOG = {
   forest: {
     id: "forest",
     displayName: "Forest",
-    availability: "coming-soon",
-    description: "Planned immersive forest environment.",
+    availability: "available",
+    description:
+      "Immersive canopy, falling leaves, and responsive forest light.",
   },
   ocean: {
     id: "ocean",
@@ -70,6 +71,7 @@ export const THEME_CATALOG_ORDER = [
 
 export const AVAILABLE_THEME_NAMES = [
   "cosmic-frontier",
+  "forest",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";

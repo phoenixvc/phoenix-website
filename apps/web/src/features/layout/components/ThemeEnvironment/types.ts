@@ -15,7 +15,7 @@ export interface EnvironmentFixture {
 export interface ThemeEnvironmentDefinition {
   themeName: ThemeName;
   displayName: string;
-  rendererId: "cosmic-starfield";
+  rendererId: "cosmic-starfield" | "forest-canopy";
   capabilities: {
     deterministic: {
       seed: boolean;

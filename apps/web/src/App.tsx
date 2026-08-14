@@ -81,90 +81,75 @@ const App = (): React.JSX.Element => {
     <ErrorBoundary>
       <BrowserRouter>
         <ScrollToHash />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Layout>
-                <Hero
-                  title="Shaping Tomorrow's Technology"
-                  subtitle="Strategic investments and partnerships empowering innovation across the globe"
-                  enableMouseTracking={true}
-                />
-                <Suspense fallback={<PageLoader isDarkMode={isDarkMode} />}>
-                  <LazyInvestmentFocus />
-                  <LazyAbout />
-                  <LazyContact />
-                </Suspense>
-              </Layout>
-            }
-          />
+        <Layout>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Hero
+                    title="Shaping Tomorrow's Technology"
+                    subtitle="Strategic investments and partnerships empowering innovation across the globe"
+                    enableMouseTracking={true}
+                  />
+                  <Suspense fallback={<PageLoader isDarkMode={isDarkMode} />}>
+                    <LazyInvestmentFocus />
+                    <LazyAbout />
+                    <LazyContact />
+                  </Suspense>
+                </>
+              }
+            />
 
-          <Route
-            path="/blog"
-            element={
-              <Layout>
+            <Route
+              path="/blog"
+              element={
                 <Suspense fallback={<PageLoader isDarkMode={isDarkMode} />}>
                   <Blog />
                 </Suspense>
-              </Layout>
-            }
-          />
+              }
+            />
 
-          <Route
-            path="/portfolio"
-            element={
-              <Layout>
+            <Route
+              path="/portfolio"
+              element={
                 <Suspense fallback={<PageLoader isDarkMode={isDarkMode} />}>
                   <Portfolio />
                 </Suspense>
-              </Layout>
-            }
-          />
+              }
+            />
 
-          <Route
-            path="/portfolio/:projectId"
-            element={
-              <Layout>
+            <Route
+              path="/portfolio/:projectId"
+              element={
                 <Suspense fallback={<PageLoader isDarkMode={isDarkMode} />}>
                   <ProjectDetail />
                 </Suspense>
-              </Layout>
-            }
-          />
+              }
+            />
 
-          <Route
-            path="/about"
-            element={
-              <Layout>
+            <Route
+              path="/about"
+              element={
                 <Suspense fallback={<PageLoader isDarkMode={isDarkMode} />}>
                   <AboutPage />
                 </Suspense>
-              </Layout>
-            }
-          />
+              }
+            />
 
-          <Route
-            path="/theme-designer"
-            element={
-              <Layout>
+            <Route
+              path="/theme-designer"
+              element={
                 <Suspense fallback={<PageLoader isDarkMode={isDarkMode} />}>
                   <ThemeDesigner isDarkMode={isDarkMode} />
                 </Suspense>
-              </Layout>
-            }
-          />
+              }
+            />
 
-          {/* 404 Not Found - must be last */}
-          <Route
-            path="*"
-            element={
-              <Layout>
-                <NotFound />
-              </Layout>
-            }
-          />
-        </Routes>
+            {/* 404 Not Found - must be last */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Layout>
       </BrowserRouter>
     </ErrorBoundary>
   );

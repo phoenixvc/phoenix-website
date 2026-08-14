@@ -2,31 +2,25 @@
 
 /* CSS Custom Properties for theme-aware colors */
 .portfolioSection {
-  --portfolio-primary: #9333ea; /* Purple - Phoenix VC brand */
-  --portfolio-accent: #f59e0b; /* Amber/Orange - accent */
-  --portfolio-gradient-start: #9333ea;
-  --portfolio-gradient-end: #f59e0b;
+  --portfolio-primary: hsl(
+    var(--color-primary)
+  ); /* Purple - Phoenix VC brand */
+  --portfolio-accent: hsl(var(--color-accent)); /* Amber/Orange - accent */
+  --portfolio-gradient-start: hsl(var(--color-primary));
+  --portfolio-gradient-end: hsl(var(--color-accent));
   min-height: 100vh;
   padding: 8rem 0 4rem;
   position: relative;
 }
 
-.dark {
-  --portfolio-primary: #a855f7; /* Lighter purple for dark mode */
-  --portfolio-accent: #fbbf24; /* Brighter amber for dark mode */
-  --portfolio-gradient-start: #a855f7;
-  --portfolio-gradient-end: #fbbf24;
-  background-color: rgba(13, 14, 30, 0.98);
-  color: rgba(255, 255, 255, 0.9);
-}
-
+.dark,
 .light {
-  --portfolio-primary: #7c3aed; /* Darker purple for light mode */
-  --portfolio-accent: #d97706; /* Darker amber for light mode */
-  --portfolio-gradient-start: #7c3aed;
-  --portfolio-gradient-end: #d97706;
-  background-color: rgba(250, 250, 255, 0.98);
-  color: rgba(20, 18, 40, 0.9);
+  --portfolio-primary: hsl(var(--color-primary));
+  --portfolio-accent: hsl(var(--color-accent));
+  --portfolio-gradient-start: hsl(var(--color-primary));
+  --portfolio-gradient-end: hsl(var(--color-accent));
+  background-color: hsl(var(--color-background) / 0.98);
+  color: hsl(var(--color-text) / 0.92);
 }
 
 /* Close Button - Modal Style */
@@ -39,8 +33,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(147, 51, 234, 0.1);
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   border-radius: 50%;
   color: var(--portfolio-primary);
   cursor: pointer;
@@ -50,8 +44,8 @@
 }
 
 .closeButton:hover {
-  background: rgba(147, 51, 234, 0.2);
-  border-color: rgba(147, 51, 234, 0.4);
+  background: hsl(var(--color-primary) / 0.2);
+  border-color: hsl(var(--color-primary) / 0.4);
   transform: scale(1.05);
 }
 
@@ -60,14 +54,14 @@
 }
 
 .dark .closeButton {
-  background: rgba(168, 85, 247, 0.15);
-  border-color: rgba(168, 85, 247, 0.3);
+  background: hsl(var(--color-primary) / 0.15);
+  border-color: hsl(var(--color-primary) / 0.3);
   color: var(--portfolio-primary);
 }
 
 .dark .closeButton:hover {
-  background: rgba(168, 85, 247, 0.25);
-  border-color: rgba(168, 85, 247, 0.5);
+  background: hsl(var(--color-primary) / 0.25);
+  border-color: hsl(var(--color-primary) / 0.5);
 }
 
 .container {
@@ -96,7 +90,11 @@
   font-size: 3.5rem;
   font-weight: 800;
   margin-bottom: 1.5rem;
-  background-image: linear-gradient(90deg, var(--portfolio-gradient-start) 0%, var(--portfolio-gradient-end) 100%);
+  background-image: linear-gradient(
+    90deg,
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -106,20 +104,28 @@
 .divider {
   width: 100px;
   height: 4px;
-  background: linear-gradient(90deg, var(--portfolio-gradient-start) 0%, var(--portfolio-gradient-end) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
+  );
   margin: 0 auto 1.5rem;
   border-radius: 2px;
   position: relative;
 }
 
 .divider::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, var(--portfolio-gradient-start) 0%, var(--portfolio-gradient-end) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
+  );
   filter: blur(8px);
   opacity: 0.5;
 }
@@ -138,8 +144,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 1.2rem;
-  background: rgba(147, 51, 234, 0.1);
-  border: 1px solid rgba(147, 51, 234, 0.3);
+  background: hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
   border-radius: 2rem;
   color: var(--portfolio-primary);
   font-size: 0.9rem;
@@ -149,20 +155,20 @@
 }
 
 .toggleButton:hover {
-  background: rgba(147, 51, 234, 0.2);
-  border-color: rgba(147, 51, 234, 0.5);
+  background: hsl(var(--color-primary) / 0.2);
+  border-color: hsl(var(--color-primary) / 0.5);
   transform: translateY(-1px);
 }
 
 .light .toggleButton {
-  background: rgba(124, 58, 237, 0.08);
+  background: hsl(var(--color-primary) / 0.08);
   color: var(--portfolio-primary);
 }
 
 /* Filter Section */
 .filterSection {
-  background: rgba(20, 18, 40, 0.4);
-  border: 1px solid rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-background) / 0.4);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
   border-radius: 1rem;
   padding: 1.5rem;
   display: flex;
@@ -171,8 +177,8 @@
 }
 
 .light .filterSection {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(124, 58, 237, 0.2);
+  background: hsl(var(--color-background) / 0.6);
+  border-color: hsl(var(--color-primary) / 0.2);
 }
 
 .filterHeader {
@@ -196,7 +202,7 @@
   gap: 0.35rem;
   padding: 0.4rem 0.8rem;
   background: transparent;
-  border: 1px solid rgba(147, 51, 234, 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
   border-radius: 1rem;
   color: var(--portfolio-primary);
   font-size: 0.8rem;
@@ -205,8 +211,8 @@
 }
 
 .clearFilters:hover {
-  background: rgba(147, 51, 234, 0.1);
-  border-color: rgba(147, 51, 234, 0.5);
+  background: hsl(var(--color-primary) / 0.1);
+  border-color: hsl(var(--color-primary) / 0.5);
 }
 
 .filterGroup {
@@ -245,12 +251,12 @@
 }
 
 .pill:hover {
-  background: rgba(147, 51, 234, 0.1);
-  border-color: rgba(147, 51, 234, 0.3);
+  background: hsl(var(--color-primary) / 0.1);
+  border-color: hsl(var(--color-primary) / 0.3);
 }
 
 .pillActive {
-  background: rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-primary) / 0.15);
   border-color: var(--portfolio-primary);
   color: var(--portfolio-primary);
 }
@@ -276,8 +282,8 @@
 }
 
 .projectCard {
-  background: rgba(20, 18, 40, 0.5);
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-background) / 0.5);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   border-radius: 1.25rem;
   padding: 2rem;
   display: flex;
@@ -286,14 +292,14 @@
 }
 
 .light .projectCard {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(124, 58, 237, 0.15);
+  background: hsl(var(--color-background) / 0.7);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .projectCard:hover {
-  border-color: rgba(147, 51, 234, 0.4);
-  box-shadow: 0 15px 40px -10px rgba(147, 51, 234, 0.25);
+  border-color: hsl(var(--color-primary) / 0.4);
+  box-shadow: 0 15px 40px -10px hsl(var(--color-primary) / 0.25);
 }
 
 .clickableCard {
@@ -301,7 +307,7 @@
 }
 
 .clickableCard:focus {
-  outline: 2px solid rgba(147, 51, 234, 0.6);
+  outline: 2px solid hsl(var(--color-primary) / 0.6);
   outline-offset: 2px;
 }
 
@@ -322,7 +328,11 @@
   width: 64px;
   height: 64px;
   border-radius: 1rem;
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(245, 158, 11, 0.2));
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary) / 0.2),
+    rgba(245, 158, 11, 0.2)
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -350,7 +360,11 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
-  background-image: linear-gradient(90deg, var(--portfolio-gradient-start) 0%, var(--portfolio-gradient-end) 100%);
+  background-image: linear-gradient(
+    90deg,
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -384,15 +398,15 @@
 
 .tag {
   padding: 0.35rem 0.75rem;
-  background: rgba(147, 51, 234, 0.1);
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   border-radius: 1rem;
   font-size: 0.8rem;
   color: var(--portfolio-primary);
 }
 
 .light .tag {
-  background: rgba(124, 58, 237, 0.08);
+  background: hsl(var(--color-primary) / 0.08);
   color: var(--portfolio-primary);
 }
 
@@ -407,18 +421,22 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background: linear-gradient(135deg, var(--portfolio-gradient-start) 0%, var(--portfolio-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
+  );
   color: white;
   font-weight: 600;
   font-size: 0.9rem;
   border-radius: 0.6rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25);
+  box-shadow: 0 4px 12px hsl(var(--color-primary) / 0.25);
 }
 
 .actionButton:hover {
-  box-shadow: 0 6px 18px rgba(147, 51, 234, 0.35);
+  box-shadow: 0 6px 18px hsl(var(--color-primary) / 0.35);
   transform: translateY(-2px);
 }
 
@@ -435,16 +453,16 @@
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 1.25rem;
-  background: rgba(156, 39, 176, 0.15);
-  color: #9c27b0;
+  background: hsl(var(--color-primary) / 0.15);
+  color: hsl(var(--color-primary));
   font-weight: 600;
   font-size: 0.9rem;
   border-radius: 0.6rem;
-  border: 1px dashed rgba(156, 39, 176, 0.4);
+  border: 1px dashed hsl(var(--color-primary) / 0.4);
 }
 
 .light .comingSoonBadge {
-  background: rgba(156, 39, 176, 0.1);
+  background: hsl(var(--color-primary) / 0.1);
 }
 
 .docsButton {
@@ -457,7 +475,11 @@
 }
 
 .detailsButton {
-  background: linear-gradient(135deg, var(--portfolio-accent) 0%, #d97706 100%);
+  background: linear-gradient(
+    135deg,
+    var(--portfolio-accent) 0%,
+    hsl(var(--color-accent)) 100%
+  );
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 
@@ -469,20 +491,24 @@
 .ctaSection {
   text-align: center;
   padding: 3rem;
-  background: rgba(147, 51, 234, 0.08);
+  background: hsl(var(--color-primary) / 0.08);
   border-radius: 1.5rem;
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
 }
 
 .light .ctaSection {
-  background: rgba(124, 58, 237, 0.05);
+  background: hsl(var(--color-primary) / 0.05);
 }
 
 .ctaTitle {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background-image: linear-gradient(90deg, var(--portfolio-gradient-start) 0%, var(--portfolio-gradient-end) 100%);
+  background-image: linear-gradient(
+    90deg,
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -502,18 +528,22 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, var(--portfolio-gradient-start) 0%, var(--portfolio-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
+  );
   color: white;
   font-weight: 600;
   font-size: 1rem;
   border-radius: 0.75rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 4px 15px hsl(var(--color-primary) / 0.3);
 }
 
 .ctaButton:hover {
-  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+  box-shadow: 0 6px 20px hsl(var(--color-primary) / 0.4);
 }
 
 /* Responsive */

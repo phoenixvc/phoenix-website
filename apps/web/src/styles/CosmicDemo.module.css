@@ -17,8 +17,8 @@
   max-width: 800px;
   width: 100%;
   color: white;
-  box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
-  border: 1px solid rgba(138, 43, 226, 0.2);
+  box-shadow: 0 0 20px hsl(var(--color-primary) / 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   backdrop-filter: blur(10px);
   z-index: 20;
 }
@@ -26,7 +26,7 @@
 .cosmicInfo h1 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #a855f7;
+  color: hsl(var(--color-primary));
   text-align: center;
 }
 
@@ -42,13 +42,13 @@
   border-radius: 0.5rem;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(138, 43, 226, 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
 }
 
 .navigationStatus h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: #a855f7;
+  color: hsl(var(--color-primary));
 }
 
 .statusItem {
@@ -74,13 +74,13 @@
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 0.5rem;
   padding: 1.5rem;
-  border: 1px solid rgba(138, 43, 226, 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
 }
 
 .instructions h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: #a855f7;
+  color: hsl(var(--color-primary));
 }
 
 .instructions ul {
@@ -101,14 +101,14 @@
   content: "✨";
   position: absolute;
   left: 0.5rem;
-  color: #a855f7;
+  color: hsl(var(--color-primary));
 }
 
 /* Light mode styles */
 :global(.lightMode) .cosmicInfo {
   background-color: rgba(255, 255, 255, 0.8);
   color: #333;
-  box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+  box-shadow: 0 0 20px hsl(var(--color-primary) / 0.2);
 }
 
 :global(.lightMode) .cosmicInfo h1 {
@@ -118,7 +118,7 @@
 :global(.lightMode) .navigationStatus,
 :global(.lightMode) .instructions {
   background-color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(138, 43, 226, 0.2);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
 }
 
 :global(.lightMode) .navigationStatus h2,

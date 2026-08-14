@@ -22,8 +22,9 @@ shared package or Theme Designer architecture.
 
 - One typed catalogue owns canonical IDs, display names, availability, the
   default theme, validation, persistence, and both selectors.
-- Only `cosmic-frontier` is selectable and persistable. Reserved identities
-  remain visible as coming soon and cannot enter runtime state.
+- Supported selectable themes are `cosmic-frontier` (default) and `forest`.
+  Reserved identities remain visible as coming soon and cannot enter runtime
+  state.
 - The trusted environment registry owns renderer code. Theme data remains
   serializable and contains no executable renderer imports.
 - Environment inputs cover deterministic seed/time, quality tier, motion

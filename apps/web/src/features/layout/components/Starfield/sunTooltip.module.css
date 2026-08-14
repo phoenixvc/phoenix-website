@@ -2,14 +2,14 @@
 :root {
   /* Dark mode defaults */
   --sun-tooltip-bg-dark: linear-gradient(135deg, rgba(25, 20, 40, 0.95) 0%, rgba(35, 25, 55, 0.95) 100%);
-  --sun-tooltip-border-dark: rgba(157, 78, 221, 0.3);
-  --sun-tooltip-border-left-dark: rgba(157, 78, 221, 0.8);
-  --sun-tooltip-shadow-dark: 0 8px 32px rgba(157, 78, 221, 0.3);
+  --sun-tooltip-border-dark: hsl(var(--color-primary) / 0.3);
+  --sun-tooltip-border-left-dark: hsl(var(--color-primary) / 0.8);
+  --sun-tooltip-shadow-dark: 0 8px 32px hsl(var(--color-primary) / 0.3);
   --sun-tooltip-text-dark: rgba(255, 255, 255, 0.9);
   --sun-tooltip-subtext-dark: rgba(255, 255, 255, 0.7);
-  --sun-tooltip-hint-dark: rgba(157, 78, 221, 0.9);
-  --sun-tooltip-header-bg-dark: rgba(157, 78, 221, 0.15);
-  --sun-tooltip-glow-dark: rgba(157, 78, 221, 0.12);
+  --sun-tooltip-hint-dark: hsl(var(--color-primary) / 0.9);
+  --sun-tooltip-header-bg-dark: hsl(var(--color-primary) / 0.15);
+  --sun-tooltip-glow-dark: hsl(var(--color-primary) / 0.12);
 
   /* Light mode settings */
   --sun-tooltip-bg-light: linear-gradient(135deg, rgba(250, 248, 255, 0.95) 0%, rgba(240, 235, 255, 0.95) 100%);
@@ -52,7 +52,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(157, 78, 221, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, hsl(var(--color-primary) / 0.4), transparent);
 }
 
 .sunTooltip::after {
@@ -81,7 +81,7 @@
 
 .clickable:hover {
   transform: translateY(0) scale(1.02);
-  box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
+  box-shadow: 0 12px 40px hsl(var(--color-primary) / 0.4);
 }
 
 .lightMode.clickable:hover {

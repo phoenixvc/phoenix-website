@@ -1,0 +1,36 @@
+[data-theme="forest"] button,
+[data-theme="forest"] a,
+[data-theme="forest"] .card,
+[data-theme="forest"] [role="button"] {
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+[data-theme="forest"] button:hover,
+[data-theme="forest"] a:hover,
+[data-theme="forest"] [role="button"]:hover {
+  box-shadow: 0 8px 20px rgba(15, 36, 24, 0.18);
+}
+
+[data-theme="forest"][data-mode="dark"] button:hover,
+[data-theme="forest"][data-mode="dark"] a:hover,
+[data-theme="forest"][data-mode="dark"] [role="button"]:hover {
+  box-shadow: 0 8px 22px rgba(232, 197, 71, 0.12);
+}
+
+[data-theme="forest"] .mainContent,
+[data-theme="forest"] main {
+  text-shadow: 0 1px 12px rgba(10, 22, 16, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="forest"] button,
+  [data-theme="forest"] a,
+  [data-theme="forest"] .card,
+  [data-theme="forest"] [role="button"] {
+    transition: none;
+  }
+}

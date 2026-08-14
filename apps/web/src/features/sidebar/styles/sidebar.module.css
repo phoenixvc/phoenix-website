@@ -4,21 +4,23 @@
   top: 0;
   left: 0;
   height: 100vh;
-  background: #0d0e1e; /* Darker background to match the improved header */
-  border-right: 1px solid rgba(99, 123, 255, 0.08); /* Subtle blue glow */
+  background: hsl(var(--color-surface, var(--color-background)));
+  border-right: 1px solid hsl(var(--color-primary) / 0.08);
   display: flex;
   flex-direction: column;
   z-index: 100;
   overflow-y: auto;
   overflow-x: hidden;
   width: 220px;
-  transition: width 0.3s ease, transform 0.3s ease;
+  transition:
+    width 0.3s ease,
+    transform 0.3s ease;
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
 }
 
 .sidebar.lightMode {
-  background: #f5f7fa; /* Lighter, slightly blue-tinted background */
-  border-right: 1px solid rgba(99, 123, 255, 0.08);
+  background: hsl(var(--color-surface, var(--color-background)));
+  border-right: 1px solid hsl(var(--color-primary) / 0.08);
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
 }
 
@@ -32,31 +34,31 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  border-bottom: 1px solid rgba(99, 123, 255, 0.08);
+  border-bottom: 1px solid hsl(var(--color-primary) / 0.08);
 }
 
 .lightMode .sidebarHeader {
-  border-bottom: 1px solid rgba(99, 123, 255, 0.08);
+  border-bottom: 1px solid hsl(var(--color-primary) / 0.08);
 }
 
 .sidebarLogo {
   font-size: 1.25rem;
   font-weight: 600;
-  background: linear-gradient(90deg, #9333ea 0%, #ff6b00 100%); /* Matching Phoenix gradient */
+  background: var(--chrome-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 0 10px rgba(147, 51, 234, 0.3); /* Subtle glow effect */
+  text-shadow: 0 0 10px hsl(var(--color-primary) / 0.3); /* Subtle glow effect */
   letter-spacing: 0.5px;
 }
 
 .sidebarToggle {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: hsl(var(--color-text) / 0.85);
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
@@ -67,25 +69,25 @@
 }
 
 .sidebarToggle:hover {
-  background: rgba(147, 51, 234, 0.2); /* Phoenix purple */
+  background: hsl(var(--color-primary) / 0.2); /* Phoenix purple */
   color: rgba(255, 255, 255, 1);
 }
 
 .lightMode .sidebarLogo {
-  background: linear-gradient(90deg, #9333ea 0%, #ff6b00 100%);
+  background: var(--chrome-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 8px rgba(147, 51, 234, 0.2); /* Reduced glow for light mode */
+  text-shadow: 0 0 8px hsl(var(--color-primary) / 0.2); /* Reduced glow for light mode */
 }
 
 .lightMode .sidebarToggle {
-  color: rgba(13, 14, 30, 0.8);
+  color: hsl(var(--color-text) / 0.8);
 }
 
 .lightMode .sidebarToggle:hover {
-  background: rgba(147, 51, 234, 0.1);
-  color: rgba(13, 14, 30, 1);
+  background: hsl(var(--color-primary) / 0.1);
+  color: hsl(var(--color-text) / 1);
 }
 
 .rotateIcon {
@@ -95,7 +97,7 @@
 .closeButton {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: hsl(var(--color-text) / 0.85);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
@@ -106,17 +108,17 @@
 }
 
 .closeButton:hover {
-  background: rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-primary) / 0.2);
   color: rgba(255, 255, 255, 1);
 }
 
 .lightMode .closeButton {
-  color: rgba(13, 14, 30, 0.8);
+  color: hsl(var(--color-text) / 0.8);
 }
 
 .lightMode .closeButton:hover {
-  background: rgba(147, 51, 234, 0.1);
-  color: rgba(13, 14, 30, 1);
+  background: hsl(var(--color-primary) / 0.1);
+  color: hsl(var(--color-text) / 1);
 }
 
 .sidebarContent {
@@ -136,7 +138,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgba(147, 51, 234, 0.7); /* Phoenix purple */
+  color: hsl(var(--color-primary) / 0.7);
   padding: 0 1rem;
   margin-bottom: 0.75rem;
   white-space: nowrap;
@@ -146,7 +148,9 @@
 }
 
 .lightMode .sidebarSectionTitle {
-  color: rgba(147, 51, 234, 0.7); /* Keep the same color for consistency */
+  color: hsl(
+    var(--color-primary) / 0.7
+  ); /* Keep the same color for consistency */
 }
 
 .sidebarCollapsed .sidebarSectionTitle {
@@ -167,7 +171,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: hsl(var(--color-text) / 0.85);
   transition: all 0.2s ease;
   cursor: pointer;
   text-decoration: none;
@@ -176,43 +180,47 @@
 }
 
 .sidebarLink:hover {
-  background: rgba(147, 51, 234, 0.1);
+  background: hsl(var(--color-primary) / 0.1);
   color: rgba(255, 255, 255, 1);
 }
 
 .lightMode .sidebarLink {
-  color: rgba(13, 14, 30, 0.8);
+  color: hsl(var(--color-text) / 0.8);
 }
 
 .lightMode .sidebarLink:hover {
-  background: rgba(147, 51, 234, 0.05);
-  color: rgba(13, 14, 30, 1);
+  background: hsl(var(--color-primary) / 0.05);
+  color: hsl(var(--color-text) / 1);
 }
 
 .sidebarLinkActive {
-  background: rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-primary) / 0.15);
   color: rgba(255, 255, 255, 1);
 }
 
 .sidebarLinkActive::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
   height: 100%;
   width: 3px;
-  background: linear-gradient(180deg, #9333ea, #ff6b00); /* Phoenix gradient */
+  background: linear-gradient(
+    180deg,
+    hsl(var(--color-primary)),
+    hsl(var(--color-accent))
+  ); /* Phoenix gradient */
   border-radius: 1px;
-  box-shadow: 0 0 8px rgba(147, 51, 234, 0.5); /* Subtle glow */
+  box-shadow: 0 0 8px hsl(var(--color-primary) / 0.5); /* Subtle glow */
 }
 
 .lightMode .sidebarLinkActive {
-  background: rgba(147, 51, 234, 0.08);
-  color: rgba(13, 14, 30, 1);
+  background: hsl(var(--color-primary) / 0.08);
+  color: hsl(var(--color-text) / 1);
 }
 
 .lightMode .sidebarLinkActive::before {
-  box-shadow: 0 0 8px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 0 8px hsl(var(--color-primary) / 0.3);
 }
 
 .sidebarIcon {

@@ -3,6 +3,7 @@ import {
   createThemeRegistry,
 } from "@/theme/registry/theme-registry";
 import { cosmicFrontierColors } from "./cosmicFrontier";
+import { forestColors } from "./forest";
 import { DEFAULT_THEME_NAME, THEME_CATALOG } from "./catalog";
 
 /** Build a fresh registry so React StrictMode never shares mutable registry state. */
@@ -16,6 +17,16 @@ export function createBuiltInThemeRegistry(): ThemeRegistry {
     author: "Phoenix VC",
     version: "1.0.0",
     tags: ["environmental", "interactive", "cosmic", "first-party"],
+    compatibleModes: ["light", "dark"],
+  });
+
+  const forest = THEME_CATALOG.forest;
+  registry.registerTheme(forest.id, forestColors, {
+    displayName: forest.displayName,
+    description: forest.description,
+    author: "Phoenix VC",
+    version: "1.0.0",
+    tags: ["environmental", "interactive", "forest", "first-party"],
     compatibleModes: ["light", "dark"],
   });
 

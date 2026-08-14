@@ -1,0 +1,28 @@
+schema: md-agent/v1
+source: docs/src/main/design/themes/forest-acceptance.md
+title: "Forest acceptance contract"
+purpose: "Acceptance bar for Forest as the first immersive existing-theme proof after Cosmic Frontier. Forest must meet the Cosmic runtime contract with a different scene before Phoenix or a shared package decision."
+audience:
+  - agent
+  - human
+facts:
+  - "Status is an implementation slice. Cross-repo package architecture stays deferred until Phoenix also proves the model."
+  - "The forest environment is the full-viewport layer behind website content in light and dark modes."
+  - "Chrome and section modules consume hsl(var(--color-*)) theme tokens instead of hardcoded Cosmic purple."
+  - "The scene is layered canopy SVGs over a painted sky, distant hills, and near branches, plus falling leaves with size, color, spin, and sway variation."
+  - "Pixel fireflies and pollen are the Forest equivalent of Cosmic star pixels."
+  - "Groves, trees, and clearings map focus areas and portfolio projects and support hover, HUD zoom, click-to-focus, and wheel zoom."
+  - "Flying and crawling insects appear only on medium and high quality tiers."
+  - "Sunlight shafts and parallax respond to pointer input only when motion is full."
+  - "A 60-second deterministic day cycle supplies dawn, day, dusk, and night. Seeded weather is calm or mist."
+  - "Effects stay at edges and depth layers so content remains readable."
+  - "The representative fixture is seed 20260809, time 12000ms, low quality, reduced motion, and paused."
+  - "forest is selectable and persistable beside the cosmic-frontier default. Reserved identities stay coming-soon."
+  - "The trusted environment registry owns the forest-canopy renderer. Theme data stays serializable and must not import renderers."
+  - "Environment inputs are deterministic seed/time, quality tier, motion policy, visibility pause/resume, resize, pointer input, and unmount dispose."
+  - "Reduced motion and the static fixture draw one representative frame and disable leaf travel, insect motion, and pointer-driven parallax."
+  - "Frame budgets are low 0ms after first paint, medium under 6ms, high under 8ms. Caps are 12/28/48 leaves and 0/4/8 insects."
+  - "Storybook exposes deterministic and interactive Forest fixtures. Browser tests assert ownership, lifecycle, tokens, reduced motion, and Cosmic remaining the default."
+  - "Visual evidence lives at apps/web/e2e/evidence/forest-dark-static.png, forest-light-static.png, and forest-reduced-motion.png."
+  - "Phoenix is the third immersive proof. Theme Designer, reusable package extraction, and Highveld stay blocked on that sequence."
+last_synced: "2026-08-14"

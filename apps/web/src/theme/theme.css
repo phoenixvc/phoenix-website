@@ -180,25 +180,25 @@
     --theme-phoenix-dark-active: 15 23 42;
 
     /* Forest Theme */
-    --theme-forest-light-primary: 120 40% 35%;
-    --theme-forest-light-secondary: 120 50% 30%;
-    --theme-forest-light-accent: 120 60% 25%;
-    --theme-forest-light-background: 255 255 255;
-    --theme-forest-light-text: 15 23 42;
-    --theme-forest-light-muted: 120 30% 75%;
-    --theme-forest-light-border: 226 232 240;
-    --theme-forest-light-hover: 120 50% 40%;
-    --theme-forest-light-active: 120 50% 30%;
+    --theme-forest-light-primary: 141 55% 27%;
+    --theme-forest-light-secondary: 23 22% 34%;
+    --theme-forest-light-accent: 43 89% 38%;
+    --theme-forest-light-background: 96 30% 95%;
+    --theme-forest-light-text: 144 28% 14%;
+    --theme-forest-light-muted: 144 10% 47%;
+    --theme-forest-light-border: 111 18% 85%;
+    --theme-forest-light-hover: 110 29% 93%;
+    --theme-forest-light-active: 110 35% 88%;
 
-    --theme-forest-dark-primary: 120 40% 55%;
-    --theme-forest-dark-secondary: 120 50% 60%;
-    --theme-forest-dark-accent: 120 60% 65%;
-    --theme-forest-dark-background: 15 23 42;
-    --theme-forest-dark-text: 241 245 249;
-    --theme-forest-dark-muted: 120 30% 50%;
-    --theme-forest-dark-border: 51 65 85;
-    --theme-forest-dark-hover: 120 50% 60%;
-    --theme-forest-dark-active: 120 50% 55%;
+    --theme-forest-dark-primary: 141 39% 40%;
+    --theme-forest-dark-secondary: 30 31% 42%;
+    --theme-forest-dark-accent: 43 80% 46%;
+    --theme-forest-dark-background: 150 38% 6%;
+    --theme-forest-dark-text: 96 27% 92%;
+    --theme-forest-dark-muted: 125 13% 55%;
+    --theme-forest-dark-border: 144 20% 21%;
+    --theme-forest-dark-hover: 144 32% 15%;
+    --theme-forest-dark-active: 144 29% 19%;
 
     /* Cloud Theme */
     --theme-cloud-light-primary: 222.2 47.4% 11.2%;
@@ -535,8 +535,8 @@
   .dark ::-webkit-scrollbar-thumb {
     background: linear-gradient(
       180deg,
-      rgba(147, 51, 234, 0.3) 0%,
-      rgba(123, 44, 191, 0.25) 100%
+      hsl(var(--color-primary) / 0.3) 0%,
+      hsl(var(--color-accent) / 0.25) 100%
     );
     border: 2px solid hsl(var(--background));
   }
@@ -544,28 +544,94 @@
   .dark ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(
       180deg,
-      rgba(147, 51, 234, 0.5) 0%,
-      rgba(123, 44, 191, 0.4) 100%
+      hsl(var(--color-primary) / 0.5) 0%,
+      hsl(var(--color-accent) / 0.4) 100%
     );
-    box-shadow: 0 0 8px rgba(147, 51, 234, 0.3);
+    box-shadow: 0 0 8px hsl(var(--color-primary) / 0.3);
   }
 
   .dark ::-webkit-scrollbar-thumb:active {
     background: linear-gradient(
       180deg,
-      rgba(147, 51, 234, 0.6) 0%,
-      rgba(123, 44, 191, 0.5) 100%
+      hsl(var(--color-primary) / 0.6) 0%,
+      hsl(var(--color-accent) / 0.5) 100%
     );
   }
 
   .dark * {
-    scrollbar-color: rgba(147, 51, 234, 0.3) hsl(var(--background));
+    scrollbar-color: hsl(var(--color-primary) / 0.3) hsl(var(--background));
   }
 }
 
 /* Accessibility: Add a clear focus indicator for keyboard users */
 *:focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: 2px solid hsl(var(--color-focus, var(--ring)));
   outline-offset: 2px;
   border-radius: var(--radius);
+}
+
+.theme-wrapper {
+  --chrome-surface: hsl(var(--color-background) / 0.92);
+  --chrome-surface-scrolled: hsl(var(--color-background) / 0.78);
+  --chrome-border: hsl(var(--color-primary) / 0.2);
+  --chrome-text: hsl(var(--color-text));
+  --chrome-muted: hsl(var(--color-muted));
+  --chrome-brand: hsl(var(--color-primary));
+  --chrome-accent: hsl(var(--color-accent));
+  --chrome-soft: hsl(var(--color-primary) / 0.16);
+  --chrome-glow: hsl(var(--color-primary) / 0.32);
+  --chrome-gradient: linear-gradient(
+    90deg,
+    hsl(var(--color-primary)),
+    hsl(var(--color-accent))
+  );
+}
+
+.theme-wrapper button,
+.theme-wrapper a,
+.theme-wrapper [role="button"] {
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+.theme-wrapper button:hover,
+.theme-wrapper a:hover,
+.theme-wrapper [role="button"]:hover {
+  box-shadow: 0 8px 20px hsl(var(--color-primary) / 0.16);
+}
+
+.theme-wrapper header a,
+.theme-wrapper aside a {
+  transition:
+    color 180ms ease,
+    text-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.theme-wrapper header a:hover,
+.theme-wrapper aside a:hover {
+  text-shadow: 0 0 10px hsl(var(--color-primary) / 0.35);
+}
+
+.theme-wrapper ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--color-primary) / 0.45),
+    hsl(var(--color-accent) / 0.28)
+  );
+}
+
+.theme-wrapper * {
+  scrollbar-color: hsl(var(--color-primary) / 0.45) hsl(var(--color-background));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-wrapper button,
+  .theme-wrapper a,
+  .theme-wrapper [role="button"] {
+    transition: none;
+  }
 }

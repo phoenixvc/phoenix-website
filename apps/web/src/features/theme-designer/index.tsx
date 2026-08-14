@@ -1,5 +1,6 @@
 // features/theme-designer/index.tsx
 import { FC } from "react";
+import { Link } from "react-router-dom";
 import { useTheme } from "@/theme";
 import { Palette, Wrench, Clock } from "lucide-react";
 import { SEO } from "@/components/SEO";
@@ -55,9 +56,9 @@ export const ThemeDesigner: FC<ThemeDesignerProps> = ({
             </ul>
           </div>
 
-          <a href="/" className={styles.backLink}>
+          <Link to="/" className={styles.backLink}>
             ← Back to Home
-          </a>
+          </Link>
         </div>
       </section>
     </>

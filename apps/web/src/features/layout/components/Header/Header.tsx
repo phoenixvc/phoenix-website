@@ -1,5 +1,6 @@
 // components/Layout/Header/Header.tsx
 import React, { FC, useEffect, useState, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./header.module.css";
 import {
   Menu,
@@ -39,8 +40,20 @@ const Header: FC<HeaderProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const { themeName, setThemeName } = useTheme();
-  const _currentPath =
-    typeof window !== "undefined" ? window.location.pathname : "";
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathname = location.pathname;
+    const hash = location.hash;
+
+    if (pathname === "/" && hash) {
+      setActivePath(pathname + hash);
+    } else if (pathname === "/" && !hash) {
+      setActivePath(pathname);
+    } else {
+      setActivePath(pathname);
+    }
+  }, [location]);
 
   // Handle scroll event to add transparency
   useEffect(() => {
@@ -51,28 +64,7 @@ const Header: FC<HeaderProps> = ({
       }
     };
 
-    // Set active path based on current location
-    const updateActivePath = (): void => {
-      const pathname = window.location.pathname;
-      const hash = window.location.hash;
-
-      // For homepage with hash
-      if (pathname === "/" && hash) {
-        setActivePath(pathname + hash);
-      }
-      // For homepage without hash
-      else if (pathname === "/" && !hash) {
-        setActivePath(pathname);
-      }
-      // For other pages
-      else {
-        setActivePath(pathname);
-      }
-    };
-
-    updateActivePath();
     window.addEventListener("scroll", handleScroll);
-    window.addEventListener("hashchange", updateActivePath);
 
     // Close profile menu when clicking outside
     const handleClickOutside = (event: MouseEvent): void => {
@@ -89,7 +81,6 @@ const Header: FC<HeaderProps> = ({
 
     return (): void => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("hashchange", updateActivePath);
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [scrolled, profileMenuRef]);
@@ -170,9 +161,9 @@ const Header: FC<HeaderProps> = ({
             )}
 
             {(window.innerWidth < 768 || isSidebarCollapsed) && (
-              <a href="/" className={styles.logoContainer}>
+              <Link to="/" className={styles.logoContainer}>
                 <span className={styles.logoText}>Phoenix VC</span>
-              </a>
+              </Link>
             )}
           </div>
 
@@ -180,14 +171,14 @@ const Header: FC<HeaderProps> = ({
             <ul className={styles.navList}>
               {navItems.map((item) => (
                 <li key={item.href} className={styles.navItem}>
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.href}
                     className={`${styles.navLink} ${
                       isNavItemActive(item.href) ? styles.activeNavLink : ""
                     }`}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

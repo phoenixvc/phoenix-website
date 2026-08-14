@@ -2,31 +2,35 @@
 
 /* CSS Custom Properties for theme-aware colors */
 .projectDetail {
-  --detail-primary: #9333ea; /* Purple - Phoenix VC brand */
-  --detail-accent: #f59e0b; /* Amber - accent */
-  --detail-gradient-start: #9333ea;
-  --detail-gradient-end: #f59e0b;
+  --detail-primary: hsl(var(--color-primary)); /* Purple - Phoenix VC brand */
+  --detail-accent: hsl(var(--color-accent)); /* Amber - accent */
+  --detail-gradient-start: hsl(var(--color-primary));
+  --detail-gradient-end: hsl(var(--color-accent));
   min-height: 100vh;
   padding: 6rem 0 4rem;
   position: relative;
 }
 
 .dark {
-  --detail-primary: #a855f7; /* Lighter purple for dark mode */
-  --detail-accent: #fbbf24; /* Brighter amber for dark mode */
-  --detail-gradient-start: #a855f7;
-  --detail-gradient-end: #fbbf24;
-  background-color: rgba(13, 14, 30, 0.98);
+  --detail-primary: hsl(
+    var(--color-primary)
+  ); /* Lighter purple for dark mode */
+  --detail-accent: hsl(var(--color-accent)); /* Brighter amber for dark mode */
+  --detail-gradient-start: hsl(var(--color-primary));
+  --detail-gradient-end: hsl(var(--color-accent));
+  background-color: hsl(var(--color-background) / 0.98);
   color: rgba(255, 255, 255, 0.9);
 }
 
 .light {
-  --detail-primary: #7c3aed; /* Darker purple for light mode */
-  --detail-accent: #d97706; /* Darker amber for light mode */
-  --detail-gradient-start: #7c3aed;
-  --detail-gradient-end: #d97706;
-  background-color: rgba(250, 250, 255, 0.98);
-  color: rgba(20, 18, 40, 0.9);
+  --detail-primary: hsl(
+    var(--color-primary)
+  ); /* Darker purple for light mode */
+  --detail-accent: hsl(var(--color-accent)); /* Darker amber for light mode */
+  --detail-gradient-start: hsl(var(--color-primary));
+  --detail-gradient-end: hsl(var(--color-accent));
+  background-color: hsl(var(--color-background) / 0.98);
+  color: hsl(var(--color-text) / 0.92);
 }
 
 .container {
@@ -47,7 +51,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: rgba(147, 51, 234, 0.7);
+  color: hsl(var(--color-primary) / 0.7);
   margin-bottom: -1rem;
 }
 
@@ -55,7 +59,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: rgba(147, 51, 234, 0.7);
+  color: hsl(var(--color-primary) / 0.7);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -65,7 +69,7 @@
 }
 
 .breadcrumbSeparator {
-  color: rgba(147, 51, 234, 0.4);
+  color: hsl(var(--color-primary) / 0.4);
 }
 
 .breadcrumbCurrent {
@@ -74,11 +78,11 @@
 }
 
 .light .breadcrumb {
-  color: rgba(124, 58, 237, 0.7);
+  color: hsl(var(--color-primary) / 0.7);
 }
 
 .light .breadcrumbLink {
-  color: rgba(124, 58, 237, 0.7);
+  color: hsl(var(--color-primary) / 0.7);
 }
 
 .light .breadcrumbLink:hover {
@@ -86,7 +90,7 @@
 }
 
 .light .breadcrumbSeparator {
-  color: rgba(124, 58, 237, 0.4);
+  color: hsl(var(--color-primary) / 0.4);
 }
 
 .light .breadcrumbCurrent {
@@ -100,7 +104,7 @@
   gap: 0.5rem;
   padding: 0.6rem 1rem;
   background: transparent;
-  border: 1px solid rgba(147, 51, 234, 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
   border-radius: 0.5rem;
   color: var(--detail-primary);
   font-size: 0.95rem;
@@ -111,21 +115,29 @@
 }
 
 .backButton:hover {
-  background: rgba(147, 51, 234, 0.1);
-  border-color: rgba(147, 51, 234, 0.5);
+  background: hsl(var(--color-primary) / 0.1);
+  border-color: hsl(var(--color-primary) / 0.5);
   transform: translateX(-4px);
 }
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.08) 0%, rgba(245, 158, 11, 0.04) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary) / 0.08) 0%,
+    rgba(245, 158, 11, 0.04) 100%
+  );
   border-radius: 1.5rem;
   padding: 2.5rem;
-  border: 1px solid rgba(147, 51, 234, 0.15);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 .dark .hero {
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.12) 0%, rgba(245, 158, 11, 0.06) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary) / 0.12) 0%,
+    rgba(245, 158, 11, 0.06) 100%
+  );
 }
 
 .heroContent {
@@ -189,7 +201,11 @@
   font-size: 2.5rem;
   font-weight: 800;
   margin: 0 0 0.5rem;
-  background-image: linear-gradient(90deg, var(--detail-gradient-start) 0%, var(--detail-gradient-end) 100%);
+  background-image: linear-gradient(
+    90deg,
+    var(--detail-gradient-start) 0%,
+    var(--detail-gradient-end) 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -243,7 +259,7 @@
 /* Technologies/Skills */
 .technologiesSection {
   padding-top: 1rem;
-  border-top: 1px solid rgba(147, 51, 234, 0.15);
+  border-top: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 .skillTags {
@@ -255,8 +271,8 @@
 .skillTag {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: rgba(147, 51, 234, 0.1);
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   border-radius: 2rem;
   font-size: 0.9rem;
   font-weight: 500;
@@ -265,18 +281,18 @@
 }
 
 .dark .skillTag {
-  background: rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-primary) / 0.15);
 }
 
 .skillTag:hover {
-  background: rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-primary) / 0.2);
   transform: translateY(-2px);
 }
 
 /* Features/Highlights */
 .highlightsSection {
   padding-top: 1rem;
-  border-top: 1px solid rgba(147, 51, 234, 0.15);
+  border-top: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 .featuresList {
@@ -293,13 +309,13 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: rgba(147, 51, 234, 0.05);
+  background: hsl(var(--color-primary) / 0.05);
   border-radius: 0.5rem;
   font-size: 1rem;
 }
 
 .dark .featureItem {
-  background: rgba(147, 51, 234, 0.1);
+  background: hsl(var(--color-primary) / 0.1);
 }
 
 .featureItem svg {
@@ -316,15 +332,15 @@
 
 .actionsCard,
 .infoCard {
-  background: rgba(147, 51, 234, 0.05);
-  border: 1px solid rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-primary) / 0.05);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
   border-radius: 1rem;
   padding: 1.5rem;
 }
 
 .dark .actionsCard,
 .dark .infoCard {
-  background: rgba(147, 51, 234, 0.08);
+  background: hsl(var(--color-primary) / 0.08);
 }
 
 .cardTitle {
@@ -357,25 +373,29 @@
 }
 
 .primaryAction {
-  background: linear-gradient(135deg, var(--detail-gradient-start) 0%, var(--detail-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--detail-gradient-start) 0%,
+    var(--detail-gradient-end) 100%
+  );
   color: white;
   border: none;
 }
 
 .primaryAction:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.35);
+  box-shadow: 0 6px 20px hsl(var(--color-primary) / 0.35);
 }
 
 .secondaryAction {
   background: transparent;
   color: var(--detail-primary);
-  border: 1px solid rgba(147, 51, 234, 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
 }
 
 .secondaryAction:hover {
-  background: rgba(147, 51, 234, 0.1);
-  border-color: rgba(147, 51, 234, 0.5);
+  background: hsl(var(--color-primary) / 0.1);
+  border-color: hsl(var(--color-primary) / 0.5);
 }
 
 .comingSoon {
@@ -426,7 +446,7 @@
 .relatedSection {
   margin-top: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(147, 51, 234, 0.15);
+  border-top: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 .relatedGrid {
@@ -440,8 +460,8 @@
   align-items: center;
   gap: 1rem;
   padding: 1.25rem;
-  background: rgba(147, 51, 234, 0.05);
-  border: 1px solid rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-primary) / 0.05);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
   border-radius: 1rem;
   text-decoration: none;
   color: inherit;
@@ -449,13 +469,13 @@
 }
 
 .dark .relatedCard {
-  background: rgba(147, 51, 234, 0.08);
+  background: hsl(var(--color-primary) / 0.08);
 }
 
 .relatedCard:hover {
   transform: translateY(-4px);
-  border-color: rgba(147, 51, 234, 0.4);
-  box-shadow: 0 8px 24px rgba(147, 51, 234, 0.15);
+  border-color: hsl(var(--color-primary) / 0.4);
+  box-shadow: 0 8px 24px hsl(var(--color-primary) / 0.15);
 }
 
 .relatedIcon {
@@ -496,13 +516,21 @@
 .ctaSection {
   text-align: center;
   padding: 3rem;
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.08) 0%, rgba(245, 158, 11, 0.04) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary) / 0.08) 0%,
+    rgba(245, 158, 11, 0.04) 100%
+  );
   border-radius: 1.5rem;
-  border: 1px solid rgba(147, 51, 234, 0.15);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 .dark .ctaSection {
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.12) 0%, rgba(245, 158, 11, 0.06) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary) / 0.12) 0%,
+    rgba(245, 158, 11, 0.06) 100%
+  );
 }
 
 .ctaSection h3 {
@@ -525,7 +553,11 @@
   align-items: center;
   justify-content: center;
   padding: 0.9rem 2rem;
-  background: linear-gradient(135deg, var(--detail-gradient-start) 0%, var(--detail-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--detail-gradient-start) 0%,
+    var(--detail-gradient-end) 100%
+  );
   color: white;
   font-size: 1rem;
   font-weight: 600;
@@ -538,7 +570,7 @@
 
 .ctaButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.35);
+  box-shadow: 0 6px 20px hsl(var(--color-primary) / 0.35);
 }
 
 /* Close Button - Modal Style */
@@ -551,8 +583,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(147, 51, 234, 0.1);
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   border-radius: 50%;
   color: var(--detail-primary);
   cursor: pointer;
@@ -562,8 +594,8 @@
 }
 
 .closeButton:hover {
-  background: rgba(147, 51, 234, 0.2);
-  border-color: rgba(147, 51, 234, 0.4);
+  background: hsl(var(--color-primary) / 0.2);
+  border-color: hsl(var(--color-primary) / 0.4);
   transform: scale(1.05);
 }
 
@@ -572,14 +604,14 @@
 }
 
 .dark .closeButton {
-  background: rgba(168, 85, 247, 0.15);
-  border-color: rgba(168, 85, 247, 0.3);
+  background: hsl(var(--color-primary) / 0.15);
+  border-color: hsl(var(--color-primary) / 0.3);
   color: var(--detail-primary);
 }
 
 .dark .closeButton:hover {
-  background: rgba(168, 85, 247, 0.25);
-  border-color: rgba(168, 85, 247, 0.5);
+  background: hsl(var(--color-primary) / 0.25);
+  border-color: hsl(var(--color-primary) / 0.5);
 }
 
 /* Not Found */

@@ -4,14 +4,14 @@
 :root {
   /* Dark mode defaults */
   --tooltip-bg-dark: linear-gradient(135deg, rgba(25, 20, 40, 0.95) 0%, rgba(35, 25, 55, 0.95) 100%);
-  --tooltip-border-dark: rgba(157, 78, 221, 0.3);
-  --tooltip-border-left-dark: rgba(157, 78, 221, 0.8);
-  --tooltip-shadow-dark: 0 8px 32px rgba(157, 78, 221, 0.3);
+  --tooltip-border-dark: hsl(var(--color-primary) / 0.3);
+  --tooltip-border-left-dark: hsl(var(--color-primary) / 0.8);
+  --tooltip-shadow-dark: 0 8px 32px hsl(var(--color-primary) / 0.3);
   --tooltip-text-dark: rgba(255, 255, 255, 0.9);
   --tooltip-subtext-dark: rgba(255, 255, 255, 0.7);
-  --tooltip-header-bg-dark: rgba(157, 78, 221, 0.15);
+  --tooltip-header-bg-dark: hsl(var(--color-primary) / 0.15);
   --tooltip-divider-dark: rgba(255, 255, 255, 0.1);
-  --tooltip-glow-dark: rgba(157, 78, 221, 0.12);
+  --tooltip-glow-dark: hsl(var(--color-primary) / 0.12);
   --tooltip-close-bg-dark: rgba(255, 255, 255, 0.2);
 
   /* Light mode settings */
@@ -61,7 +61,7 @@
 
 .tooltip.pinned:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 45px rgba(157, 78, 221, 0.3);
+  box-shadow: 0 12px 45px hsl(var(--color-primary) / 0.3);
 }
 
 .tooltip.lightMode.pinned:hover {

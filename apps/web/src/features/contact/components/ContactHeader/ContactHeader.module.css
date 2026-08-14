@@ -8,8 +8,8 @@
   text-align: center;
   background: linear-gradient(
     135deg,
-    hsl(270, 70%, 60%),  /* Bright purple */
-    hsl(250, 90%, 65%)   /* Vibrant violet */
+    hsl(270, 70%, 60%),
+    /* Bright purple */ hsl(250, 90%, 65%) /* Vibrant violet */
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -24,8 +24,8 @@
 .darkHeading {
   background: linear-gradient(
     135deg,
-    hsl(270, 70%, 60%),  /* Bright purple */
-    hsl(250, 90%, 65%)   /* Vibrant violet */
+    hsl(270, 70%, 60%),
+    /* Bright purple */ hsl(250, 90%, 65%) /* Vibrant violet */
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -36,8 +36,9 @@
 .lightHeading {
   background: linear-gradient(
     135deg,
-    hsl(270, 60%, 45%),  /* Darker purple for light mode */
-    hsl(250, 80%, 55%)   /* Slightly darker violet for light mode */
+    hsl(270, 60%, 45%),
+    /* Darker purple for light mode */ hsl(250, 80%, 55%)
+      /* Slightly darker violet for light mode */
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -63,7 +64,9 @@
 
 .darkSubtitle {
   color: rgba(240, 240, 255, 0.95); /* Brighter text for better visibility */
-  text-shadow: 0 0 20px rgba(13, 12, 34, 0.5), 0 0 15px rgba(138, 43, 226, 0.4);
+  text-shadow:
+    0 0 20px hsl(var(--color-background) / 0.5),
+    0 0 15px hsl(var(--color-primary) / 0.4);
   position: relative;
 }
 
@@ -78,9 +81,9 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(138, 43, 226, 0.6),
-    rgba(153, 50, 245, 0.8),
-    rgba(138, 43, 226, 0.6),
+    hsl(var(--color-primary) / 0.6),
+    hsl(var(--color-accent) / 0.8),
+    hsl(var(--color-primary) / 0.6),
     transparent
   );
   animation: glow 3s infinite alternate;
@@ -105,10 +108,10 @@
 @keyframes glow {
   0% {
     opacity: 0.4;
-    box-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
+    box-shadow: 0 0 5px hsl(var(--color-primary) / 0.3);
   }
   100% {
     opacity: 0.8;
-    box-shadow: 0 0 10px rgba(138, 43, 226, 0.6);
+    box-shadow: 0 0 10px hsl(var(--color-primary) / 0.6);
   }
 }

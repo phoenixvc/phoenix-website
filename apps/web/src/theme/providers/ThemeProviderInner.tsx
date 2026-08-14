@@ -38,6 +38,11 @@ import { createComponentRegistry } from "../registry/component-theme-registry";
 import { ThemeStateManager } from "../core";
 import { logger } from "@/utils/logger";
 import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
+import {
+  persistThemeName,
+  readQueryThemeName,
+  resolveInitialThemeName,
+} from "../utils/resolve-initial-theme";
 
 const defaultState: ThemeState = {
   name: "Default Theme",
@@ -69,7 +74,9 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
   const [state, setState] = useState<ThemeState>({
     ...defaultState,
     ...config,
-    themeName: config.defaultThemeName ?? defaultState.themeName,
+    themeName: resolveInitialThemeName(
+      config.defaultThemeName ?? defaultState.themeName,
+    ),
     mode: config.defaultMode ?? defaultState.mode,
   });
   const [error, setError] = useState<Error | null>(null);
@@ -89,6 +96,24 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
   useLayoutEffect(() => {
     ThemeAcquisitionManager.getInstance().setThemeRegistry(themes);
   }, [themes]);
+
+  useLayoutEffect(() => {
+    const requested = readQueryThemeName();
+    if (!requested || requested === state.themeName) {
+      return;
+    }
+    persistThemeName(requested);
+    setState((prev) => ({
+      ...prev,
+      themeName: requested,
+      previous: {
+        themeName: prev.themeName,
+        mode: prev.mode,
+      },
+      initialized: false,
+      timestamp: Date.now(),
+    }));
+  }, [state.themeName]);
 
   // Get systemMode from context instead of using useSystemMode hook
   const {
@@ -460,6 +485,8 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
   // Modified setThemeClasses function with manager ready check
   const setThemeClasses = useCallback(
     (themeName: ThemeName): void => {
+      persistThemeName(themeName);
+
       if (themeName === state.themeName) {
         return;
       }
@@ -468,7 +495,6 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
         logger.warn(
           "[ThemeProvider] Cannot set theme classes because theme manager is not ready yet",
         );
-        // Update state directly as a fallback
         setState((prev) => ({
           ...prev,
           themeName: themeName,
