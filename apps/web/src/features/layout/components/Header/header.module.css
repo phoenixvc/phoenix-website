@@ -925,14 +925,29 @@
   text-shadow: 0 0 16px rgba(249, 115, 22, 0.45);
 }
 
+:global([data-theme="phoenix"]) .navLink {
+  padding: 0.35rem 0.75rem !important;
+  border-radius: 9999px !important;
+  transition: all 0.25s ease !important;
+}
+
 :global([data-theme="phoenix"]) .navLink:hover {
+  background-color: rgba(245, 158, 11, 0.14) !important;
   color: #fffbeb !important;
   text-shadow: 0 0 12px rgba(249, 115, 22, 0.7) !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.2) !important;
 }
 
 :global([data-theme="phoenix"][data-mode="light"]) .navLink:hover {
+  background-color: rgba(234, 88, 12, 0.12) !important;
   color: #7c2d12 !important;
   text-shadow: 0 0 8px rgba(234, 88, 12, 0.4) !important;
+}
+
+:global([data-theme="phoenix"]) .navLink:focus-visible {
+  outline: none !important;
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.6) !important;
 }
 
 :global([data-theme="phoenix"]) .menuButton:hover,

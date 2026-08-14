@@ -92,8 +92,17 @@ export const createPhoenixNodes = (): PhoenixNode[] => {
   ];
 
   const focusAreas = Object.values(FOCUS_AREA_CONFIG);
+  const phoenixAltarColors = [
+    "#fbbf24",
+    "#f59e0b",
+    "#f97316",
+    "#ea580c",
+    "#ef4444",
+  ];
+
   const altars: PhoenixNode[] = focusAreas.map((area, index) => {
     const point = ringPoint(0.32, 0.44, 0.14, index, focusAreas.length);
+    const color = phoenixAltarColors[index % phoenixAltarColors.length];
     return {
       id: `${area.id}-altar`,
       kind: "altar",
@@ -103,7 +112,7 @@ export const createPhoenixNodes = (): PhoenixNode[] => {
       x: point.x,
       y: point.y,
       radius: 0.035,
-      color: area.color || "#f59e0b",
+      color,
       secondaryColor: "#f97316",
       parentId: "focus-sanctuary",
       initials: area.label
@@ -117,8 +126,18 @@ export const createPhoenixNodes = (): PhoenixNode[] => {
   const projects = PORTFOLIO_PROJECTS.filter(
     (project) => project.listed !== false,
   );
+  const phoenixBeaconColors = [
+    "#fbbf24",
+    "#fed7aa",
+    "#f59e0b",
+    "#f97316",
+    "#ef4444",
+    "#ea580c",
+  ];
+
   const beacons: PhoenixNode[] = projects.map((project, index) => {
     const point = ringPoint(0.68, 0.40, 0.17, index, projects.length);
+    const color = phoenixBeaconColors[index % phoenixBeaconColors.length];
     return {
       id: project.id,
       kind: "beacon",
@@ -128,7 +147,7 @@ export const createPhoenixNodes = (): PhoenixNode[] => {
       x: point.x,
       y: point.y,
       radius: 0.024 + Math.min((project.mass || 100) / 8000, 0.014),
-      color: project.color || "#f97316",
+      color,
       secondaryColor: "#fbbf24",
       parentId: "portfolio-hearth",
       initials: project.initials,
