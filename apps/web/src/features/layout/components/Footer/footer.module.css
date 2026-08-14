@@ -350,3 +350,40 @@
     margin-top: 2rem;
   }
 }
+
+/* Phoenix Theme Overrides */
+:global([data-theme="phoenix"]) .socialIcon {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fffbeb !important;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+:global([data-theme="phoenix"]) .light .socialIcon {
+  background: rgba(234, 88, 12, 0.1) !important;
+  color: #7c2d12 !important;
+  border: 1px solid rgba(234, 88, 12, 0.2);
+}
+
+:global([data-theme="phoenix"]) .socialIcon:hover {
+  background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.45) !important;
+  color: #fffbeb !important;
+  transform: translateY(-2px);
+}
+
+:global([data-theme="phoenix"]) .sectionTitle::after {
+  background: linear-gradient(90deg, #f59e0b, #ea580c) !important;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.45);
+}
+
+:global([data-theme="phoenix"]) .link::before {
+  background: linear-gradient(90deg, #f59e0b, #ea580c) !important;
+}
+
+:global([data-theme="phoenix"]) .link:hover {
+  color: #fbbf24 !important;
+}
+
+:global([data-theme="phoenix"]) .light .link:hover {
+  color: #c2410c !important;
+}

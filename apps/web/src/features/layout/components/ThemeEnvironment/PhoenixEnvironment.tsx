@@ -20,7 +20,9 @@ import {
   PHOENIX_OVERVIEW_CAMERA,
   createPhoenixNodes,
   lerpPhoenixCamera,
+  pickPhoenixNode,
   type PhoenixCamera,
+  type PhoenixNode,
 } from "./phoenixWorld";
 import styles from "./phoenixEnvironment.module.css";
 
@@ -53,16 +55,17 @@ const resolveQualityTier = (
   return "medium";
 };
 
-const PhoenixEnvironment = ({
+export const PhoenixEnvironment = ({
   isDarkMode,
-  motionMode,
-  qualityTier,
+  motionMode = "full",
+  qualityTier = "high",
   paused,
   randomSeed,
   fixedTimestamp,
 }: PhoenixEnvironmentProps): ReactElement => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<PhoenixPointer | null>(null);
+  const hoveredNodeRef = useRef<PhoenixNode | null>(null);
   const cameraRef = useRef<PhoenixCamera>({ ...PHOENIX_OVERVIEW_CAMERA });
 
   const reducedMotion = motionMode === "reduced";
@@ -120,6 +123,7 @@ const PhoenixEnvironment = ({
         reducedMotion,
         camera: cameraRef.current,
         nodes,
+        hoveredNode: hoveredNodeRef.current,
       });
     };
 
@@ -161,11 +165,23 @@ const PhoenixEnvironment = ({
     if (reducedMotion || paused) {
       return;
     }
+    const canvas = canvasRef.current;
     pointerRef.current = { x: event.clientX, y: event.clientY };
+    if (canvas) {
+      hoveredNodeRef.current = pickPhoenixNode(
+        event.clientX,
+        event.clientY,
+        nodes,
+        cameraRef.current,
+        canvas.clientWidth,
+        canvas.clientHeight,
+      );
+    }
   };
 
   const handlePointerLeave = (): void => {
     pointerRef.current = null;
+    hoveredNodeRef.current = null;
   };
 
   return (

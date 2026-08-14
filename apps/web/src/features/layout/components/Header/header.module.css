@@ -925,18 +925,37 @@
   text-shadow: 0 0 16px rgba(249, 115, 22, 0.45);
 }
 
+:global([data-theme="phoenix"]) .navLink:hover {
+  color: #fffbeb !important;
+  text-shadow: 0 0 12px rgba(249, 115, 22, 0.7) !important;
+}
+
+:global([data-theme="phoenix"][data-mode="light"]) .navLink:hover {
+  color: #7c2d12 !important;
+  text-shadow: 0 0 8px rgba(234, 88, 12, 0.4) !important;
+}
+
 :global([data-theme="phoenix"]) .menuButton:hover,
-:global([data-theme="phoenix"]) .themeToggleButton:hover {
-  background-color: rgba(249, 115, 22, 0.2);
+:global([data-theme="phoenix"]) .themeToggleButton:hover,
+:global([data-theme="phoenix"]) .controlButton:hover {
+  background-color: rgba(249, 115, 22, 0.2) !important;
+  color: #fffbeb !important;
+}
+
+:global([data-theme="phoenix"]) .activeControl,
+:global([data-theme="phoenix"]) .iconButton.active {
+  background-color: rgba(249, 115, 22, 0.25) !important;
+  color: #f59e0b !important;
 }
 
 :global([data-theme="phoenix"]) .activeNavLink::after {
-  background: linear-gradient(90deg, #f97316, #ef4444, #fbbf24);
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.55);
+  background: linear-gradient(90deg, #f97316, #ef4444, #fbbf24) !important;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.55) !important;
 }
 
 :global([data-theme="phoenix"]) .activeTheme {
-  background-color: rgba(249, 115, 22, 0.22);
+  background-color: rgba(249, 115, 22, 0.22) !important;
+  color: #fffbeb !important;
 }
 
 :global([data-theme="phoenix"][data-mode="light"]) .navLink {
@@ -945,14 +964,76 @@
 
 :global([data-theme="phoenix"]) .profileButton.active,
 :global([data-theme="phoenix"]) .profileButton:hover {
-  background-color: rgba(249, 115, 22, 0.2);
+  background-color: rgba(249, 115, 22, 0.2) !important;
 }
 
 :global([data-theme="phoenix"]) .profileImageContainer {
-  border-color: rgba(249, 115, 22, 0.75);
-  box-shadow: 0 0 12px rgba(249, 115, 22, 0.35);
+  border-color: rgba(249, 115, 22, 0.75) !important;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.35) !important;
 }
 
 :global([data-theme="phoenix"]) .profileImage {
-  background: linear-gradient(135deg, #f97316, #ef4444, #fbbf24);
+  background: linear-gradient(135deg, #f97316, #ef4444, #fbbf24) !important;
+}
+
+:global([data-theme="phoenix"]) .profileDropdown {
+  background-color: rgba(18, 11, 14, 0.96) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(245, 158, 11, 0.2) !important;
+}
+
+:global([data-theme="phoenix"]) .lightMode .profileDropdown {
+  background-color: rgba(254, 252, 248, 0.96) !important;
+  border: 1px solid rgba(234, 88, 12, 0.25) !important;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 0 16px rgba(245, 158, 11, 0.15) !important;
+}
+
+:global([data-theme="phoenix"]) .profileImageLarge {
+  background: linear-gradient(135deg, #f97316, #ef4444, #fbbf24) !important;
+  border-color: rgba(249, 115, 22, 0.75) !important;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.4) !important;
+}
+
+:global([data-theme="phoenix"]) .dropdownDivider {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 158, 11, 0.35),
+    transparent
+  ) !important;
+}
+
+:global([data-theme="phoenix"]) .dropdownItem:hover,
+:global([data-theme="phoenix"]) .themeOption:not(:disabled):hover {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #fffbeb !important;
+}
+
+:global([data-theme="phoenix"]) .lightMode .dropdownItem:hover,
+:global([data-theme="phoenix"]) .lightMode .themeOption:not(:disabled):hover {
+  background-color: rgba(234, 88, 12, 0.1) !important;
+  color: #2c1a14 !important;
+}
+
+:global([data-theme="phoenix"]) .dropdownItemIcon {
+  color: #f59e0b !important;
+}
+
+:global([data-theme="phoenix"]) .themeSubmenu {
+  background-color: rgba(12, 7, 9, 0.7) !important;
+  border-top: 1px solid rgba(245, 158, 11, 0.2) !important;
+}
+
+:global([data-theme="phoenix"]) .lightMode .themeSubmenu {
+  background-color: rgba(245, 240, 235, 0.7) !important;
+  border-top: 1px solid rgba(234, 88, 12, 0.2) !important;
+}
+
+:global([data-theme="phoenix"]) .comingSoonBadge {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
 }

@@ -2,6 +2,7 @@ import type { EnvironmentQualityTier } from "./types";
 import {
   type PhoenixCamera,
   type PhoenixNode,
+  worldToScreen,
 } from "./phoenixWorld";
 
 export const PHOENIX_FRAME_BUDGET_MS = {
@@ -12,19 +13,19 @@ export const PHOENIX_FRAME_BUDGET_MS = {
 
 export const PHOENIX_SCENE_LIMITS = {
   low: { embers: 22, ash: 12, flares: 1, ribbons: 1, parallax: 0 },
-  medium: { embers: 52, ash: 26, flares: 2, ribbons: 2, parallax: 0.35 },
-  high: { embers: 90, ash: 45, flares: 3, ribbons: 3, parallax: 0.7 },
+  medium: { embers: 48, ash: 24, flares: 2, ribbons: 2, parallax: 0.35 },
+  high: { embers: 88, ash: 42, flares: 3, ribbons: 3, parallax: 0.65 },
 } as const;
 
 export const PHOENIX_DAY_CYCLE_MS = 60_000;
 export const PHOENIX_DEFAULT_SEED = 20260814;
 
-export type PhoenixAtmosphere = "radiant" | "smoldering";
 export type PhoenixDayPhase =
-  | "dawn-spark"
+  | "dawn-ember"
   | "zenith-blaze"
-  | "dusk-ember"
+  | "dusk-cinder"
   | "hearth-rebirth";
+export type PhoenixAtmosphere = "radiant" | "smoldering";
 
 export interface PhoenixPointer {
   x: number;
@@ -53,7 +54,7 @@ export interface PhoenixPalette {
   nodeText: string;
 }
 
-export interface Ember {
+interface Ember {
   x: number;
   y: number;
   size: number;
@@ -62,11 +63,11 @@ export interface Ember {
   swayFreq: number;
   phase: number;
   luminosity: number;
-  color: keyof Pick<PhoenixPalette, "emberA" | "emberB" | "emberC">;
+  color: "emberA" | "emberB" | "emberC";
   sparkleSpeed: number;
 }
 
-export interface Ash {
+interface Ash {
   x: number;
   y: number;
   size: number;
@@ -75,10 +76,10 @@ export interface Ash {
   rotation: number;
   spin: number;
   phase: number;
-  color: keyof Pick<PhoenixPalette, "ashA" | "ashB">;
+  color: "ashA" | "ashB";
 }
 
-export interface SolarRibbon {
+interface SolarRibbon {
   x: number;
   width: number;
   height: number;
@@ -87,13 +88,20 @@ export interface SolarRibbon {
   alpha: number;
 }
 
+interface Ridge {
+  y: number;
+  height: number;
+  depth: number;
+  frequency: number;
+}
+
 export interface PhoenixScene {
   seed: number;
   atmosphere: PhoenixAtmosphere;
   embers: Ember[];
   ashFlakes: Ash[];
   ribbons: SolarRibbon[];
-  ridges: Array<{ y: number; height: number; depth: number; frequency: number }>;
+  ridges: Ridge[];
 }
 
 export interface DrawPhoenixSceneOptions {
@@ -111,24 +119,28 @@ export interface DrawPhoenixSceneOptions {
   hoveredNode?: PhoenixNode | null;
 }
 
-export const createRng = (seed: number): (() => number) => {
-  let state = seed >>> 0;
+const createRng = (seed: number): (() => number) => {
+  let state = seed % 2147483647;
+  if (state <= 0) {
+    state += 2147483646;
+  }
   return (): number => {
-    state += 0x6d2b79f5;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    state = (state * 16807) % 2147483647;
+    return (state - 1) / 2147483646;
   };
 };
 
 export const resolvePhoenixDayPhase = (timeMs: number): PhoenixDayPhase => {
-  const cycle =
-    ((timeMs % PHOENIX_DAY_CYCLE_MS) + PHOENIX_DAY_CYCLE_MS) %
-    PHOENIX_DAY_CYCLE_MS;
-  const unit = cycle / PHOENIX_DAY_CYCLE_MS;
-  if (unit < 0.22) return "dawn-spark";
-  if (unit < 0.56) return "zenith-blaze";
-  if (unit < 0.78) return "dusk-ember";
+  const progress = (timeMs % PHOENIX_DAY_CYCLE_MS) / PHOENIX_DAY_CYCLE_MS;
+  if (progress < 0.25) {
+    return "dawn-ember";
+  }
+  if (progress < 0.5) {
+    return "zenith-blaze";
+  }
+  if (progress < 0.75) {
+    return "dusk-cinder";
+  }
   return "hearth-rebirth";
 };
 
@@ -138,15 +150,13 @@ export const createPhoenixPalette = (
   atmosphere: PhoenixAtmosphere,
 ): PhoenixPalette => {
   if (!isDarkMode) {
-    const isZenith = phase === "zenith-blaze";
-    const isDawn = phase === "dawn-spark";
     return {
-      skyTop: isZenith ? "#fef3e2" : isDawn ? "#fde8d7" : "#fbf0e4",
-      skyMid: isZenith ? "#fed7aa" : "#fed0aa",
-      skyBottom: isZenith ? "#fdba74" : "#fca5a5",
-      ridgeFar: "#e2a98f",
-      ridgeMid: "#c67d58",
-      ridgeNear: "#9a4c28",
+      skyTop: "#fef3c7",
+      skyMid: "#fed7aa",
+      skyBottom: "#fdba74",
+      ridgeFar: "#7c2d12",
+      ridgeMid: "#9a3412",
+      ridgeNear: "#c2410c",
       magmaGlow:
         atmosphere === "radiant"
           ? "rgba(249, 115, 22, 0.32)"
@@ -255,26 +265,24 @@ const drawEmber = (
   x: number,
   y: number,
   size: number,
-  glowColor: string,
+  color: string,
   coreColor: string,
-  intensity: number,
+  alpha: number,
 ): void => {
-  const outerRadius = Math.max(1, size * 2.8 * intensity);
-  const glow = ctx.createRadialGradient(x, y, 0, x, y, outerRadius);
-  glow.addColorStop(0, coreColor);
-  glow.addColorStop(0.35, glowColor);
-  glow.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
 
-  ctx.fillStyle = glow;
+  const grad = ctx.createRadialGradient(x, y, size * 0.15, x, y, size * 2.2);
+  grad.addColorStop(0, coreColor);
+  grad.addColorStop(0.35, color);
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+
+  ctx.fillStyle = grad;
   ctx.beginPath();
-  ctx.arc(x, y, outerRadius, 0, Math.PI * 2);
+  ctx.arc(x, y, size * 2.2, 0, Math.PI * 2);
   ctx.fill();
 
-  // White-hot core speck
-  ctx.fillStyle = coreColor;
-  ctx.beginPath();
-  ctx.arc(x, y, Math.max(0.6, size * 0.45 * intensity), 0, Math.PI * 2);
-  ctx.fill();
+  ctx.restore();
 };
 
 const drawAsh = (
@@ -299,6 +307,132 @@ const drawAsh = (
   ctx.restore();
 };
 
+const drawSolarBeacons = (
+  ctx: CanvasRenderingContext2D,
+  nodes: PhoenixNode[],
+  camera: PhoenixCamera,
+  width: number,
+  height: number,
+  timeMs: number,
+  palette: PhoenixPalette,
+  hoveredNode: PhoenixNode | null | undefined,
+  reducedMotion: boolean,
+): void => {
+  const seconds = timeMs / 1000;
+
+  const nodeMap = new Map<string, PhoenixNode>();
+  nodes.forEach((n) => nodeMap.set(n.id, n));
+
+  ctx.save();
+  nodes.forEach((node) => {
+    if (!node.parentId) return;
+    const parent = nodeMap.get(node.parentId);
+    if (!parent) return;
+
+    const from = worldToScreen(parent.x, parent.y, camera, width, height);
+    const to = worldToScreen(node.x, node.y, camera, width, height);
+
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.strokeStyle = palette.nodeRing;
+    ctx.lineWidth = 0.75;
+    ctx.setLineDash([3, 8]);
+    ctx.lineDashOffset = reducedMotion ? 0 : -seconds * 8;
+    ctx.globalAlpha = 0.22;
+    ctx.stroke();
+  });
+  ctx.restore();
+
+  nodes.forEach((node) => {
+    const screen = worldToScreen(node.x, node.y, camera, width, height);
+    const isSanctuary = node.kind === "sanctuary";
+    const isHovered = hoveredNode?.id === node.id;
+    const pulse = reducedMotion ? 1 : 0.88 + 0.12 * Math.sin(seconds * 2.2 + node.x * 8);
+
+    ctx.save();
+
+    if (isSanctuary) {
+      const starRadius = (isHovered ? 28 : 22) * pulse;
+      const glowRadius = starRadius * 3.5;
+
+      const flareGrad = ctx.createRadialGradient(
+        screen.x,
+        screen.y,
+        starRadius * 0.2,
+        screen.x,
+        screen.y,
+        glowRadius,
+      );
+      flareGrad.addColorStop(0, "#fffbeb");
+      flareGrad.addColorStop(0.25, node.color);
+      flareGrad.addColorStop(0.65, palette.nodeGlow);
+      flareGrad.addColorStop(1, "rgba(0,0,0,0)");
+
+      ctx.fillStyle = flareGrad;
+      ctx.beginPath();
+      ctx.arc(screen.x, screen.y, glowRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      const rayLen = starRadius * (isHovered ? 3.0 : 2.2) * pulse;
+      ctx.strokeStyle = "rgba(255, 251, 235, 0.4)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(screen.x - rayLen, screen.y);
+      ctx.lineTo(screen.x + rayLen, screen.y);
+      ctx.moveTo(screen.x, screen.y - rayLen);
+      ctx.lineTo(screen.x, screen.y + rayLen);
+      ctx.stroke();
+
+      ctx.fillStyle = palette.emberCore;
+      ctx.beginPath();
+      ctx.arc(screen.x, screen.y, starRadius * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (isHovered) {
+        ctx.fillStyle = "#fffbeb";
+        ctx.font = "600 12px 'Cinzel', serif";
+        ctx.textAlign = "center";
+        ctx.fillText(node.name.toUpperCase(), screen.x, screen.y + starRadius * 1.5 + 14);
+      }
+    } else {
+      const orbRadius = (isHovered ? 7 : 4.5) * (reducedMotion ? 1 : 0.9 + 0.1 * Math.sin(seconds * 3 + node.y * 6));
+      const auraRadius = orbRadius * 3.2;
+
+      const auraGrad = ctx.createRadialGradient(
+        screen.x,
+        screen.y,
+        orbRadius * 0.3,
+        screen.x,
+        screen.y,
+        auraRadius,
+      );
+      auraGrad.addColorStop(0, node.color);
+      auraGrad.addColorStop(0.5, "rgba(245, 158, 11, 0.3)");
+      auraGrad.addColorStop(1, "rgba(0,0,0,0)");
+
+      ctx.fillStyle = auraGrad;
+      ctx.beginPath();
+      ctx.arc(screen.x, screen.y, auraRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = isHovered ? "#fffbeb" : node.color;
+      ctx.beginPath();
+      ctx.arc(screen.x, screen.y, orbRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (isHovered) {
+        ctx.fillStyle = "#fef3c7";
+        ctx.font = "500 11px 'Outfit', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(node.name, screen.x, screen.y - orbRadius - 8);
+      }
+    }
+
+    ctx.restore();
+  });
+};
+
 export const drawPhoenixScene = ({
   ctx,
   width,
@@ -309,9 +443,9 @@ export const drawPhoenixScene = ({
   qualityTier,
   pointer,
   reducedMotion,
-  camera: _camera,
-  nodes: _nodes,
-  hoveredNode: _hoveredNode,
+  camera,
+  nodes,
+  hoveredNode,
 }: DrawPhoenixSceneOptions): void => {
   const phase = resolvePhoenixDayPhase(timeMs);
   const palette = createPhoenixPalette(isDarkMode, phase, scene.atmosphere);
@@ -413,7 +547,22 @@ export const drawPhoenixScene = ({
   ctx.fillRect(0, height - magmaHeight, width, magmaHeight);
   ctx.restore();
 
-  // 5. Ash Flakes Simulation
+  // 5. Celestial Solar Beacons & Hearth Stars
+  if (nodes && camera) {
+    drawSolarBeacons(
+      ctx,
+      nodes,
+      camera,
+      width,
+      height,
+      timeMs,
+      palette,
+      hoveredNode,
+      reducedMotion,
+    );
+  }
+
+  // 6. Ash Flakes Simulation
   scene.ashFlakes.forEach((ash) => {
     const travel = reducedMotion
       ? ash.y
