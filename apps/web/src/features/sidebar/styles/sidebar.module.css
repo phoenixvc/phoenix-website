@@ -286,3 +286,44 @@
     transform: translateX(0);
   }
 }
+
+:global([data-theme="phoenix"][data-mode="dark"]) .sidebar {
+  background: #090708;
+  border-right-color: rgba(249, 115, 22, 0.22);
+  box-shadow: 4px 0 20px rgba(4, 2, 3, 0.35);
+}
+
+:global([data-theme="phoenix"][data-mode="light"]) .sidebar {
+  background: #fcf8f2;
+  border-right-color: rgba(234, 88, 12, 0.16);
+}
+
+:global([data-theme="phoenix"]) .sidebarLogo {
+  background: linear-gradient(90deg, #f97316 0%, #ef4444 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 12px rgba(249, 115, 22, 0.35);
+}
+
+:global([data-theme="phoenix"]) .sidebarHeader {
+  border-bottom-color: rgba(249, 115, 22, 0.18);
+}
+
+:global([data-theme="phoenix"]) .sidebarToggle:hover,
+:global([data-theme="phoenix"]) .closeButton:hover,
+:global([data-theme="phoenix"]) .sidebarLink:hover {
+  background: rgba(249, 115, 22, 0.18);
+}
+
+:global([data-theme="phoenix"]) .sidebarSectionTitle {
+  color: rgba(249, 115, 22, 0.85);
+}
+
+:global([data-theme="phoenix"]) .sidebarLinkActive {
+  background: rgba(249, 115, 22, 0.2);
+}
+
+:global([data-theme="phoenix"]) .sidebarLinkActive::before {
+  background: linear-gradient(180deg, #f97316, #ef4444, #fbbf24);
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.55);
+}

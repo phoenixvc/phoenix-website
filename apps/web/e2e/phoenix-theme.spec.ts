@@ -11,27 +11,17 @@ const captureThemeDiagnostics = (page: Page): string[] => {
   return diagnostics;
 };
 
+const phoenixFixtureUrl = "/?theme=phoenix&phoenix-fixture=static";
+
 test.describe("Phoenix theme contract", () => {
   test.describe.configure({ mode: "serial" });
   test.setTimeout(120_000);
 
-  test.beforeEach(async ({ page }) => {
-    page.on("pageerror", (error) => console.error("pageerror:", error.message));
-    page.on("console", (message) => {
-      if (message.type() === "error") {
-        console.error("browser console:", message.text());
-      }
-    });
-  });
-
-  test("owns the active environment and exposes a deterministic static fixture", async ({
+  test("owns the phoenix environment and exposes a deterministic static fixture", async ({
     page,
   }) => {
     const diagnostics = captureThemeDiagnostics(page);
-    await page.addInitScript(() => {
-      localStorage.setItem("theme_name", JSON.stringify("phoenix"));
-    });
-    await page.goto("/?phoenix-fixture=static", {
+    await page.goto(phoenixFixtureUrl, {
       waitUntil: "domcontentloaded",
     });
 
@@ -56,7 +46,28 @@ test.describe("Phoenix theme contract", () => {
     await expect(phoenixEnv).toHaveAttribute("data-quality-tier", "low");
     await expect(phoenixEnv).toHaveAttribute("data-seed", "20260814");
     await expect(phoenixEnv).toHaveAttribute("data-time", "12000");
+    await expect(phoenixEnv).toHaveAttribute("data-frame-budget", "0");
+    await expect(phoenixEnv).toHaveAttribute("data-phoenix-zoom", "1.00");
+    await expect(phoenixEnv).toHaveAttribute("data-phoenix-focus", "overview");
+    await expect
+      .poll(async () =>
+        Number(await phoenixEnv.getAttribute("data-phoenix-node-count")),
+      )
+      .toBeGreaterThan(10);
     await expect(phoenixEnv.locator("canvas")).toBeVisible();
+    await expect(phoenixEnv.locator("svg").first()).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Portfolio Hearth" }),
+    ).toBeVisible();
+
+    const headerBackground = await page.locator("header").evaluate((element) =>
+      getComputedStyle(element).backgroundColor,
+    );
+    expect(headerBackground).toMatch(/rgba?\(9,\s*7,\s*8/);
+    const sidebarBackground = await page.locator("aside").evaluate((element) =>
+      getComputedStyle(element).backgroundColor,
+    );
+    expect(sidebarBackground).toMatch(/rgb\(9,\s*7,\s*8\)/);
 
     await expect
       .poll(() =>
@@ -107,48 +118,108 @@ test.describe("Phoenix theme contract", () => {
         ),
       ),
     ).toEqual([]);
+
+    await page.screenshot({
+      path: "e2e/evidence/phoenix-dark-static.png",
+      fullPage: true,
+    });
   });
 
-  test("honours reduced-motion without removing the representative frame", async ({
+  test("honours reduced-motion without removing the representative phoenix frame", async ({
     page,
   }) => {
-    await page.addInitScript(() => {
-      localStorage.setItem("theme_name", JSON.stringify("phoenix"));
-    });
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/?theme=phoenix", { waitUntil: "domcontentloaded" });
 
     const environment = page.locator(
       "[data-theme-environment='phoenix-reign']",
     );
     await expect(environment).toHaveAttribute("data-motion", "reduced");
     await expect(environment).toHaveAttribute("data-lifecycle", "paused");
-    await expect(
-      page.locator("[data-phoenix-environment] canvas"),
-    ).toBeVisible();
+    await expect(page.locator("[data-phoenix-environment] canvas")).toBeVisible();
+    await page.screenshot({
+      path: "e2e/evidence/phoenix-reduced-motion.png",
+      fullPage: true,
+    });
   });
 
-  test("switches between dark and light mode seamlessly", async ({ page }) => {
-    await page.addInitScript(() => {
-      localStorage.setItem("theme_name", JSON.stringify("phoenix"));
-    });
-    await page.goto("/?phoenix-fixture=static", {
+  test("reapplies phoenix color aliases when mode changes", async ({ page }) => {
+    await page.goto(phoenixFixtureUrl, {
       waitUntil: "domcontentloaded",
     });
 
     const provider = page.locator(".theme-wrapper");
+    await expect(provider).toHaveAttribute("data-theme", "phoenix");
     await expect(provider).toHaveAttribute("data-mode", "dark");
-    await expect(page.locator("[data-phoenix-environment]")).toHaveAttribute(
-      "data-mode",
-      "dark",
-    );
 
+    const readAliases = (): Promise<{
+      background: string;
+      namespacedBackground: string;
+    }> =>
+      page.evaluate(() => ({
+        background:
+          document.documentElement.style.getPropertyValue(
+            "--color-background",
+          ),
+        namespacedBackground: document.documentElement.style.getPropertyValue(
+          "--theme-colors-background",
+        ),
+      }));
+
+    const darkAliases = await readAliases();
     await page.getByRole("button", { name: "Toggle theme" }).click();
 
     await expect(provider).toHaveAttribute("data-mode", "light");
-    await expect(page.locator("[data-phoenix-environment]")).toHaveAttribute(
-      "data-mode",
-      "light",
+    await expect.poll(readAliases).toMatchObject({
+      background: expect.stringMatching(/\d/),
+      namespacedBackground: expect.stringMatching(/\d/),
+    });
+    const lightAliases = await readAliases();
+    expect(lightAliases.background).toBe(lightAliases.namespacedBackground);
+    expect(lightAliases.background).not.toBe(darkAliases.background);
+
+    await page.screenshot({
+      path: "e2e/evidence/phoenix-light-static.png",
+      fullPage: true,
+    });
+  });
+
+  test("zooms into a sanctuary from the phoenix navigation HUD", async ({ page }) => {
+    await page.goto(phoenixFixtureUrl, { waitUntil: "domcontentloaded" });
+    const phoenixEnv = page.locator("[data-phoenix-environment]");
+    await page.getByRole("button", { name: "Portfolio Hearth" }).click();
+    await expect(phoenixEnv).toHaveAttribute("data-phoenix-focus", "portfolio-hearth");
+    await expect(phoenixEnv).toHaveAttribute("data-phoenix-zoom", "2.40");
+    await page.getByRole("button", { name: "Whole Realm" }).click();
+    await expect(phoenixEnv).toHaveAttribute("data-phoenix-focus", "overview");
+    await expect(phoenixEnv).toHaveAttribute("data-phoenix-zoom", "1.00");
+  });
+
+  test("can be selected from the header theme menu", async ({ page }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Profile menu" }).click();
+    await page.getByRole("button", { name: "Theme Selection" }).click();
+    await page.getByRole("button", { name: "Phoenix" }).click();
+
+    await expect(page.locator(".theme-wrapper")).toHaveAttribute(
+      "data-theme",
+      "phoenix",
     );
+    await expect(
+      page.locator("[data-theme-environment='phoenix-reign']"),
+    ).toHaveAttribute("data-theme-environment-owner", "phoenix");
+  });
+
+  test("keeps Cosmic as the default when Phoenix is not selected", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".theme-wrapper")).toHaveAttribute(
+      "data-theme",
+      "cosmic-frontier",
+    );
+    await expect(
+      page.locator("[data-theme-environment='cosmic-starfield']"),
+    ).toHaveAttribute("data-theme-environment-fallback", "false");
   });
 });

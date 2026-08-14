@@ -877,6 +877,10 @@
   background: linear-gradient(135deg, #03a9f4, #0d47a1);
 }
 
+.themeColorIndicator[data-theme="phoenix"] {
+  background: linear-gradient(135deg, #f97316, #ef4444, #fbbf24);
+}
+
 .comingSoonBadge {
   font-size: 0.7rem;
   padding: 2px 6px;
@@ -896,4 +900,59 @@
   .profileDropdown {
     right: -16px;
   }
+}
+
+:global([data-theme="phoenix"][data-mode="dark"]) .header,
+:global([data-theme="phoenix"][data-mode="dark"]) .headerScrolled {
+  background-color: rgba(9, 7, 8, 0.92);
+  border-bottom-color: rgba(249, 115, 22, 0.28);
+  box-shadow: 0 4px 20px rgba(4, 2, 3, 0.35);
+}
+
+:global([data-theme="phoenix"][data-mode="light"]) .header,
+:global([data-theme="phoenix"][data-mode="light"]) .headerScrolled {
+  background-color: rgba(252, 248, 242, 0.94);
+  border-bottom-color: rgba(234, 88, 12, 0.20);
+  box-shadow: 0 4px 18px rgba(120, 86, 69, 0.10);
+}
+
+:global([data-theme="phoenix"]) .logoText,
+:global([data-theme="phoenix"]) .header .logoText,
+:global([data-theme="phoenix"]) .lightMode .logoText {
+  background: linear-gradient(90deg, #f97316 0%, #ef4444 50%, #fbbf24 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: 0 0 16px rgba(249, 115, 22, 0.45);
+}
+
+:global([data-theme="phoenix"]) .menuButton:hover,
+:global([data-theme="phoenix"]) .themeToggleButton:hover {
+  background-color: rgba(249, 115, 22, 0.2);
+}
+
+:global([data-theme="phoenix"]) .activeNavLink::after {
+  background: linear-gradient(90deg, #f97316, #ef4444, #fbbf24);
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.55);
+}
+
+:global([data-theme="phoenix"]) .activeTheme {
+  background-color: rgba(249, 115, 22, 0.22);
+}
+
+:global([data-theme="phoenix"][data-mode="light"]) .navLink {
+  color: rgba(28, 19, 13, 0.88);
+}
+
+:global([data-theme="phoenix"]) .profileButton.active,
+:global([data-theme="phoenix"]) .profileButton:hover {
+  background-color: rgba(249, 115, 22, 0.2);
+}
+
+:global([data-theme="phoenix"]) .profileImageContainer {
+  border-color: rgba(249, 115, 22, 0.75);
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.35);
+}
+
+:global([data-theme="phoenix"]) .profileImage {
+  background: linear-gradient(135deg, #f97316, #ef4444, #fbbf24);
 }

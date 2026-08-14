@@ -31,7 +31,7 @@ const loadDebugModeFromStorage = (): boolean => {
 
 const Layout = ({ children }: LayoutProps): React.ReactElement => {
   // Use theme context for dark mode - defaults to dark, only light if user explicitly chose it
-  const { themeName, themeMode, toggleMode } = useTheme();
+  const { themeName, themeMode, toggleMode, setThemeName } = useTheme();
   const isDarkMode = themeMode === "dark";
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -55,20 +55,43 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
 
   // Create a ref to the starfield component
   const starfieldRef = useRef<StarfieldRef>(null);
-  const environmentFixture: EnvironmentFixture | undefined =
-    import.meta.env.DEV &&
-    (new URLSearchParams(window.location.search).get("cosmic-fixture") ===
-      "static" ||
-      new URLSearchParams(window.location.search).get("phoenix-fixture") ===
-        "static")
-      ? {
-          seed: 20260814,
-          timeMs: 12000,
-          qualityTier: "low",
-          motionMode: "reduced",
-          paused: true,
-        }
-      : undefined;
+  const environmentFixture: EnvironmentFixture | undefined = (():
+    | EnvironmentFixture
+    | undefined => {
+    if (!import.meta.env.DEV) {
+      return undefined;
+    }
+    const params = new URLSearchParams(window.location.search);
+    const wantsStatic =
+      params.get("theme-fixture") === "static" ||
+      params.get("cosmic-fixture") === "static" ||
+      params.get("phoenix-fixture") === "static" ||
+      params.get("forest-fixture") === "static";
+    if (!wantsStatic) {
+      return undefined;
+    }
+    return {
+      seed: 20260814,
+      timeMs: 12000,
+      qualityTier: "low",
+      motionMode: "reduced",
+      paused: true,
+    };
+  })();
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) {
+      return;
+    }
+    const requested = new URLSearchParams(window.location.search).get("theme");
+    if (
+      requested === "phoenix" ||
+      requested === "forest" ||
+      requested === "cosmic-frontier"
+    ) {
+      setThemeName(requested);
+    }
+  }, [setThemeName]);
 
   // Check if we're on mobile on mount and when window resizes
   useEffect(() => {

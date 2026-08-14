@@ -119,6 +119,41 @@
   color: rgba(13, 14, 30, 0.7);
 }
 
+:global([data-theme="phoenix"][data-mode="dark"]) .footer {
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 7, 8, 0.45),
+    rgba(9, 7, 8, 0.90)
+  );
+  border-top: 1px solid rgba(249, 115, 22, 0.22);
+}
+
+:global([data-theme="phoenix"][data-mode="light"]) .footer {
+  background: linear-gradient(
+    to bottom,
+    rgba(252, 248, 242, 0.60),
+    rgba(252, 248, 242, 0.92)
+  );
+  border-top: 1px solid rgba(234, 88, 12, 0.16);
+}
+
+:global([data-theme="phoenix"]) .footerGlow {
+  background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.5), transparent);
+  box-shadow: 0 0 16px 2px rgba(249, 115, 22, 0.35);
+}
+
+:global([data-theme="phoenix"]) .logoText,
+:global([data-theme="phoenix"]) .light .logoText {
+  background: linear-gradient(90deg, #f97316 0%, #ef4444 50%, #fbbf24 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: 0 0 14px rgba(249, 115, 22, 0.35);
+}
+
+:global([data-theme="phoenix"]) .logoWrapper::after {
+  background: linear-gradient(90deg, #f97316, #ef4444, #fbbf24);
+}
+
 .socialLinks {
   display: flex;
   gap: 1rem;

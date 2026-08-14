@@ -2,6 +2,7 @@ import { StrictMode, useState, type ReactElement } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { ThemeProvider } from "@/theme";
+import type { ThemeName } from "@/theme/types";
 import { DEFAULT_THEME_NAME } from "@/theme/constants/themes/catalog";
 import { createBuiltInThemeRegistry } from "@/theme/constants/themes/registry";
 import "./theme/theme.css";
@@ -39,6 +40,20 @@ window.setTimeout(resetChunkReloadCounter, 5000);
 // Initialize Core Web Vitals monitoring
 initWebVitals();
 
+const getInitialThemeName = (): ThemeName => {
+  if (typeof window !== "undefined") {
+    const urlTheme = new URLSearchParams(window.location.search).get("theme");
+    if (
+      urlTheme === "phoenix" ||
+      urlTheme === "forest" ||
+      urlTheme === "cosmic-frontier"
+    ) {
+      return urlTheme;
+    }
+  }
+  return DEFAULT_THEME_NAME;
+};
+
 function PhoenixApp(): ReactElement {
   const [themeRegistry] = useState(createBuiltInThemeRegistry);
 
@@ -46,7 +61,7 @@ function PhoenixApp(): ReactElement {
     <ThemeProvider
       themeRegistry={themeRegistry}
       config={{
-        defaultThemeName: DEFAULT_THEME_NAME,
+        defaultThemeName: getInitialThemeName(),
         defaultMode: "dark",
         useSystem: false,
         storage: {

@@ -1,5 +1,7 @@
 /* index.css */
 
+@import "./styles/themes/phoenix.css";
+
 /* 1. Import Tailwind layers */
 @tailwind base;
 @tailwind components;
