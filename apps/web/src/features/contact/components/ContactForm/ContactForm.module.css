@@ -450,10 +450,34 @@ textarea.dark,
 }
 
 /* Phoenix Theme Overrides */
+:global([data-theme="phoenix"]) .card::before {
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(245, 158, 11, 0.4),
+    transparent,
+    rgba(239, 68, 68, 0.5),
+    transparent
+  ) !important;
+}
+
+:global([data-theme="phoenix"]) .card:hover {
+  box-shadow:
+    0 15px 35px -10px rgba(0, 0, 0, 0.4),
+    0 8px 18px -5px rgba(239, 68, 68, 0.25),
+    0 0 26px rgba(245, 158, 11, 0.35) !important;
+}
+
 :global([data-theme="phoenix"]) .card.dark {
   background: rgba(18, 11, 14, 0.75);
   border: 1px solid rgba(245, 158, 11, 0.25);
   box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15), 0 0 20px rgba(245, 158, 11, 0.1);
+}
+
+:global([data-theme="phoenix"]) .card:not(.dark) {
+  background: rgba(254, 252, 248, 0.88);
+  border: 1px solid rgba(234, 88, 12, 0.2);
+  box-shadow: 0 10px 30px -10px rgba(120, 86, 69, 0.12), 0 0 20px rgba(245, 158, 11, 0.12);
 }
 
 :global([data-theme="phoenix"]) .card.dark .input,
@@ -464,9 +488,17 @@ textarea.dark,
   color: #fef3c7 !important;
 }
 
-:global([data-theme="phoenix"]) .card.dark .input:focus,
-:global([data-theme="phoenix"]) .card.dark .textarea:focus,
-:global([data-theme="phoenix"]) .card.dark .select:focus {
+:global([data-theme="phoenix"]) .card:not(.dark) .input,
+:global([data-theme="phoenix"]) .card:not(.dark) .textarea,
+:global([data-theme="phoenix"]) .card:not(.dark) .select {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(234, 88, 12, 0.25) !important;
+  color: #2c1a14 !important;
+}
+
+:global([data-theme="phoenix"]) .card .input:focus,
+:global([data-theme="phoenix"]) .card .textarea:focus,
+:global([data-theme="phoenix"]) .card .select:focus {
   border-color: #f59e0b !important;
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25), 0 0 12px rgba(239, 68, 68, 0.3) !important;
 }
