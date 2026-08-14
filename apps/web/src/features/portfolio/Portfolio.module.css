@@ -8,6 +8,7 @@
   --portfolio-accent: hsl(var(--color-accent)); /* Amber/Orange - accent */
   --portfolio-gradient-start: hsl(var(--color-primary));
   --portfolio-gradient-end: hsl(var(--color-accent));
+
   min-height: 100vh;
   padding: 8rem 0 4rem;
   position: relative;
@@ -19,6 +20,7 @@
   --portfolio-accent: hsl(var(--color-accent));
   --portfolio-gradient-start: hsl(var(--color-primary));
   --portfolio-gradient-end: hsl(var(--color-accent));
+
   background-color: hsl(var(--color-background) / 0.98);
   color: hsl(var(--color-text) / 0.92);
 }
@@ -331,7 +333,7 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-primary) / 0.2),
-    rgba(245, 158, 11, 0.2)
+    hsl(var(--color-accent) / 0.2)
   );
   display: flex;
   align-items: center;
@@ -477,14 +479,14 @@
 .detailsButton {
   background: linear-gradient(
     135deg,
-    var(--portfolio-accent) 0%,
-    hsl(var(--color-accent)) 100%
+    var(--portfolio-gradient-start) 0%,
+    var(--portfolio-gradient-end) 100%
   );
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 4px 12px hsl(var(--color-accent) / 0.25);
 }
 
 .detailsButton:hover {
-  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 6px 18px hsl(var(--color-accent) / 0.35);
 }
 
 /* CTA Section */

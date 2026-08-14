@@ -63,28 +63,28 @@
 
 .sway {
   transform-origin: 1200px 0;
-  animation: canopySway 9s ease-in-out infinite;
+  animation: canopy-sway 9s ease-in-out infinite;
 }
 
 .swaySlow {
   transform-origin: 200px 0;
-  animation: canopySway 13s ease-in-out infinite reverse;
+  animation: canopy-sway 13s ease-in-out infinite reverse;
 }
 
 .grow {
-  animation: vineGrow 8s ease-out both;
+  animation: vine-grow 8s ease-out both;
 }
 
 .growDelayed {
-  animation: vineGrow 11s ease-out both;
+  animation: vine-grow 11s ease-out both;
 }
 
 .pulse {
-  animation: mossPulse 3.4s ease-in-out infinite;
+  animation: moss-pulse 3.4s ease-in-out infinite;
 }
 
 .drift {
-  animation: sparkDrift 7s ease-in-out infinite;
+  animation: spark-drift 7s ease-in-out infinite;
 }
 
 .tooltip {
@@ -106,7 +106,7 @@
 }
 
 .tooltip strong {
-  font-family: Outfit, "Segoe UI", sans-serif;
+  font-family: Bitter, "Segoe UI", serif;
   margin-bottom: 0.2rem;
 }
 
@@ -145,7 +145,7 @@
   border-color: rgba(63, 143, 90, 0.7);
 }
 
-@keyframes canopySway {
+@keyframes canopy-sway {
   0%,
   100% {
     transform: rotate(0deg);
@@ -155,7 +155,7 @@
   }
 }
 
-@keyframes vineGrow {
+@keyframes vine-grow {
   from {
     stroke-dashoffset: 1400;
   }
@@ -164,7 +164,7 @@
   }
 }
 
-@keyframes mossPulse {
+@keyframes moss-pulse {
   0%,
   100% {
     opacity: 0.28;
@@ -174,7 +174,7 @@
   }
 }
 
-@keyframes sparkDrift {
+@keyframes spark-drift {
   0%,
   100% {
     transform: translate(0, 0);

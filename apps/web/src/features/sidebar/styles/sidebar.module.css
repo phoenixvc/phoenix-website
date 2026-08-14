@@ -210,6 +210,7 @@
     hsl(var(--color-primary)),
     hsl(var(--color-accent))
   ); /* Phoenix gradient */
+
   border-radius: 1px;
   box-shadow: 0 0 8px hsl(var(--color-primary) / 0.5); /* Subtle glow */
 }

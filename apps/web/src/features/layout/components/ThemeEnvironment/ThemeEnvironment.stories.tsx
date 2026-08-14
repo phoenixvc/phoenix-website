@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router-dom";
 import ThemeEnvironment from "./ThemeEnvironment";
 
 const meta = {
@@ -8,9 +9,11 @@ const meta = {
   parameters: { layout: "fullscreen" },
   decorators: [
     (Story): ReactElement => (
-      <div style={{ minHeight: "100vh", background: "#080b18" }}>
-        <Story />
-      </div>
+      <MemoryRouter>
+        <div style={{ minHeight: "100vh", background: "#080b18" }}>
+          <Story />
+        </div>
+      </MemoryRouter>
     ),
   ],
   args: {

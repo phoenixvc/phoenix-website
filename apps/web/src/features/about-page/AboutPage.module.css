@@ -166,7 +166,7 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-primary) / 0.2),
-    hsl(var(--color-primary) / 0.2)
+    hsl(var(--color-accent) / 0.2)
   );
   display: flex;
   align-items: center;
@@ -416,7 +416,7 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-primary)) 0%,
-    hsl(var(--color-primary)) 100%
+    hsl(var(--color-accent)) 100%
   );
   color: white;
   font-weight: 600;

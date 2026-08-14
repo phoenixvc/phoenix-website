@@ -129,8 +129,9 @@ export class ThemeCore {
     // Set default theme if provided, but ONLY if stateManager is available
     if (themeRegistry && themeRegistry.defaults && this.stateManager) {
       const { themeName, mode } = themeRegistry.defaults;
-      if (themeName) {
-        // Handle promise properly to avoid ESLint error
+      const selectedTheme = this.stateManager.getState().themeName;
+      if (themeName && (!selectedTheme || selectedTheme === themeName)) {
+        // Do not overwrite a query- or storage-selected theme with the registry default.
         void this.setColorScheme(themeName);
       }
       if (mode) {

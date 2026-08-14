@@ -6,6 +6,7 @@
   --detail-accent: hsl(var(--color-accent)); /* Amber - accent */
   --detail-gradient-start: hsl(var(--color-primary));
   --detail-gradient-end: hsl(var(--color-accent));
+
   min-height: 100vh;
   padding: 6rem 0 4rem;
   position: relative;
@@ -18,6 +19,7 @@
   --detail-accent: hsl(var(--color-accent)); /* Brighter amber for dark mode */
   --detail-gradient-start: hsl(var(--color-primary));
   --detail-gradient-end: hsl(var(--color-accent));
+
   background-color: hsl(var(--color-background) / 0.98);
   color: hsl(var(--color-text) / 0.9);
 }
@@ -29,6 +31,7 @@
   --detail-accent: hsl(var(--color-accent)); /* Darker amber for light mode */
   --detail-gradient-start: hsl(var(--color-primary));
   --detail-gradient-end: hsl(var(--color-accent));
+
   background-color: hsl(var(--color-background) / 0.98);
   color: hsl(var(--color-text) / 0.92);
 }
@@ -125,7 +128,7 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-primary) / 0.08) 0%,
-    rgba(245, 158, 11, 0.04) 100%
+    hsl(var(--color-accent) / 0.04) 100%
   );
   border-radius: 1.5rem;
   padding: 2.5rem;
@@ -136,7 +139,7 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-primary) / 0.12) 0%,
-    rgba(245, 158, 11, 0.06) 100%
+    hsl(var(--color-accent) / 0.06) 100%
   );
 }
 
@@ -519,7 +522,7 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-primary) / 0.08) 0%,
-    rgba(245, 158, 11, 0.04) 100%
+    hsl(var(--color-accent) / 0.04) 100%
   );
   border-radius: 1.5rem;
   border: 1px solid hsl(var(--color-primary) / 0.15);
@@ -529,7 +532,7 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-primary) / 0.12) 0%,
-    rgba(245, 158, 11, 0.06) 100%
+    hsl(var(--color-accent) / 0.06) 100%
   );
 }
 
