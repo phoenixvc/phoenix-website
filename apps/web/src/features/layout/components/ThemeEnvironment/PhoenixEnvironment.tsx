@@ -14,6 +14,7 @@ import {
   PHOENIX_FRAME_BUDGET_MS,
   createPhoenixScene,
   drawPhoenixScene,
+  type PhoenixDragSpark,
   type PhoenixPointer,
 } from "./phoenixScene";
 import {
@@ -29,9 +30,9 @@ import styles from "./phoenixEnvironment.module.css";
 
 export interface PhoenixEnvironmentProps {
   isDarkMode: boolean;
-  motionMode: EnvironmentMotionMode;
+  motionMode?: EnvironmentMotionMode;
   qualityTier?: EnvironmentQualityTier;
-  paused: boolean;
+  paused?: boolean;
   randomSeed?: number;
   fixedTimestamp?: number;
 }
@@ -41,6 +42,8 @@ interface TooltipState {
   x: number;
   y: number;
 }
+
+const SPARK_COLORS = ["#fffbeb", "#fbbf24", "#f97316", "#ef4444", "#fed7aa"];
 
 const resolveQualityTier = (
   requested: EnvironmentQualityTier | undefined,
@@ -72,8 +75,12 @@ export const PhoenixEnvironment = ({
 }: PhoenixEnvironmentProps): ReactElement => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<PhoenixPointer | null>(null);
+  const isDraggingRef = useRef(false);
+  const dragSparksRef = useRef<PhoenixDragSpark[]>([]);
+  const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
   const hoveredNodeRef = useRef<PhoenixNode | null>(null);
   const cameraRef = useRef<PhoenixCamera>({ ...PHOENIX_OVERVIEW_CAMERA });
+  const scrollYRef = useRef<number>(0);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
 
   const reducedMotion = motionMode === "reduced";
@@ -101,6 +108,7 @@ export const PhoenixEnvironment = ({
 
     let frameId = 0;
     let lastMark = 0;
+    let lastTimestamp = performance.now();
     const start = performance.now();
 
     const resize = (): void => {
@@ -114,11 +122,32 @@ export const PhoenixEnvironment = ({
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
     };
 
+    const updateSparks = (deltaSeconds: number): void => {
+      const sparks = dragSparksRef.current;
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.life -= deltaSeconds;
+        if (s.life <= 0) {
+          sparks.splice(i, 1);
+          continue;
+        }
+        s.x += s.vx;
+        s.y += s.vy;
+        s.vy -= 0.12 * deltaSeconds * 60; // Thermal rise
+        s.rotation += s.spin;
+      }
+    };
+
     const paint = (timestamp: number): void => {
+      const deltaSeconds = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
+      lastTimestamp = timestamp;
       const timeMs = fixedTimestamp ?? timestamp - start;
+
       if (!reducedMotion && !paused && fixedTimestamp === undefined) {
         cameraRef.current = lerpPhoenixCamera(cameraRef.current);
+        updateSparks(deltaSeconds);
       }
+
       drawPhoenixScene({
         ctx: context,
         width: canvas.clientWidth,
@@ -132,6 +161,8 @@ export const PhoenixEnvironment = ({
         camera: cameraRef.current,
         nodes,
         hoveredNode: hoveredNodeRef.current,
+        dragSparks: dragSparksRef.current,
+        scrollY: scrollYRef.current,
       });
     };
 
@@ -146,12 +177,54 @@ export const PhoenixEnvironment = ({
       }
     };
 
+    const spawnDragSpark = (x: number, y: number, vx: number, vy: number): void => {
+      if (reducedMotion || paused || dragSparksRef.current.length > 45) return;
+      const color = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
+      dragSparksRef.current.push({
+        x: x + (Math.random() - 0.5) * 8,
+        y: y + (Math.random() - 0.5) * 8,
+        vx: vx * 0.35 + (Math.random() - 0.5) * 1.5,
+        vy: vy * 0.35 - (0.5 + Math.random() * 1.2),
+        length: 12 + Math.random() * 18,
+        width: 4 + Math.random() * 6,
+        rotation: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.25,
+        curve: (Math.random() - 0.5) * 0.6,
+        color,
+        life: 0.8 + Math.random() * 0.6,
+        maxLife: 1.4,
+      });
+    };
+
+    const handleGlobalPointerDown = (event: PointerEvent): void => {
+      isDraggingRef.current = true;
+      lastPointerRef.current = { x: event.clientX, y: event.clientY };
+      spawnDragSpark(event.clientX, event.clientY, 0, -2);
+    };
+
+    const handleGlobalPointerUp = (): void => {
+      isDraggingRef.current = false;
+      lastPointerRef.current = null;
+    };
+
     const handleGlobalPointerMove = (event: PointerEvent): void => {
       if (reducedMotion || paused) {
         return;
       }
       const canvasEl = canvasRef.current;
       pointerRef.current = { x: event.clientX, y: event.clientY };
+
+      if (isDraggingRef.current && lastPointerRef.current) {
+        const vx = event.clientX - lastPointerRef.current.x;
+        const vy = event.clientY - lastPointerRef.current.y;
+        const dist = Math.hypot(vx, vy);
+        if (dist > 3) {
+          spawnDragSpark(event.clientX, event.clientY, vx, vy);
+          spawnDragSpark(event.clientX, event.clientY, vx * 0.6, vy * 0.6);
+        }
+      }
+      lastPointerRef.current = { x: event.clientX, y: event.clientY };
+
       if (canvasEl) {
         const picked = pickPhoenixNode(
           event.clientX,
@@ -177,19 +250,33 @@ export const PhoenixEnvironment = ({
       }
     };
 
+    const handleScroll = (): void => {
+      scrollYRef.current = window.scrollY || 0;
+    };
+
     const handleGlobalPointerLeave = (): void => {
       pointerRef.current = null;
       hoveredNodeRef.current = null;
+      isDraggingRef.current = false;
+      lastPointerRef.current = null;
       setTooltip(null);
     };
 
     resize();
+    handleScroll();
     paint(fixedTimestamp ?? 0);
     if (!paused && !reducedMotion && fixedTimestamp === undefined) {
       frameId = window.requestAnimationFrame(tick);
     }
 
     window.addEventListener("resize", resize);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("pointerdown", handleGlobalPointerDown, {
+      passive: true,
+    });
+    window.addEventListener("pointerup", handleGlobalPointerUp, {
+      passive: true,
+    });
     window.addEventListener("pointermove", handleGlobalPointerMove, {
       passive: true,
     });
@@ -200,6 +287,9 @@ export const PhoenixEnvironment = ({
     return (): void => {
       window.cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("pointerdown", handleGlobalPointerDown);
+      window.removeEventListener("pointerup", handleGlobalPointerUp);
       window.removeEventListener("pointermove", handleGlobalPointerMove);
       window.removeEventListener("pointerleave", handleGlobalPointerLeave);
     };

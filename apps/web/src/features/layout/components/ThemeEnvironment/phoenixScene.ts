@@ -109,6 +109,21 @@ export interface PhoenixScene {
   ridges: Ridge[];
 }
 
+export interface PhoenixDragSpark {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  length: number;
+  width: number;
+  rotation: number;
+  spin: number;
+  curve: number;
+  color: string;
+  life: number;
+  maxLife: number;
+}
+
 export interface DrawPhoenixSceneOptions {
   ctx: CanvasRenderingContext2D;
   width: number;
@@ -122,6 +137,8 @@ export interface DrawPhoenixSceneOptions {
   camera?: PhoenixCamera;
   nodes?: PhoenixNode[];
   hoveredNode?: PhoenixNode | null;
+  dragSparks?: PhoenixDragSpark[];
+  scrollY?: number;
 }
 
 const createRng = (seed: number): (() => number) => {
@@ -381,10 +398,10 @@ const drawSolarBeacons = (
 ): void => {
   const seconds = timeMs / 1000;
 
+  // 1. Constellation Filaments (Energized pulse on hearth hover)
   const nodeMap = new Map<string, PhoenixNode>();
   nodes.forEach((n) => nodeMap.set(n.id, n));
 
-  ctx.save();
   nodes.forEach((node) => {
     if (!node.parentId) return;
     const parent = nodeMap.get(node.parentId);
@@ -393,17 +410,36 @@ const drawSolarBeacons = (
     const from = worldToScreen(parent.x, parent.y, camera, width, height);
     const to = worldToScreen(node.x, node.y, camera, width, height);
 
+    const isConnectedHovered =
+      hoveredNode?.id === parent.id ||
+      hoveredNode?.id === node.id ||
+      (hoveredNode?.parentId && hoveredNode.parentId === parent.id);
+
+    ctx.save();
     ctx.beginPath();
     ctx.moveTo(from.x, from.y);
     ctx.lineTo(to.x, to.y);
-    ctx.strokeStyle = palette.nodeRing;
-    ctx.lineWidth = 0.75;
-    ctx.setLineDash([3, 8]);
-    ctx.lineDashOffset = reducedMotion ? 0 : -seconds * 8;
-    ctx.globalAlpha = 0.22;
+
+    if (isConnectedHovered) {
+      // Energized golden filament
+      ctx.strokeStyle = "#fbbf24";
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([6, 6]);
+      ctx.lineDashOffset = reducedMotion ? 0 : -seconds * 22;
+      ctx.globalAlpha = 0.85;
+      ctx.shadowColor = "rgba(245, 158, 11, 0.9)";
+      ctx.shadowBlur = 10;
+    } else {
+      ctx.strokeStyle = palette.nodeRing;
+      ctx.lineWidth = 0.75;
+      ctx.setLineDash([3, 8]);
+      ctx.lineDashOffset = reducedMotion ? 0 : -seconds * 8;
+      ctx.globalAlpha = 0.20;
+    }
+
     ctx.stroke();
+    ctx.restore();
   });
-  ctx.restore();
 
   nodes.forEach((node) => {
     const screen = worldToScreen(node.x, node.y, camera, width, height);
@@ -507,40 +543,41 @@ export const drawPhoenixScene = ({
   camera,
   nodes,
   hoveredNode,
+  dragSparks,
+  scrollY = 0,
 }: DrawPhoenixSceneOptions): void => {
   const phase = resolvePhoenixDayPhase(timeMs);
   const palette = createPhoenixPalette(isDarkMode, phase, scene.atmosphere);
   const limits = PHOENIX_SCENE_LIMITS[qualityTier];
   const pointerX = pointer ? (pointer.x / width - 0.5) * 2 : 0;
   const pointerY = pointer ? (pointer.y / height - 0.5) * 2 : 0;
-  const parallax = reducedMotion ? 0 : limits.parallax;
+  const parallax = limits.parallax;
   const seconds = timeMs / 1000;
 
-  ctx.clearRect(0, 0, width, height);
+  const scrollProgress = Math.min(scrollY / (height * 1.5), 1.0);
+  const scrollHorizonOffset = scrollProgress * height * 0.08;
 
-  // 1. Atmospheric Sky Gradient
-  const sky = ctx.createLinearGradient(0, 0, 0, height);
-  sky.addColorStop(0, palette.skyTop);
-  sky.addColorStop(0.55, palette.skyMid);
-  sky.addColorStop(1, palette.skyBottom);
-  ctx.fillStyle = sky;
+  // 1. Sky Gradient Canvas Base
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
+  skyGrad.addColorStop(0, palette.skyTop);
+  skyGrad.addColorStop(0.55, palette.skyMid);
+  skyGrad.addColorStop(1, palette.skyBottom);
+  ctx.fillStyle = skyGrad;
   ctx.fillRect(0, 0, width, height);
 
-  // 2. Solar Auroral Ribbons / Thermal Plumes
-  scene.ribbons.forEach((ribbon) => {
+  // 2. Solar Auroral Ribbons
+  scene.ribbons.forEach((ribbon, index) => {
     const shiftX =
-      ribbon.x * width +
-      pointerX * parallax * 28 +
-      (reducedMotion ? 0 : Math.sin(seconds * 0.4 + ribbon.phase) * 22);
-    const plumeTop = height * 0.05;
-    const plumeBottom = height * 0.85;
+      (ribbon.x * width +
+        Math.sin(seconds * 0.3 + ribbon.phase) * (reducedMotion ? 0 : 35) +
+        pointerX * parallax * 20 +
+        width) %
+      width;
+    const plumeTop = height * (0.05 + index * 0.1) + scrollHorizonOffset * 0.5;
+    const plumeBottom = height * (0.85 - index * 0.05);
 
     ctx.save();
-    ctx.globalAlpha =
-      ribbon.alpha *
-      (reducedMotion
-        ? 0.7
-        : 0.6 + 0.4 * Math.sin(seconds * 0.6 + ribbon.phase));
+    ctx.globalAlpha = ribbon.alpha;
     const flareGrad = ctx.createRadialGradient(
       shiftX,
       plumeBottom,
@@ -567,10 +604,12 @@ export const drawPhoenixScene = ({
     ctx.restore();
   });
 
-  // 3. Volcanic Caldera & Ridgelines with Parallax
+  // 3. Volcanic Caldera & Ridgelines with Parallax & Scroll-Driven Horizon Tilt
   scene.ridges.forEach((ridge, index) => {
     const shiftX = pointerX * parallax * ridge.depth * 24;
-    const shiftY = pointerY * parallax * ridge.depth * 12;
+    const shiftY =
+      pointerY * parallax * ridge.depth * 12 +
+      scrollHorizonOffset * (1 + index * 0.4);
     ctx.fillStyle =
       index === 0
         ? palette.ridgeFar
@@ -595,15 +634,15 @@ export const drawPhoenixScene = ({
     ctx.fill();
   });
 
-  // 4. Horizon Magma Seam Pulse
-  const magmaHeight = height * 0.18;
+  // 4. Horizon Magma Seam Pulse & Deepening Glow
+  const magmaHeight = height * (0.18 + scrollProgress * 0.1);
   const pulse = reducedMotion ? 1 : 0.85 + 0.15 * Math.sin(seconds * 1.8);
   const magmaGrad = ctx.createLinearGradient(0, height - magmaHeight, 0, height);
   magmaGrad.addColorStop(0, "rgba(0,0,0,0)");
-  magmaGrad.addColorStop(0.6, palette.magmaGlow);
+  magmaGrad.addColorStop(0.55, palette.magmaGlow);
   magmaGrad.addColorStop(1, palette.emberB);
   ctx.save();
-  ctx.globalAlpha = 0.45 * pulse;
+  ctx.globalAlpha = (0.45 + scrollProgress * 0.25) * pulse;
   ctx.fillStyle = magmaGrad;
   ctx.fillRect(0, height - magmaHeight, width, magmaHeight);
   ctx.restore();
@@ -623,7 +662,27 @@ export const drawPhoenixScene = ({
     );
   }
 
-  // 6. Ash Flakes Simulation
+  // 6. Interactive Drag Sparks & Phoenix Plumes
+  if (dragSparks && dragSparks.length > 0) {
+    dragSparks.forEach((spark) => {
+      const alpha = (spark.life / spark.maxLife) * 0.9;
+      if (alpha <= 0) return;
+      drawPhoenixFeather(
+        ctx,
+        spark.x,
+        spark.y,
+        spark.length,
+        spark.width,
+        spark.rotation,
+        spark.curve,
+        spark.color,
+        "#fffbeb",
+        alpha,
+      );
+    });
+  }
+
+  // 7. Ash Flakes Simulation
   scene.ashFlakes.forEach((ash) => {
     const travel = reducedMotion
       ? ash.y
@@ -640,7 +699,7 @@ export const drawPhoenixScene = ({
     drawAsh(ctx, posX, posY, ash.size, rot, palette[ash.color]);
   });
 
-  // 7. Rising Phoenix Plumes & Molten Feathers
+  // 8. Rising Phoenix Plumes & Molten Feathers
   scene.feathers.forEach((feather) => {
     const travel = reducedMotion
       ? feather.y
@@ -687,7 +746,7 @@ export const drawPhoenixScene = ({
     );
   });
 
-  // 8. Bottom Magma Seam Vignette (Seamless top, subtle bottom atmospheric depth)
+  // 9. Bottom Magma Seam Vignette (Seamless top, subtle bottom atmospheric depth)
   ctx.fillStyle = palette.vignette;
   ctx.fillRect(0, height * 0.88, width, height * 0.12);
 };
