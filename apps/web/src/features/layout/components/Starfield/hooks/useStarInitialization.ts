@@ -17,7 +17,7 @@ const DEFAULT_ENABLE_PLANETS = true;
 const DEFAULT_PLANET_SIZE = 1.0;
 
 interface StarInitializationProps {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
   dimensionsRef: React.MutableRefObject<{ width: number; height: number }>;
   starDensity: number;
   sidebarWidth: number;

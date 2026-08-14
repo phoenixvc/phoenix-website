@@ -13,7 +13,7 @@ export const useSectionObserver = (
     threshold: 0.5,
     rootMargin: "0px 0px -10% 0px",
   },
-): RefObject<HTMLDivElement> => {
+): RefObject<HTMLDivElement | null> => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect((): (() => void) => {

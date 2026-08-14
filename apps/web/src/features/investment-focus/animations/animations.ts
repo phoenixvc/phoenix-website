@@ -16,7 +16,7 @@ export const investmentFocusAnimations = {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   },
@@ -27,14 +27,14 @@ export const investmentFocusAnimations = {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
     hover: {
       y: -8,
       transition: {
         duration: 0.2,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
       },
     },
   },
@@ -43,7 +43,7 @@ export const investmentFocusAnimations = {
       scale: 1.1,
       transition: {
         duration: 0.2,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
       },
     },
   },

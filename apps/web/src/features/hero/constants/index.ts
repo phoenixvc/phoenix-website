@@ -5,7 +5,7 @@ export const ANIMATION_CONFIG = {
     item: 0.5,
   },
   stagger: 0.2,
-  ease: "easeOut",
+  ease: "easeOut" as const,
 } as const;
 
 export const DEFAULT_HERO_CONTENT = {
