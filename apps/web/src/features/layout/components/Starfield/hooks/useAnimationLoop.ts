@@ -2,8 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CollisionEffect, GameState } from "../types";
 import { animate } from "./animation/animate";
 import { AnimationProps, AnimationRefs } from "./animation/types";
-import { createSunHoverManager, SunHoverManager } from "./animation/sunHoverManager";
-import { createPlanetHoverManager, PlanetHoverManager } from "./animation/planetHoverManager";
+import {
+  createSunHoverManager,
+  SunHoverManager,
+} from "./animation/sunHoverManager";
+import {
+  createPlanetHoverManager,
+  PlanetHoverManager,
+} from "./animation/planetHoverManager";
 import { logger } from "@/utils/logger";
 
 export const useAnimationLoop = (
@@ -24,7 +30,7 @@ export const useAnimationLoop = (
   const lastTimeRef = useRef<number | null>(null); // Explicitly typed as number | null
   const lastFrameTimeRef = useRef<number>(Date.now());
   const frameSkipRef = useRef<number>(0);
-  
+
   // Always create a local ref unconditionally to satisfy React Hooks rules
   // Use the passed mousePositionRef if available, otherwise use the local one
   const localMousePositionRef = useRef(
@@ -40,10 +46,10 @@ export const useAnimationLoop = (
       isOnScreen: false, // Start false - only true after real mouse interaction
     },
   );
-  
+
   // Use the passed mousePositionRef if available, otherwise use the local one
   const mousePositionRef = props.mousePositionRef || localMousePositionRef;
-  
+
   const hoverInfoRef = useRef(
     props.hoverInfo || { project: null, x: 0, y: 0, show: false },
   );
@@ -112,7 +118,13 @@ export const useAnimationLoop = (
       // Type assertion to ensure we're treating gameState as GameState
       gameStateRef.current = props.gameState as GameState;
     }
-  }, [props.mousePositionRef, props.mousePosition, props.hoverInfo, props.gameState, mousePositionRef]);
+  }, [
+    props.mousePositionRef,
+    props.mousePosition,
+    props.hoverInfo,
+    props.gameState,
+    mousePositionRef,
+  ]);
 
   // Update FPS data callback - uses props.updateFpsData directly which is stable
   const updateFpsData = useCallback(
@@ -176,13 +188,18 @@ export const useAnimationLoop = (
 
     // Start animation with a small delay to ensure everything is ready
     setTimeout(() => {
+      if (latestPropsRef.current.paused) {
+        isRestartingRef.current = false;
+        return;
+      }
+
       if (props.canvasRef.current) {
         isRestartingRef.current = false;
         isAnimatingRef.current = true;
         // Start animation
         animationRef.current = window.requestAnimationFrame((timestamp) => {
           animate(
-            timestamp,
+            latestPropsRef.current.fixedTimestamp ?? timestamp,
             { ...latestPropsRef.current, updateFpsData },
             refs,
           );
@@ -199,7 +216,11 @@ export const useAnimationLoop = (
     // Start animation – read from the ref each frame
     const frame = (ts: number): void => {
       if (DEBUG_LOG) logger.debug("→ frame", ts);
-      animate(ts, { ...latestPropsRef.current, updateFpsData }, refs);
+      animate(
+        latestPropsRef.current.fixedTimestamp ?? ts,
+        { ...latestPropsRef.current, updateFpsData },
+        refs,
+      );
     };
     animationRef.current = window.requestAnimationFrame(frame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -234,7 +255,7 @@ export const useAnimationLoop = (
     const startTimeout = setTimeout(() => {
       // Double check that we haven't been unmounted
       if (props.canvasRef.current) {
-        isAnimatingRef.current = true; // Ensure this is true before starting
+        isAnimatingRef.current = !props.paused;
         startAnimationWithProps();
       }
     }, 100);
@@ -271,6 +292,7 @@ export const useAnimationLoop = (
     props.starsRef,
     startAnimationWithProps,
     props.debugSettings,
+    props.paused,
   ]);
 
   return {

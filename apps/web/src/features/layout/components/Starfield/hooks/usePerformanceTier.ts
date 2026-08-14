@@ -36,6 +36,8 @@ export interface PerformanceTierConfig {
   lowFramesRequired?: number;
   /** Initial performance tier (default: "low") */
   initialTier?: PerformanceTier;
+  /** Disable FPS-driven changes when a deterministic fixture forces a tier. */
+  adaptive?: boolean;
 }
 
 export interface PerformanceTierResult {
@@ -63,6 +65,7 @@ const DEFAULT_CONFIG: Required<PerformanceTierConfig> = {
   stableFramesRequired: 60,
   lowFramesRequired: 30,
   initialTier: "low",
+  adaptive: true,
 };
 
 /**
@@ -77,6 +80,7 @@ export function usePerformanceTier(
     stableFramesRequired,
     lowFramesRequired,
     initialTier,
+    adaptive,
   } = { ...DEFAULT_CONFIG, ...config };
 
   // Performance tier state - start low for safety
@@ -109,6 +113,8 @@ export function usePerformanceTier(
       setCurrentFps(fps);
       setTimestamp(currentTimestamp);
 
+      if (!adaptive) return;
+
       // Adaptive Performance Logic
       if (fps > stableThreshold) {
         stableFpsCountRef.current++;
@@ -134,7 +140,13 @@ export function usePerformanceTier(
         }
       }
     },
-    [stableThreshold, lowThreshold, stableFramesRequired, lowFramesRequired],
+    [
+      adaptive,
+      stableThreshold,
+      lowThreshold,
+      stableFramesRequired,
+      lowFramesRequired,
+    ],
   );
 
   // Delay showing starfield until initialization is complete

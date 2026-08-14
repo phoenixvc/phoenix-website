@@ -57,19 +57,26 @@ export const generateThemeVariables = (
       throw new Error("Missing scheme.base.secondary in color scheme");
     }
 
-    // Build computed colors using HSL values
-    // Use the direct color values instead of looking for [500]
+    // Build the complete runtime color surface from the registered scheme.
     const computedColors = {
-      // scheme.base.primary is a ColorShades map whose hsl/hex are reached via
-      // its index signature (typed as a wide union); assert string to satisfy
-      // the ThemeVariables.computed.colors contract without changing behaviour.
-      primary: (scheme.base.primary.hsl || scheme.base.primary.hex) as string,
-      secondary: (scheme.base.secondary.hsl ||
-        scheme.base.secondary.hex) as string,
+      primary: scheme.base.primary[500].hsl,
+      secondary: scheme.base.secondary[500].hsl,
+      accent: scheme.base.accent[500].hsl,
       background: modeColors.background.hsl,
-      // modeColors.text is a { primary, secondary } pair, not a single color.
       text: modeColors.text.primary.hsl,
+      textSecondary: modeColors.text.secondary.hsl,
+      muted: modeColors.muted.hsl,
       border: modeColors.border.hsl,
+      surface: modeColors.surface?.hsl ?? modeColors.background.hsl,
+      overlay: modeColors.overlay?.hsl ?? modeColors.background.hsl,
+      hover: modeColors.hover?.hsl ?? scheme.base.primary[100].hsl,
+      active: modeColors.active?.hsl ?? scheme.base.primary[200].hsl,
+      focus: modeColors.focus?.hsl ?? scheme.base.accent[500].hsl,
+      disabled: modeColors.disabled?.hsl ?? modeColors.muted.hsl,
+      success: colors.semantic?.success.hsl ?? scheme.base.primary[500].hsl,
+      warning: colors.semantic?.warning.hsl ?? scheme.base.accent[500].hsl,
+      error: colors.semantic?.error.hsl ?? scheme.base.secondary[500].hsl,
+      info: colors.semantic?.info.hsl ?? scheme.base.accent[500].hsl,
     };
 
     // Build the ThemeVariables object.
@@ -142,9 +149,23 @@ export const generateThemeVariables = (
         colors: {
           primary: "hsl(210, 100%, 50%)",
           secondary: "hsl(270, 60%, 50%)",
+          accent: "hsl(195, 100%, 50%)",
           background: mode === "light" ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)",
           text: mode === "light" ? "hsl(0, 0%, 10%)" : "hsl(0, 0%, 90%)",
+          textSecondary:
+            mode === "light" ? "hsl(0, 0%, 30%)" : "hsl(0, 0%, 70%)",
+          muted: "hsl(220, 10%, 50%)",
           border: mode === "light" ? "hsl(0, 0%, 80%)" : "hsl(0, 0%, 30%)",
+          surface: mode === "light" ? "hsl(0, 0%, 98%)" : "hsl(0, 0%, 15%)",
+          overlay: "hsl(0, 0%, 0%)",
+          hover: "hsl(210, 50%, 90%)",
+          active: "hsl(210, 50%, 80%)",
+          focus: "hsl(195, 100%, 50%)",
+          disabled: "hsl(220, 10%, 60%)",
+          success: "hsl(145, 60%, 40%)",
+          warning: "hsl(40, 90%, 50%)",
+          error: "hsl(0, 75%, 55%)",
+          info: "hsl(210, 100%, 50%)",
         },
         spacing: {
           xs: "0.25rem",

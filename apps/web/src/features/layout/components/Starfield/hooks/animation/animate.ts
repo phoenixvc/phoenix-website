@@ -84,6 +84,9 @@ export const animate = (
   props: AnimationProps,
   refs: AnimationRefs,
 ): void => {
+  const nextFrameTimestamp = (nextTimestamp: number): number =>
+    props.fixedTimestamp ?? nextTimestamp;
+
   try {
     // Update frame cache at the start of each frame
     updateFrameCache();
@@ -101,7 +104,8 @@ export const animate = (
     if (refs.isRestartingRef.current) {
       logger.debug("Skipping animation frame during restart");
       refs.animationRef.current = window.requestAnimationFrame(
-        (nextTimestamp) => animate(nextTimestamp, props, refs),
+        (nextTimestamp) =>
+          animate(nextFrameTimestamp(nextTimestamp), props, refs),
       );
       return;
     }
@@ -115,7 +119,8 @@ export const animate = (
       logger.error("Animation frame error: starsRef is undefined");
       if (refs.isAnimatingRef.current) {
         refs.animationRef.current = window.requestAnimationFrame(
-          (nextTimestamp) => animate(nextTimestamp, props, refs),
+          (nextTimestamp) =>
+            animate(nextFrameTimestamp(nextTimestamp), props, refs),
         );
       }
       return;
@@ -181,7 +186,8 @@ export const animate = (
       // Continue animation loop but don"t try to draw anything
       if (refs.isAnimatingRef.current || refs.isRestartingRef.current) {
         refs.animationRef.current = window.requestAnimationFrame(
-          (nextTimestamp) => animate(nextTimestamp, props, refs),
+          (nextTimestamp) =>
+            animate(nextFrameTimestamp(nextTimestamp), props, refs),
         );
       }
       return;
@@ -275,7 +281,12 @@ export const animate = (
     let liveHoveredSunId: string | null = null;
     const hoverManager = refs.sunHoverManagerRef?.current;
 
-    if (hoverManager && props.enableMouseInteraction && props.setHoveredSunId && props.setHoveredSun) {
+    if (
+      hoverManager &&
+      props.enableMouseInteraction &&
+      props.setHoveredSunId &&
+      props.setHoveredSun
+    ) {
       // CRITICAL: Check sun hover detection BEFORE processing hover manager
       // This allows us to clear planet tooltip immediately if mouse is over a sun
       const earlySunHoverCheck = checkSunHover(
@@ -289,7 +300,8 @@ export const animate = (
       // When hovering a sun, immediately clear planet tooltip ref AND state
       // This MUST happen BEFORE processFrame to prevent race condition where
       // isPlanetTooltipShowing blocks the sun tooltip from appearing
-      const shouldClearPlanetTooltip = earlySunHoverCheck !== null && refs.hoverInfoRef.current?.show;
+      const shouldClearPlanetTooltip =
+        earlySunHoverCheck !== null && refs.hoverInfoRef.current?.show;
       if (shouldClearPlanetTooltip) {
         // Clear ref immediately (synchronous)
         refs.hoverInfoRef.current = { project: null, x: 0, y: 0, show: false };
@@ -405,16 +417,16 @@ export const animate = (
             elementAtMouse.closest("[data-starfield]") !== null;
           // Check if the element is inside the hero section (which should allow tooltips)
           const isInsideHeroSection =
-            elementAtMouse.closest("section[aria-label=\"hero section\"]") !==
+            elementAtMouse.closest("section[aria-label=hero\\ section]") !==
             null;
           // Check if hovering over header/navigation (should allow tooltips since they're transparent)
           const isInsideHeader = elementAtMouse.closest("header") !== null;
           // Check if hovering over sidebar (should allow tooltips)
           const isInsideSidebar =
-            elementAtMouse.closest("aside, [role=\"complementary\"]") !== null;
+            elementAtMouse.closest("aside, [role=complementary]") !== null;
           // Check if element has explicit passthrough data attribute
           const hasPassthrough =
-            elementAtMouse.closest("[data-starfield-passthrough=\"true\"]") !==
+            elementAtMouse.closest("[data-starfield-passthrough=true]") !==
             null;
 
           // Only consider it as "over content card" if it's NOT any of the allowed elements
@@ -446,7 +458,8 @@ export const animate = (
           isOverContentCard,
           currentHoverInfo,
           tooltipElement: props.projectTooltipElementRef?.current ?? null,
-          isMouseOverTooltipRef: props.isMouseOverProjectTooltipRef?.current ?? false,
+          isMouseOverTooltipRef:
+            props.isMouseOverProjectTooltipRef?.current ?? false,
           callbacks: {
             setHoverInfo: props.setHoverInfo,
           },
@@ -454,7 +467,12 @@ export const animate = (
         });
 
         // When hovering a planet, immediately clear sun tooltip to avoid stale tooltips
-        if (isHoveringPlanet && props.hoveredSunIdRef?.current !== null && props.setHoveredSunId && props.setHoveredSun) {
+        if (
+          isHoveringPlanet &&
+          props.hoveredSunIdRef?.current !== null &&
+          props.setHoveredSunId &&
+          props.setHoveredSun
+        ) {
           props.setHoveredSunId(null);
           props.setHoveredSun(null);
         }
@@ -714,7 +732,8 @@ export const animate = (
     // Continue the animation loop if still animating or restarting
     if (refs.isAnimatingRef.current || refs.isRestartingRef.current) {
       refs.animationRef.current = window.requestAnimationFrame(
-        (nextTimestamp) => animate(nextTimestamp, props, refs),
+        (nextTimestamp) =>
+          animate(nextFrameTimestamp(nextTimestamp), props, refs),
       );
     } else {
       logger.debug(
@@ -738,7 +757,8 @@ export const animate = (
       logger.debug("Attempting to recover from animation error");
       setTimeout(() => {
         refs.animationRef.current = window.requestAnimationFrame(
-          (nextTimestamp) => animate(nextTimestamp, props, refs),
+          (nextTimestamp) =>
+            animate(nextFrameTimestamp(nextTimestamp), props, refs),
         );
       }, 100);
     }

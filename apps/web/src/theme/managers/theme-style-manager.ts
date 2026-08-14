@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ColorMapping } from "../mappings";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 import {
   ColorDefinition,
   ThemeName,
@@ -1404,7 +1405,7 @@ export class ThemeStyleManager {
   // Generate all theme variables
   generateThemeVariables(
     mode: ThemeMode = "light",
-    themeName: ThemeName = "classic",
+    themeName: ThemeName = DEFAULT_THEME_NAME,
   ): Record<string, string | ColorDefinition> {
     this.log(`Generating theme variables for mode=${mode}, theme=${themeName}`);
 
@@ -1444,7 +1445,7 @@ export class ThemeStyleManager {
   // Generate all theme classes
   generateThemeClasses(
     mode: ThemeMode = "light",
-    scheme: ThemeName = "classic",
+    scheme: ThemeName = DEFAULT_THEME_NAME,
   ): Record<string, string> {
     this.log(`Generating theme classes for mode=${mode}, scheme=${scheme}`);
 

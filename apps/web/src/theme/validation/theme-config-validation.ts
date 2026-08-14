@@ -5,9 +5,10 @@ import {
   TransitionValidation,
 } from ".";
 import { createValidationResult } from "./utils/create-validation-result"; // Utility function for consistent result handling
+import { AVAILABLE_THEME_NAMES } from "../constants/themes/catalog";
 
 export class ThemeConfigValidation {
-  static VALID_COLOR_SCHEMES = ["classic"] as const; // This creates a readonly tuple type
+  static VALID_COLOR_SCHEMES = AVAILABLE_THEME_NAMES;
   static VALID_MODES = ["light", "dark"] as const;
 
   static validateThemeConfig(config: ThemeInitOptions): ValidationResult {
@@ -37,9 +38,9 @@ export class ThemeConfigValidation {
     if (defaultMode && !this.VALID_MODES.includes(defaultMode)) {
       errors.push(
         new ThemeValidationError(
-          `Invalid default mode: ${defaultScheme}`,
+          `Invalid default mode: ${defaultMode}`,
           "INVALID_DEFAULT_MODE", // error code
-          "defaultScheme", // path in the config object
+          "defaultMode", // path in the config object
         ),
       );
     }

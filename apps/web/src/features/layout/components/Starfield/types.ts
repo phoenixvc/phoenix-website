@@ -496,6 +496,16 @@ export interface StarfieldProps {
   debugMode?: boolean;
   maxVelocity?: number;
   animationSpeed?: number;
+  /** Pause after drawing one representative frame. */
+  paused?: boolean;
+  /** Expose the user's motion policy to rendering and CSS. */
+  reducedMotion?: boolean;
+  /** Force a quality tier for deterministic fixtures; otherwise adapts by FPS. */
+  qualityTier?: "low" | "medium" | "high";
+  /** Seed initialization for reproducible Storybook and browser fixtures. */
+  randomSeed?: number;
+  /** Freeze animation time for deterministic representative frames. */
+  fixedTimestamp?: number;
   drawDebugInfo?: (
     ctx: CanvasRenderingContext2D,
     width: number,

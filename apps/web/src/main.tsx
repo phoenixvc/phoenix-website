@@ -1,7 +1,9 @@
-import { StrictMode } from "react";
+import { StrictMode, useState, type ReactElement } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { ThemeProvider } from "@/theme";
+import { DEFAULT_THEME_NAME } from "@/theme/constants/themes/catalog";
+import { createBuiltInThemeRegistry } from "@/theme/constants/themes/registry";
 import "./theme/theme.css";
 import { logger } from "@/utils/logger";
 import { initWebVitals } from "@/utils/performance";
@@ -36,16 +38,19 @@ window.setTimeout(resetChunkReloadCounter, 5000);
 
 // Initialize Core Web Vitals monitoring
 initWebVitals();
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+
+function PhoenixApp(): ReactElement {
+  const [themeRegistry] = useState(createBuiltInThemeRegistry);
+
+  return (
     <ThemeProvider
+      themeRegistry={themeRegistry}
       config={{
-        defaultThemeName: "classic",
+        defaultThemeName: DEFAULT_THEME_NAME,
         defaultMode: "dark",
         useSystem: false,
         storage: {
           type: "localStorage",
-          prefix: "my-app-theme",
         },
         transition: {
           duration: 300,
@@ -59,5 +64,11 @@ createRoot(document.getElementById("root")!).render(
     >
       <App />
     </ThemeProvider>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <PhoenixApp />
   </StrictMode>,
 );

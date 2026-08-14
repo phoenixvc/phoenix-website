@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Footer } from "./Footer/Footer";
 import Header from "./Header/Header";
 import styles from "./layout.module.css";
-import Starfield, { StarfieldRef } from "./Starfield/Starfield";
+import { type StarfieldRef } from "./Starfield/Starfield";
+import { ThemeEnvironment, type EnvironmentFixture } from "./ThemeEnvironment";
 import { CosmicNavigationState, Star } from "./Starfield/types";
 import { logger } from "@/utils/logger";
 import Disclaimer from "@/components/ui/Disclaimer";
@@ -30,7 +31,7 @@ const loadDebugModeFromStorage = (): boolean => {
 
 const Layout = ({ children }: LayoutProps): React.ReactElement => {
   // Use theme context for dark mode - defaults to dark, only light if user explicitly chose it
-  const { themeMode, toggleMode } = useTheme();
+  const { themeName, themeMode, toggleMode } = useTheme();
   const isDarkMode = themeMode === "dark";
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -54,6 +55,18 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
 
   // Create a ref to the starfield component
   const starfieldRef = useRef<StarfieldRef>(null);
+  const environmentFixture: EnvironmentFixture | undefined =
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).get("cosmic-fixture") ===
+      "static"
+      ? {
+          seed: 20260809,
+          timeMs: 12000,
+          qualityTier: "low",
+          motionMode: "reduced",
+          paused: true,
+        }
+      : undefined;
 
   // Check if we're on mobile on mount and when window resizes
   useEffect(() => {
@@ -213,29 +226,16 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
         Skip to main content
       </a>
 
-      {/* Always use Starfield, remove conditional rendering */}
-      <Starfield
-        key={`starfield-${isDarkMode}-${sidebarWidth}-${gameMode}`}
+      <ThemeEnvironment
+        key={`environment-${themeName}-${isDarkMode}-${sidebarWidth}-${gameMode}`}
         ref={starfieldRef}
+        themeName={themeName}
         sidebarWidth={sidebarWidth}
         isDarkMode={isDarkMode}
-        enableFlowEffect={true}
-        enableBlackHole={true}
-        enableMouseInteraction={true}
-        enablePlanets={true}
-        starDensity={1.8}
-        starSize={1.5}
-        particleSpeed={0.05}
-        flowStrength={0.01}
-        gravitationalPull={0.05}
-        mouseEffectRadius={220}
-        mouseEffectColor="rgba(138, 43, 226, 0.15)"
-        blackHoleSize={1.5}
         gameMode={gameMode}
-        maxVelocity={0.5}
         debugMode={debugMode}
-        animationSpeed={1.0}
         drawDebugInfo={customDebugInfo}
+        fixture={environmentFixture}
       />
       <Sidebar
         isOpen={isSidebarOpen}

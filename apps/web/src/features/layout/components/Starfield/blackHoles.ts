@@ -41,6 +41,7 @@ export const initBlackHoles = (
   _particleSpeed: number,
   _colorScheme: string,
   _starSize: number,
+  random: () => number = Math.random,
 ): BlackHole[] => {
   if (!enableBlackHole) return [];
 
@@ -61,7 +62,7 @@ export const initBlackHoles = (
     // Random rotation speed within configured range
     const rotationSpeed =
       BH.rotation.baseSpeed *
-      (Math.random() * (BH.rotation.randomMax - BH.rotation.randomMin) +
+      (random() * (BH.rotation.randomMax - BH.rotation.randomMin) +
         BH.rotation.randomMin);
 
     return {

@@ -1,5 +1,6 @@
 // theme/managers/component-manager.ts
 import { ThemeName } from "../types/core/base";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 import {
   BaseStyles,
   CardVariant,
@@ -251,7 +252,7 @@ export class ComponentManager {
   generateComponentClasses(
     component: string,
     variant: string = "default",
-    scheme: ThemeName = "classic",
+    scheme: ThemeName = DEFAULT_THEME_NAME,
   ): Record<string, string> {
     const componentState = this.getComponentState(component, variant);
     if (!componentState) return {};
@@ -303,7 +304,7 @@ export class ComponentManager {
 
   // Generate classes for all components
   generateAllClasses(
-    scheme: ThemeName = "classic",
+    scheme: ThemeName = DEFAULT_THEME_NAME,
     registry: ComponentThemeRegistry = this.registry,
   ): Record<string, string> {
     const classes: Record<string, string> = {};

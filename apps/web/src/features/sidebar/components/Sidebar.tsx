@@ -102,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className={styles.sidebarContent}>
         {DEFAULT_SIDEBAR_GROUPS.map((group) => (
           <div
-            key={group.title || "primary"}
+            key={group.title || group.items[0]?.href || "empty-group"}
             className={styles.sidebarSection}
           >
             {group.title && (

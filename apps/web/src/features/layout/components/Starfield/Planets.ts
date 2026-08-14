@@ -25,6 +25,7 @@ export const initPlanets = (
   centerOffsetY: number,
   planetSize: number,
   useSimpleRendering: boolean = false,
+  random: () => number = Math.random,
 ): Planet[] => {
   if (!enablePlanets || !portfolioItems || portfolioItems.length === 0)
     return [];
@@ -73,33 +74,31 @@ export const initPlanets = (
         // Distribute satellites more evenly around the star
         const angle =
           (i / satelliteCount) * TWO_PI +
-          Math.random() * ORBIT_CONFIG.satellites.angleRandomOffset;
+          random() * ORBIT_CONFIG.satellites.angleRandomOffset;
         const distanceRange =
           ORBIT_CONFIG.satellites.distanceMax -
           ORBIT_CONFIG.satellites.distanceMin;
         const distance =
-          ORBIT_CONFIG.satellites.distanceMin + Math.random() * distanceRange;
+          ORBIT_CONFIG.satellites.distanceMin + random() * distanceRange;
         const speedRange =
           ORBIT_CONFIG.satellites.speedMax - ORBIT_CONFIG.satellites.speedMin;
-        const speed =
-          ORBIT_CONFIG.satellites.speedMin + Math.random() * speedRange;
+        const speed = ORBIT_CONFIG.satellites.speedMin + random() * speedRange;
         const eccRange =
           ORBIT_CONFIG.satellites.eccentricityMax -
           ORBIT_CONFIG.satellites.eccentricityMin;
         const eccentricity =
-          ORBIT_CONFIG.satellites.eccentricityMin + Math.random() * eccRange;
+          ORBIT_CONFIG.satellites.eccentricityMin + random() * eccRange;
         const sizeRange =
           ORBIT_CONFIG.satellites.sizeMax - ORBIT_CONFIG.satellites.sizeMin;
         const size =
-          (ORBIT_CONFIG.satellites.sizeMin + Math.random() * sizeRange) *
-          planetSize;
+          (ORBIT_CONFIG.satellites.sizeMin + random() * sizeRange) * planetSize;
 
         // Ensure valid color format with proper hex values
         const alphaRange =
           ORBIT_CONFIG.satellites.alphaMax - ORBIT_CONFIG.satellites.alphaMin;
         const color = item.color
           ? `${item.color}${Math.floor(
-              Math.random() * alphaRange + ORBIT_CONFIG.satellites.alphaMin,
+              random() * alphaRange + ORBIT_CONFIG.satellites.alphaMin,
             )
               .toString(16)
               .padStart(2, "0")}`
@@ -131,25 +130,23 @@ export const initPlanets = (
     let verticalFactor = 1.0;
     const pathConfig = ORBIT_CONFIG.pathEccentricity[pathType];
     const eccRange = pathConfig.max - pathConfig.min;
-    pathEccentricity = pathConfig.min + Math.random() * eccRange;
+    pathEccentricity = pathConfig.min + random() * eccRange;
     verticalFactor = pathConfig.verticalFactor;
 
     // Path tilt for dynamic appearance
-    const pathTilt = Math.random() * 30;
+    const pathTilt = random() * 30;
 
     let trailLength, glowIntensity;
     if (pathType === "comet") {
       const trailRange =
         ORBIT_CONFIG.cometTrail.lengthMax - ORBIT_CONFIG.cometTrail.lengthMin;
-      trailLength =
-        ORBIT_CONFIG.cometTrail.lengthMin + Math.random() * trailRange;
+      trailLength = ORBIT_CONFIG.cometTrail.lengthMin + random() * trailRange;
     }
 
     if (pathType === "star" && !useSimpleRendering) {
       const glowRange =
         ORBIT_CONFIG.starGlow.intensityMax - ORBIT_CONFIG.starGlow.intensityMin;
-      glowIntensity =
-        ORBIT_CONFIG.starGlow.intensityMin + Math.random() * glowRange;
+      glowIntensity = ORBIT_CONFIG.starGlow.intensityMin + random() * glowRange;
     }
 
     // Enhanced pulsation for better visibility
@@ -172,8 +169,7 @@ export const initPlanets = (
       vx,
       vy,
       angle: baseAngle,
-      rotationSpeed:
-        ORBIT_CONFIG.rotationSpeed.min + Math.random() * rotSpeedRange,
+      rotationSpeed: ORBIT_CONFIG.rotationSpeed.min + random() * rotSpeedRange,
       orbitRadius,
       orbitSpeed,
       // will be overwritten each frame, but initialize to the right spot:
@@ -230,7 +226,7 @@ export const initPlanets = (
       planet.orbitParentId = focusAreaSuns[sunIndex].id;
     } else {
       // Final fallback
-      const randomSunIndex = Math.floor(Math.random() * SUNS.length);
+      const randomSunIndex = Math.floor(random() * SUNS.length);
       planet.orbitParentId = SUNS[randomSunIndex].id;
     }
   });
@@ -257,11 +253,11 @@ export const initPlanets = (
 
       // Make the biggest planet a comet with bright trail
       biggestPlanet.pathType = "comet";
-      biggestPlanet.trailLength = 250 + Math.random() * 80;
-      biggestPlanet.pathEccentricity = 0.5 + Math.random() * 0.3;
-      biggestPlanet.orbitSpeed = 0.00008 + Math.random() * 0.00004;
-      biggestPlanet.glowIntensity = 2.0 + Math.random() * 0.8;
-      biggestPlanet.verticalFactor = 1.8 + Math.random() * 0.6;
+      biggestPlanet.trailLength = 250 + random() * 80;
+      biggestPlanet.pathEccentricity = 0.5 + random() * 0.3;
+      biggestPlanet.orbitSpeed = 0.00008 + random() * 0.00004;
+      biggestPlanet.glowIntensity = 2.0 + random() * 0.8;
+      biggestPlanet.verticalFactor = 1.8 + random() * 0.6;
     }
   });
 
@@ -276,7 +272,7 @@ export const initPlanets = (
     // Ensure satellites have proper speeds
     if (star.satellites && star.satellites.length > 0) {
       star.satellites.forEach((satellite) => {
-        satellite.speed = 0.005 + Math.random() * 0.01;
+        satellite.speed = 0.005 + random() * 0.01;
       });
     }
   });
@@ -301,7 +297,13 @@ export const checkPlanetHover = (
   let worldMouseX = mouseX;
   let worldMouseY = mouseY;
   if (camera && canvasWidth && canvasHeight) {
-    const worldCoords = screenToWorldCoords(mouseX, mouseY, camera, canvasWidth, canvasHeight);
+    const worldCoords = screenToWorldCoords(
+      mouseX,
+      mouseY,
+      camera,
+      canvasWidth,
+      canvasHeight,
+    );
     worldMouseX = worldCoords.x;
     worldMouseY = worldCoords.y;
   }
@@ -309,7 +311,8 @@ export const checkPlanetHover = (
   // Shared hover radius constant for consistent detection
   // Scale by zoom for consistent hover detection at different zoom levels
   const zoomFactor = camera?.zoom || 1;
-  const hoverRadius = (ORBIT_CONFIG.hover.radiusMultiplier * planetSize) / zoomFactor;
+  const hoverRadius =
+    (ORBIT_CONFIG.hover.radiusMultiplier * planetSize) / zoomFactor;
 
   // Helper function to calculate distance between mouse and planet
   // Uses multiplication instead of Math.pow for better performance

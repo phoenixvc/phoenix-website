@@ -6,6 +6,7 @@ import {
   ThemeVariables,
 } from "../types";
 import { defaultTheme } from "./defaultTheme";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 
 // Theme factory function for the hybrid approach
 export function createTheme(
@@ -86,7 +87,7 @@ function generateThemeVariables(
   colors: ThemeColors,
 ): ThemeVariables {
   // Get the current color scheme
-  const colorScheme = config.themeName || "classic";
+  const colorScheme = config.themeName || DEFAULT_THEME_NAME;
   const mode = config.mode || "light";
 
   // Get the appropriate color scheme
@@ -104,9 +105,22 @@ function generateThemeVariables(
     colors: {
       primary: baseColors.primary[500].hsl,
       secondary: baseColors.secondary[500].hsl,
+      accent: baseColors.accent[500].hsl,
       background: modeColors.background.hsl,
       text: modeColors.text.primary.hsl,
+      textSecondary: modeColors.text.secondary.hsl,
+      muted: modeColors.muted.hsl,
       border: modeColors.border.hsl,
+      surface: modeColors.surface?.hsl ?? modeColors.background.hsl,
+      overlay: modeColors.overlay?.hsl ?? modeColors.background.hsl,
+      hover: modeColors.hover?.hsl ?? baseColors.primary[100].hsl,
+      active: modeColors.active?.hsl ?? baseColors.primary[200].hsl,
+      focus: modeColors.focus?.hsl ?? baseColors.accent[500].hsl,
+      disabled: modeColors.disabled?.hsl ?? modeColors.muted.hsl,
+      success: colors.semantic?.success.hsl ?? baseColors.primary[500].hsl,
+      warning: colors.semantic?.warning.hsl ?? baseColors.accent[500].hsl,
+      error: colors.semantic?.error.hsl ?? baseColors.secondary[500].hsl,
+      info: colors.semantic?.info.hsl ?? baseColors.accent[500].hsl,
     },
     spacing: {
       xs: "0.25rem",

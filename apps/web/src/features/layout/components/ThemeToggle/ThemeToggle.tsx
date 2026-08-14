@@ -1,5 +1,5 @@
 // src/components/ThemeToggle/ThemeToggle.tsx
-import React, { useCallback, useRef, useEffect } from "react";
+import React, { useCallback } from "react";
 import { Moon, Sun, Palette, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,25 +15,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeName } from "@/theme";
 import { useTheme } from "@/theme/hooks";
-
-// Define color schemes outside the component to avoid recreation
-const COLOR_SCHEMES: { label: string; value: ThemeName }[] = [
-  { label: "Classic", value: "classic" },
-  { label: "Forest", value: "forest" },
-  { label: "Ocean", value: "ocean" },
-  { label: "Phoenix", value: "phoenix" },
-  { label: "Lavender", value: "lavender" },
-  { label: "Cloud", value: "cloud" },
-];
+import { AVAILABLE_THEME_ENTRIES } from "@/theme/constants/themes/catalog";
 
 const ThemeToggle: React.FC = () => {
-  // Use refs to store the current theme state to avoid re-renders
-  const themeRef = useRef<{
-    mode: "light" | "dark";
-    useSystemMode: boolean;
-    colorScheme: ThemeName;
-  }>({ mode: "light", useSystemMode: false, colorScheme: "classic" });
-
   // Get theme functions from context
   const {
     themeMode,
@@ -43,15 +27,6 @@ const ThemeToggle: React.FC = () => {
     setTheme: setThemeClasses,
     setUseSystemMode,
   } = useTheme();
-
-  // Update the ref when theme state changes
-  useEffect(() => {
-    themeRef.current = {
-      mode: themeMode,
-      useSystemMode,
-      colorScheme: themeName,
-    };
-  }, [themeMode, useSystemMode, themeName]);
 
   // Memoize handlers to prevent recreation on each render
   const handleSetMode = useCallback(
@@ -117,21 +92,21 @@ const ThemeToggle: React.FC = () => {
             Color Scheme
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            {COLOR_SCHEMES.map((scheme) => (
+            {AVAILABLE_THEME_ENTRIES.map((scheme) => (
               <DropdownMenuItem
-                key={scheme.value}
-                onClick={() => handleSetThemeClasses(scheme.value)}
+                key={scheme.id}
+                onClick={() => handleSetThemeClasses(scheme.id)}
                 className="flex items-center"
               >
                 <div className="relative w-4 h-4 rounded-full mr-2 border border-muted">
-                  {themeName === scheme.value && (
+                  {themeName === scheme.id && (
                     <div
                       className="absolute inset-0 rounded-full"
                       style={{ backgroundColor: "hsl(var(--color-primary))" }}
                     />
                   )}
                 </div>
-                {scheme.label}
+                {scheme.displayName}
               </DropdownMenuItem>
             ))}
           </DropdownMenuSubContent>

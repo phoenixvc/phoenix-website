@@ -78,9 +78,22 @@ export interface ThemeVariables {
     colors: {
       primary: string;
       secondary: string;
+      accent: string;
       background: string;
       text: string;
+      textSecondary: string;
+      muted: string;
       border: string;
+      surface: string;
+      overlay: string;
+      hover: string;
+      active: string;
+      focus: string;
+      disabled: string;
+      success: string;
+      warning: string;
+      error: string;
+      info: string;
     };
     /** Spacing tokens */
     spacing: Record<string, string>;

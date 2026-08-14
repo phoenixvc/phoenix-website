@@ -11,6 +11,7 @@ import ThemeProviderInner from "./ThemeProviderInner";
 import { createThemeRegistry } from "@/theme/registry/theme-registry";
 import { ThemeCore } from "@/theme/core/theme-core";
 import { ThemeStateManager } from "../core";
+import { ThemeAcquisitionManager } from "../managers/theme-acquisition-manager";
 // Add this function to ThemeProvider.tsx or create a utility file
 
 /**
@@ -58,6 +59,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = (props) => {
 
     // Create the registries
     const fullThemeRegistry = createThemeRegistry(themeRegistry);
+    ThemeAcquisitionManager.getInstance().setThemeRegistry(fullThemeRegistry);
 
     // Initialize the theme core with the registries
     themeCore.initializeRegistries({

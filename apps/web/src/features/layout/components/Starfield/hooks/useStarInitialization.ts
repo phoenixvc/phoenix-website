@@ -10,6 +10,7 @@ import { initPlanets } from "../Planets";
 import { resetConnectionStagger } from "../stars";
 import { BlackHole, DebugSettings, Planet, Star } from "../types";
 import { logger } from "@/utils/logger";
+import { createSeededRandom } from "../utils";
 
 // Default values for planet/employee star properties (matching Starfield.tsx defaults)
 const DEFAULT_ENABLE_PLANETS = true;
@@ -43,6 +44,7 @@ interface StarInitializationProps {
   employeeStarSize?: number;
   debugSettings: DebugSettings;
   cancelAnimation: () => void;
+  randomSeed?: number;
 }
 
 export const useStarInitialization = ({
@@ -64,6 +66,7 @@ export const useStarInitialization = ({
   employeeStarSize,
   debugSettings,
   cancelAnimation,
+  randomSeed,
 }: StarInitializationProps): {
   stars: Star[];
   starsRef: React.MutableRefObject<Star[]>;
@@ -107,6 +110,7 @@ export const useStarInitialization = ({
       _centerOffsetY: number = 0,
       starSize: number = 1.0,
       colorScheme: string = "white",
+      random: () => number = Math.random,
     ): Star[] => {
       logger.debug(`Initializing ${starCount} stars with size ${starSize}`);
 
@@ -119,15 +123,15 @@ export const useStarInitialization = ({
 
       for (let i = 0; i < starCount; i++) {
         // Position stars within the effective width (after sidebar)
-        const x = sidebarWidth + Math.random() * effectiveWidth;
-        const y = Math.random() * height;
+        const x = sidebarWidth + random() * effectiveWidth;
+        const y = random() * height;
 
         // Random size with weighted distribution (more small stars)
-        const sizeMultiplier = Math.pow(Math.random(), 2) * 2 + 0.5;
+        const sizeMultiplier = Math.pow(random(), 2) * 2 + 0.5;
         const size = sizeMultiplier * starSize;
 
         // Random color from palette
-        const color = colors[Math.floor(Math.random() * colors.length)];
+        const color = colors[Math.floor(random() * colors.length)];
 
         // Create star with small initial velocity
         stars.push({
@@ -135,12 +139,12 @@ export const useStarInitialization = ({
           y,
           size,
           color,
-          vx: (Math.random() - 0.5) * 0.05, // Small random initial velocity
-          vy: (Math.random() - 0.5) * 0.05, // Small random initial velocity
+          vx: (random() - 0.5) * 0.05, // Small random initial velocity
+          vy: (random() - 0.5) * 0.05, // Small random initial velocity
           originalX: x,
           originalY: y,
           mass: size * 2,
-          speed: Math.random() * 0.05, // Small random speed
+          speed: random() * 0.05, // Small random speed
           isActive: false,
           lastPushed: 0,
           targetVx: 0,
@@ -204,6 +208,7 @@ export const useStarInitialization = ({
       centerOffsetY,
       starSize,
       colorScheme,
+      randomSeed === undefined ? Math.random : createSeededRandom(randomSeed),
     );
 
     // Initialize black holes
@@ -219,6 +224,9 @@ export const useStarInitialization = ({
       particleSpeed,
       colorScheme,
       starSize,
+      randomSeed === undefined
+        ? Math.random
+        : createSeededRandom(randomSeed + 1000),
     );
 
     // Initialize employee stars with extremely slow orbit speeds
@@ -231,6 +239,10 @@ export const useStarInitialization = ({
       centerOffsetX,
       centerOffsetY,
       effectivePlanetSize,
+      false,
+      randomSeed === undefined
+        ? Math.random
+        : createSeededRandom(randomSeed + 2000),
     );
 
     // Modify employee stars to have extremely slow orbit speeds
@@ -275,6 +287,7 @@ export const useStarInitialization = ({
     effectivePlanetSize,
     initializeStarsWithLowVelocity,
     debugSettings.employeeOrbitSpeed,
+    randomSeed,
     canvasRef,
     dimensionsRef,
   ]);
@@ -300,12 +313,33 @@ export const useStarInitialization = ({
 
         for (let i = 0; i < 100; i++) {
           fallbackStars.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            size: Math.random() * 2 + 1,
+            x:
+              (randomSeed === undefined
+                ? Math.random()
+                : createSeededRandom(randomSeed + i)()) * width,
+            y:
+              (randomSeed === undefined
+                ? Math.random()
+                : createSeededRandom(randomSeed + 100 + i)()) * height,
+            size:
+              (randomSeed === undefined
+                ? Math.random()
+                : createSeededRandom(randomSeed + 200 + i)()) *
+                2 +
+              1,
             color: "rgba(255, 255, 255, 0.8)",
-            vx: (Math.random() - 0.5) * 0.05,
-            vy: (Math.random() - 0.5) * 0.05,
+            vx:
+              ((randomSeed === undefined
+                ? Math.random()
+                : createSeededRandom(randomSeed + 300 + i)()) -
+                0.5) *
+              0.05,
+            vy:
+              ((randomSeed === undefined
+                ? Math.random()
+                : createSeededRandom(randomSeed + 400 + i)()) -
+                0.5) *
+              0.05,
             originalX: 0,
             originalY: 0,
             mass: 1,
@@ -327,7 +361,7 @@ export const useStarInitialization = ({
     }
 
     return starsRef.current;
-  }, [initializeElements, dimensionsRef]);
+  }, [initializeElements, dimensionsRef, randomSeed]);
 
   // Function to reset all stars
   const resetStars = useCallback((): void => {
@@ -364,6 +398,7 @@ export const useStarInitialization = ({
       centerOffsetY,
       starSize,
       colorScheme,
+      randomSeed === undefined ? Math.random : createSeededRandom(randomSeed),
     );
 
     logger.debug(`Created ${newStars.length} stars`);
@@ -392,6 +427,7 @@ export const useStarInitialization = ({
     initializeElements,
     cancelAnimation,
     dimensionsRef,
+    randomSeed,
   ]);
 
   return {

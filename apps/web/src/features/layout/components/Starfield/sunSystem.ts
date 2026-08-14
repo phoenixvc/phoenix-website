@@ -1,6 +1,6 @@
 // sunSystem.ts - Dynamic sun positioning with gravitational interactions
 import { SUNS } from "./cosmos/cosmicHierarchy";
-import { getDailySeededRandom } from "./utils";
+import { createSeededRandom, getDailySeededRandom } from "./utils";
 import { SUN_PHYSICS } from "./physicsConfig";
 import { getFrameTime } from "./frameCache";
 import { hexToRgbSafe, lightenRgb } from "./colorUtils";
@@ -69,15 +69,13 @@ export interface SunState {
  */
 function generateRandomSunPositions(
   count: number,
+  random: () => number = getDailySeededRandom(2000),
 ): Array<{ x: number; y: number }> {
   const positions: Array<{ x: number; y: number }> = [];
   const maxAttempts = SUN_PHYSICS.maxPositionAttempts;
   const edgePadding = SUN_PHYSICS.edgePadding;
   const minDistance = SUN_PHYSICS.minDistance;
   const sidebarOffset = SUN_PHYSICS.sidebarOffset;
-
-  // Use seeded random for consistent daily layouts (offset 2000 for suns)
-  const random = getDailySeededRandom(2000);
 
   for (let i = 0; i < count; i++) {
     let attempts = 0;
@@ -127,6 +125,11 @@ export const INITIAL_SUN_POSITIONS = generateRandomSunPositions(4);
 // Global sun state (mutable for animation)
 let sunStates: SunState[] = [];
 let systemStartTime = 0;
+let deterministicSeed: number | undefined;
+
+export function setSunSystemSeed(seed: number | undefined): void {
+  deterministicSeed = seed;
+}
 
 // Initialize sun states
 export function initializeSunStates(): void {
@@ -134,27 +137,38 @@ export function initializeSunStates(): void {
     (sun) => sun.parentId === "focus-areas-galaxy",
   );
   systemStartTime = Date.now();
+  const random =
+    deterministicSeed === undefined
+      ? Math.random
+      : createSeededRandom(deterministicSeed + 3000);
+  const initialPositions =
+    deterministicSeed === undefined
+      ? INITIAL_SUN_POSITIONS
+      : generateRandomSunPositions(
+          focusAreaSuns.length,
+          createSeededRandom(deterministicSeed + 2000),
+        );
 
   sunStates = focusAreaSuns.map((sun, index) => {
-    const pos = INITIAL_SUN_POSITIONS[index % INITIAL_SUN_POSITIONS.length];
+    const pos = initialPositions[index % initialPositions.length];
 
     // Create unique drift parameters for each sun so they move independently
-    const driftPhaseX = Math.random() * TWO_PI; // Random starting phase
-    const driftPhaseY = Math.random() * TWO_PI;
+    const driftPhaseX = random() * TWO_PI; // Random starting phase
+    const driftPhaseY = random() * TWO_PI;
     const driftSpeedX =
       SUN_PHYSICS.driftSpeedMin +
-      Math.random() * (SUN_PHYSICS.driftSpeedMax - SUN_PHYSICS.driftSpeedMin);
+      random() * (SUN_PHYSICS.driftSpeedMax - SUN_PHYSICS.driftSpeedMin);
     const driftSpeedY =
       SUN_PHYSICS.driftSpeedMin +
-      Math.random() * (SUN_PHYSICS.driftSpeedMax - SUN_PHYSICS.driftSpeedMin);
+      random() * (SUN_PHYSICS.driftSpeedMax - SUN_PHYSICS.driftSpeedMin);
     // Vary the speed slightly so X and Y don't sync up
     const driftAmplitudeX =
       SUN_PHYSICS.driftAmplitudeMin +
-      Math.random() *
+      random() *
         (SUN_PHYSICS.driftAmplitudeMax - SUN_PHYSICS.driftAmplitudeMin);
     const driftAmplitudeY =
       SUN_PHYSICS.driftAmplitudeMin +
-      Math.random() *
+      random() *
         (SUN_PHYSICS.driftAmplitudeMax - SUN_PHYSICS.driftAmplitudeMin);
 
     // Staggered activation - first sun (index 0) starts first, others wait longer with random delays
@@ -164,7 +178,7 @@ export function initializeSunStates(): void {
       ? systemStartTime + SUN_PHYSICS.activationDelayMin
       : systemStartTime +
         SUN_PHYSICS.activationDelayMin +
-        Math.random() *
+        random() *
           (SUN_PHYSICS.activationDelayMax - SUN_PHYSICS.activationDelayMin);
 
     // Pre-compute RGB values and lightened colors once at initialization
@@ -211,7 +225,7 @@ export function initializeSunStates(): void {
       baseX: pos.x,
       baseY: pos.y,
       size: sun.size,
-      rotationAngle: Math.random() * TWO_PI,
+      rotationAngle: random() * TWO_PI,
       rotationSpeed: 0.00001,
       isPropelling: false,
       propelTimer: 0,

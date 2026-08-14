@@ -41,6 +41,20 @@
   cursor: pointer; /* Add this to show it's clickable */
 }
 
+.starfieldWrapper[data-motion="reduced"] .starfieldBackground,
+.starfieldWrapper[data-motion="reduced"] .nebulaOverlay,
+.starfieldWrapper[data-motion="reduced"] .frontierAccent,
+.starfieldWrapper[data-motion="reduced"] .purpleAccent,
+.starfieldWrapper[data-motion="reduced"] .starfieldCanvas {
+  animation: none;
+}
+
+.starfieldWrapper[data-motion="reduced"] .starfieldCanvas {
+  cursor: default;
+  pointer-events: none;
+  opacity: 1;
+}
+
 .starfieldWrapper .debugControls,
 .starfieldWrapper .debugIndicator,
 .starfieldWrapper button,
@@ -50,8 +64,16 @@
 
 /* Update these z-index values to positive numbers */
 .starfieldBackground {
-  background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
-  background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+  background-size:
+    550px 550px,
+    350px 350px,
+    250px 250px,
+    150px 150px;
+  background-position:
+    0 0,
+    40px 60px,
+    130px 270px,
+    70px 100px;
   animation: starfieldMotion 200s linear infinite;
   z-index: 1; /* Changed from -2 to 1 */
   pointer-events: none; /* Allow clicks to pass through to canvas */
@@ -163,7 +185,11 @@
   left: -10%;
   width: 40%;
   height: 40%;
-  background: radial-gradient(ellipse at center, rgba(76, 0, 153, 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(76, 0, 153, 0.08) 0%,
+    transparent 70%
+  );
   filter: blur(80px);
   z-index: 1;
   pointer-events: none; /* Allow clicks to pass through to canvas */
@@ -172,8 +198,20 @@
 /* Canvas styles consolidated in first .starfieldCanvas definition */
 
 @keyframes starfieldMotion {
-  0% { background-position: 0 0, 40px 60px, 130px 270px, 70px 100px; }
-  100% { background-position: 550px 550px, 390px 410px, 380px 520px, 220px 250px; }
+  0% {
+    background-position:
+      0 0,
+      40px 60px,
+      130px 270px,
+      70px 100px;
+  }
+  100% {
+    background-position:
+      550px 550px,
+      390px 410px,
+      380px 520px,
+      220px 250px;
+  }
 }
 
 /* Dark Mode Styles (default) - Enhanced with more purple to match the menu */
@@ -190,21 +228,41 @@
 .starfieldBackground {
   background-color: var(--background-color);
   background-image:
-    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-    radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-    radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
-    radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
+    radial-gradient(white, rgba(255, 255, 255, 0.2) 2px, transparent 40px),
+    radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 30px),
+    radial-gradient(white, rgba(255, 255, 255, 0.1) 2px, transparent 40px),
+    radial-gradient(
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0.1) 2px,
+      transparent 30px
+    );
 }
 
 .nebulaOverlay {
   background-image:
-    radial-gradient(circle at 20% 80%, var(--nebula-primary) 0%, transparent 40%),
-    radial-gradient(circle at 80% 10%, var(--nebula-secondary) 0%, transparent 35%),
-    radial-gradient(circle at 60% 60%, var(--nebula-tertiary) 0%, transparent 45%);
+    radial-gradient(
+      circle at 20% 80%,
+      var(--nebula-primary) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      var(--nebula-secondary) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 60% 60%,
+      var(--nebula-tertiary) 0%,
+      transparent 45%
+    );
 }
 
 .frontierAccent {
-  background: radial-gradient(ellipse at center, var(--frontier-glow) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    var(--frontier-glow) 0%,
+    transparent 70%
+  );
 }
 
 /* Additional purple accents that match the menu */
@@ -214,7 +272,11 @@
   left: 5%;
   width: 30%;
   height: 30%;
-  background: radial-gradient(ellipse at center, rgba(138, 43, 226, 0.05) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(138, 43, 226, 0.05) 0%,
+    transparent 70%
+  );
   filter: blur(50px);
   z-index: -1;
 }
@@ -238,25 +300,61 @@
 .starfieldBackground.light {
   background-color: #f0f4f8;
   background-image:
-    radial-gradient(rgba(30,64,175,.3), rgba(30,64,175,.1) 2px, transparent 40px),
-    radial-gradient(rgba(30,64,175,.25), rgba(30,64,175,.08) 1px, transparent 30px),
-    radial-gradient(rgba(30,64,175,.2), rgba(30,64,175,.05) 2px, transparent 40px),
-    radial-gradient(rgba(30,64,175,.15), rgba(30,64,175,.03) 2px, transparent 30px);
+    radial-gradient(
+      rgba(30, 64, 175, 0.3),
+      rgba(30, 64, 175, 0.1) 2px,
+      transparent 40px
+    ),
+    radial-gradient(
+      rgba(30, 64, 175, 0.25),
+      rgba(30, 64, 175, 0.08) 1px,
+      transparent 30px
+    ),
+    radial-gradient(
+      rgba(30, 64, 175, 0.2),
+      rgba(30, 64, 175, 0.05) 2px,
+      transparent 40px
+    ),
+    radial-gradient(
+      rgba(30, 64, 175, 0.15),
+      rgba(30, 64, 175, 0.03) 2px,
+      transparent 30px
+    );
 }
 
 .nebulaOverlay.light {
   background-image:
-    radial-gradient(circle at 20% 80%, rgba(111, 0, 255, 0.03) 0%, transparent 40%),
-    radial-gradient(circle at 80% 10%, rgba(0, 183, 255, 0.025) 0%, transparent 35%),
-    radial-gradient(circle at 60% 60%, rgba(255, 0, 128, 0.02) 0%, transparent 45%);
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(111, 0, 255, 0.03) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(0, 183, 255, 0.025) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 60% 60%,
+      rgba(255, 0, 128, 0.02) 0%,
+      transparent 45%
+    );
 }
 
 .frontierAccent.light {
-  background: radial-gradient(ellipse at center, rgba(72, 61, 139, 0.04) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(72, 61, 139, 0.04) 0%,
+    transparent 70%
+  );
 }
 
 .purpleAccent.light {
-  background: radial-gradient(ellipse at center, rgba(138, 43, 226, 0.02) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(138, 43, 226, 0.02) 0%,
+    transparent 70%
+  );
 }
 
 .lightMode {
@@ -264,13 +362,22 @@
 }
 
 @keyframes pulse {
-  from { opacity: 0.3; }
-  to { opacity: 1; }
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.1); }
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
 }
 
 /* Make debug controls always on top and clickable */
@@ -444,35 +551,55 @@
 }
 
 .fadeOut {
-  animation: fadeOut 0.5s ease-in-out;
+  animation: fade-out 0.5s ease-in-out;
 }
 
 .zoomIn {
-  animation: zoomIn 0.5s ease-in-out;
+  animation: zoom-in 0.5s ease-in-out;
 }
 
 .zoomOut {
-  animation: zoomOut 0.5s ease-in-out;
+  animation: zoom-out 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
-@keyframes zoomIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@keyframes zoom-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-@keyframes zoomOut {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(1.2); opacity: 0; }
+@keyframes zoom-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.2);
+    opacity: 0;
+  }
 }
 
 /* Object labels */
@@ -593,7 +720,11 @@
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -736,14 +867,29 @@
 }
 
 @keyframes fadeInOut {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-10px); }
-  60% { transform: translateY(-5px); }
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
 }
 
 /* Starfield canvas - consolidated in first definition */
@@ -878,7 +1024,11 @@
   transform: translateX(-50%);
   z-index: 50; /* Below header (z-index: 1000) but above starfield */
   padding: 12px 24px;
-  background: linear-gradient(135deg, rgba(25, 20, 40, 0.95) 0%, rgba(35, 25, 55, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(25, 20, 40, 0.95) 0%,
+    rgba(35, 25, 55, 0.95) 100%
+  );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(157, 78, 221, 0.5);
@@ -892,24 +1042,40 @@
   gap: 8px;
   box-shadow: 0 8px 32px rgba(157, 78, 221, 0.3);
   transition: all 0.3s ease;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 .zoomOutButton:hover {
-  background: linear-gradient(135deg, rgba(35, 30, 55, 0.98) 0%, rgba(45, 35, 70, 0.98) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(35, 30, 55, 0.98) 0%,
+    rgba(45, 35, 70, 0.98) 100%
+  );
   box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
   transform: translateX(-50%) scale(1.02);
 }
 
 .zoomOutButtonLight {
-  background: linear-gradient(135deg, rgba(250, 248, 255, 0.95) 0%, rgba(240, 235, 255, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(250, 248, 255, 0.95) 0%,
+    rgba(240, 235, 255, 0.95) 100%
+  );
   border: 1px solid rgba(123, 44, 191, 0.3);
   color: rgba(30, 30, 50, 0.9);
   box-shadow: 0 8px 32px rgba(123, 44, 191, 0.2);
 }
 
 .zoomOutButtonLight:hover {
-  background: linear-gradient(135deg, rgba(245, 240, 255, 0.98) 0%, rgba(235, 228, 255, 0.98) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(245, 240, 255, 0.98) 0%,
+    rgba(235, 228, 255, 0.98) 100%
+  );
   box-shadow: 0 12px 40px rgba(123, 44, 191, 0.3);
 }
 
@@ -926,7 +1092,7 @@
   bottom: 0;
   pointer-events: none;
   z-index: 45; /* Below zoom out button (50) but above starfield */
-  
+
   /* Subtle vignette effect - darker edges, clear center */
   background: radial-gradient(
     ellipse at center,
@@ -935,13 +1101,14 @@
     rgba(20, 15, 35, 0.3) 70%,
     rgba(10, 5, 20, 0.5) 100%
   );
-  
+
   /* Add a subtle animated pulse to show camera is active */
-  animation: vignettePulse 3s ease-in-out infinite;
+  animation: vignette-pulse 3s ease-in-out infinite;
 }
 
-@keyframes vignettePulse {
-  0%, 100% {
+@keyframes vignette-pulse {
+  0%,
+  100% {
     opacity: 0.8;
   }
   50% {
@@ -966,7 +1133,7 @@
   right: 20px;
   z-index: 48; /* Below zoom out button (50) */
   pointer-events: none;
-  
+
   /* Fade in animation */
   animation: focusIndicatorFadeIn 0.4s ease-out forwards;
 }
@@ -987,30 +1154,38 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  
   /* Glass morphism effect */
-  background: linear-gradient(135deg, rgba(25, 20, 40, 0.85) 0%, rgba(35, 25, 55, 0.85) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(25, 20, 40, 0.85) 0%,
+    rgba(35, 25, 55, 0.85) 100%
+  );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  
   border: 1px solid rgba(157, 78, 221, 0.3);
   border-radius: 20px;
-  
   color: rgba(255, 255, 255, 0.95);
   font-size: 13px;
   font-weight: 500;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  
-  box-shadow: 
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  box-shadow:
     0 4px 16px rgba(157, 78, 221, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .focusAreaIndicatorLight .focusAreaLabel {
-  background: linear-gradient(135deg, rgba(250, 248, 255, 0.9) 0%, rgba(240, 235, 255, 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(250, 248, 255, 0.9) 0%,
+    rgba(240, 235, 255, 0.9) 100%
+  );
   border: 1px solid rgba(123, 44, 191, 0.25);
   color: rgba(30, 30, 50, 0.95);
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(123, 44, 191, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }

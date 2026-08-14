@@ -31,6 +31,8 @@ export interface DebugSettings {
 }
 
 export interface AnimationProps {
+  paused?: boolean;
+  fixedTimestamp?: number;
   mousePosition: {
     x: number;
     y: number;
@@ -116,7 +118,16 @@ export interface AnimationProps {
   projectTooltipElementRef?: MutableRefObject<HTMLDivElement | null>; // Ref to the project tooltip DOM element for accurate position checking
   sunTooltipElementRef?: MutableRefObject<HTMLDivElement | null>; // Ref to the sun tooltip DOM element for accurate position checking
   setHoveredSunId?: (sunId: string | null) => void; // Callback to update hovered sun ID
-  setHoveredSun?: (sun: { id: string; name: string; description?: string; color: string; x: number; y: number } | null) => void; // Callback to update hovered sun info
+  setHoveredSun?: (
+    sun: {
+      id: string;
+      name: string;
+      description?: string;
+      color: string;
+      x: number;
+      y: number;
+    } | null,
+  ) => void; // Callback to update hovered sun info
   cameraRef?: MutableRefObject<{ cx: number; cy: number; zoom: number }>; // Ref for synchronous camera access
   sidebarWidth?: number; // Width of sidebar for centering calculations
 }

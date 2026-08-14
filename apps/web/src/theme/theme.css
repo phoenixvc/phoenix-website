@@ -35,9 +35,9 @@
   /* Base (Classic) Theme - Light */
   :root {
     /* Base colors */
-    --background: 210 20% 98%;      /* near #f5f7fa */
+    --background: 210 20% 98%; /* near #f5f7fa */
     --alternate-background: 210 25% 85%;
-    --foreground: 210 20% 15%;        /* near #262a2f */
+    --foreground: 210 20% 15%; /* near #262a2f */
     --color-text: 210 20% 15%;
 
     /* Component backgrounds */
@@ -77,9 +77,9 @@
 
   /* Base (Classic) Theme - Dark Overrides */
   .dark {
-    --background: 222.2 84% 4.9%;       /* ~ #1f2937 */
-    --alternate-background: #2D1B2D;
-    --foreground: 210 40% 98%;          /* ~ #f1f5f9 */
+    --background: 222.2 84% 4.9%; /* ~ #1f2937 */
+    --alternate-background: #2d1b2d;
+    --foreground: 210 40% 98%; /* ~ #f1f5f9 */
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
@@ -104,7 +104,7 @@
     --chart-5: 340 75% 55%;
     --shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     --backdrop-blur: 8px;
-    --color-shadow: #6C757D;
+    --color-shadow: #6c757d;
   }
 
   /* Apply base background and text */
@@ -220,6 +220,27 @@
     --theme-cloud-dark-border: 217.2 32.6% 17.5%;
     --theme-cloud-dark-hover: 217.2 32.6% 20%;
     --theme-cloud-dark-active: 217.2 32.6% 15%;
+
+    /* Cosmic Frontier Theme */
+    --theme-cosmic-light-primary: 258 84.20454907965677% 64.88340192043897%;
+    --theme-cosmic-light-secondary: 239 78.55660453481802% 64.88340192043897%;
+    --theme-cosmic-light-accent: 199 83.38548174805483% 64.88340192043897%;
+    --theme-cosmic-light-background: 218 57.14285714285723% 97.25490196078432%;
+    --theme-cosmic-light-text: 225 43.20987654320989% 15.88235294117647%;
+    --theme-cosmic-light-muted: 225 19.678714859437754% 48.82352941176471%;
+    --theme-cosmic-light-border: 224 46.428571428571416% 89.01960784313725%;
+    --theme-cosmic-light-hover: 233 100% 96.66666666666667%;
+    --theme-cosmic-light-active: 254 68.75% 93.72549019607843%;
+
+    --theme-cosmic-dark-primary: 258 84.20454907965677% 64.88340192043897%;
+    --theme-cosmic-dark-secondary: 239 78.55660453481802% 64.88340192043897%;
+    --theme-cosmic-dark-accent: 199 83.38548174805483% 64.88340192043897%;
+    --theme-cosmic-dark-background: 229 50% 6.2745098039215685%;
+    --theme-cosmic-dark-text: 224 100% 97.84313725490196%;
+    --theme-cosmic-dark-muted: 225 25.96685082872929% 64.50980392156863%;
+    --theme-cosmic-dark-border: 227 32.78688524590164% 23.921568627450977%;
+    --theme-cosmic-dark-hover: 249 37.86407766990291% 20.19607843137255%;
+    --theme-cosmic-dark-active: 215 53.06122448979591% 19.215686274509807%;
   }
 }
 
@@ -373,6 +394,30 @@
     --color-hover: var(--theme-cloud-dark-hover);
     --color-active: var(--theme-cloud-dark-active);
   }
+
+  /* Cosmic Frontier Theme */
+  .theme-cosmic-frontier-light {
+    --color-primary: var(--theme-cosmic-light-primary);
+    --color-secondary: var(--theme-cosmic-light-secondary);
+    --color-accent: var(--theme-cosmic-light-accent);
+    --color-background: var(--theme-cosmic-light-background);
+    --color-text: var(--theme-cosmic-light-text);
+    --color-muted: var(--theme-cosmic-light-muted);
+    --color-border: var(--theme-cosmic-light-border);
+    --color-hover: var(--theme-cosmic-light-hover);
+    --color-active: var(--theme-cosmic-light-active);
+  }
+  .theme-cosmic-frontier-dark {
+    --color-primary: var(--theme-cosmic-dark-primary);
+    --color-secondary: var(--theme-cosmic-dark-secondary);
+    --color-accent: var(--theme-cosmic-dark-accent);
+    --color-background: var(--theme-cosmic-dark-background);
+    --color-text: var(--theme-cosmic-dark-text);
+    --color-muted: var(--theme-cosmic-dark-muted);
+    --color-border: var(--theme-cosmic-dark-border);
+    --color-hover: var(--theme-cosmic-dark-hover);
+    --color-active: var(--theme-cosmic-dark-active);
+  }
 }
 
 /* 5. Base styles (to ensure Tailwind and custom styles play nicely) */
@@ -518,9 +563,9 @@
   }
 }
 
-  /* Accessibility: Add a clear focus indicator for keyboard users */
-  *:focus-visible {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
-    border-radius: var(--radius);
-  }
+/* Accessibility: Add a clear focus indicator for keyboard users */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}

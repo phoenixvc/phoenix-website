@@ -7,7 +7,12 @@
   z-index: 1000 !important; /* High z-index to ensure it's above the starfield */
   transition: all 0.3s ease;
   height: 70px;
-  background-color: rgba(13, 14, 30, 0.92); /* Increased opacity for better text visibility */
+  background-color: rgba(
+    13,
+    14,
+    30,
+    0.92
+  ); /* Increased opacity for better text visibility */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(99, 123, 255, 0.15); /* Slightly more visible border */
@@ -20,8 +25,9 @@
   background-color: rgba(13, 14, 30, 0.75);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15),
-              0 0 10px rgba(99, 123, 255, 0.05); /* Added subtle blue glow */
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.15),
+    0 0 10px rgba(99, 123, 255, 0.05); /* Added subtle blue glow */
 }
 
 .headerContainer {
@@ -76,7 +82,11 @@
 .header .logoText {
   font-size: 1.25rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #9333ea 0%, #ff6b00 100%); /* Magenta to purple gradient */
+  background: linear-gradient(
+    90deg,
+    #9333ea 0%,
+    #ff6b00 100%
+  ); /* Magenta to purple gradient */
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -160,15 +170,26 @@
 
 /* Light mode header styles - UPDATED FOR BETTER TEXT VISIBILITY */
 .header.lightMode {
-  background-color: rgba(252, 253, 255, 0.95); /* Higher opacity for better text contrast */
+  background-color: rgba(
+    252,
+    253,
+    255,
+    0.95
+  ); /* Higher opacity for better text contrast */
   border-bottom: 1px solid rgba(99, 123, 255, 0.12);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Slightly stronger shadow */
 }
 
 .headerScrolled.lightMode {
-  background-color: rgba(252, 253, 255, 0.7); /* Even more transparent when scrolled */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04),
-              0 0 10px rgba(99, 123, 255, 0.02);
+  background-color: rgba(
+    252,
+    253,
+    255,
+    0.7
+  ); /* Even more transparent when scrolled */
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.04),
+    0 0 10px rgba(99, 123, 255, 0.02);
 }
 
 .lightMode .menuButton,
@@ -209,7 +230,8 @@
   box-shadow: 0 0 8px rgba(147, 51, 234, 0.3); /* Reduced glow for light mode */
 }
 
-@media (max-width: 768px) {/* header.module.css */
+@media (max-width: 768px) {
+  /* header.module.css */
   .header {
     position: fixed;
     top: 0;
@@ -218,7 +240,12 @@
     z-index: 1000 !important; /* High z-index to ensure it's above the starfield */
     transition: all 0.3s ease;
     height: 70px;
-    background-color: rgba(13, 14, 30, 0.85); /* Darker, more saturated with less opacity */
+    background-color: rgba(
+      13,
+      14,
+      30,
+      0.85
+    ); /* Darker, more saturated with less opacity */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(99, 123, 255, 0.1); /* Subtle blue glow border */
@@ -231,8 +258,9 @@
     background-color: rgba(13, 14, 30, 0.75);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15),
-                0 0 10px rgba(99, 123, 255, 0.05); /* Added subtle blue glow */
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.15),
+      0 0 10px rgba(99, 123, 255, 0.05); /* Added subtle blue glow */
   }
 
   .headerContainer {
@@ -266,7 +294,12 @@
 
   .menuButton:hover {
     color: rgba(255, 255, 255, 1);
-    background-color: rgba(147, 51, 234, 0.2); /* Phoenix purple glow on hover */
+    background-color: rgba(
+      147,
+      51,
+      234,
+      0.2
+    ); /* Phoenix purple glow on hover */
   }
 
   .logoContainer {
@@ -278,7 +311,11 @@
   .logoText {
     font-size: 1.25rem;
     font-weight: 700;
-    background: linear-gradient(90deg, #fff 30%, #ff6b00 100%); /* Phoenix orange gradient */
+    background: linear-gradient(
+      90deg,
+      #fff 30%,
+      #ff6b00 100%
+    ); /* Phoenix orange gradient */
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -354,20 +391,36 @@
 
   .themeToggleButton:hover {
     color: rgba(255, 255, 255, 1);
-    background-color: rgba(147, 51, 234, 0.2); /* Phoenix purple glow on hover */
+    background-color: rgba(
+      147,
+      51,
+      234,
+      0.2
+    ); /* Phoenix purple glow on hover */
   }
 
   /* Light mode header styles - UPDATED FOR LIGHTER APPEARANCE */
   .header.lightMode {
-    background-color: rgba(252, 253, 255, 0.8); /* Much lighter, almost white background */
+    background-color: rgba(
+      252,
+      253,
+      255,
+      0.8
+    ); /* Much lighter, almost white background */
     border-bottom: 1px solid rgba(99, 123, 255, 0.08);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Lighter shadow */
   }
 
   .headerScrolled.lightMode {
-    background-color: rgba(252, 253, 255, 0.7); /* Even more transparent when scrolled */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04),
-                0 0 10px rgba(99, 123, 255, 0.02);
+    background-color: rgba(
+      252,
+      253,
+      255,
+      0.7
+    ); /* Even more transparent when scrolled */
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.04),
+      0 0 10px rgba(99, 123, 255, 0.02);
   }
 
   .lightMode .menuButton,
@@ -435,7 +488,9 @@
     align-items: center;
     justify-content: center;
     margin-left: 10px;
-    transition: background-color 0.2s, transform 0.2s;
+    transition:
+      background-color 0.2s,
+      transform 0.2s;
   }
 
   .iconButton:hover {
@@ -597,8 +652,9 @@
   min-width: 260px;
   background-color: rgba(20, 18, 40, 0.95);
   border-radius: 8px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
-              0 0 15px rgba(147, 51, 234, 0.15);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(147, 51, 234, 0.15);
   border: 1px solid rgba(147, 51, 234, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -609,8 +665,9 @@
 
 .lightMode .profileDropdown {
   background-color: rgba(252, 253, 255, 0.95);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-              0 0 15px rgba(147, 51, 234, 0.1);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 0 15px rgba(147, 51, 234, 0.1);
   border: 1px solid rgba(147, 51, 234, 0.15);
 }
 
@@ -679,7 +736,8 @@
 
 .dropdownDivider {
   height: 1px;
-  background: linear-gradient(90deg,
+  background: linear-gradient(
+    90deg,
     rgba(147, 51, 234, 0.1),
     rgba(147, 51, 234, 0.3) 50%,
     rgba(147, 51, 234, 0.1)
@@ -688,6 +746,7 @@
 }
 
 .dropdownItem {
+  width: 100%;
   padding: 12px 16px;
   display: flex;
   align-items: center;
@@ -696,6 +755,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
 }
 
 .lightMode .dropdownItem {
@@ -738,6 +801,7 @@
 }
 
 .themeOption {
+  width: 100%;
   padding: 10px 12px;
   display: flex;
   align-items: center;
@@ -747,20 +811,28 @@
   transition: all 0.2s ease;
   color: rgba(255, 255, 255, 0.8);
   position: relative;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
 }
 
 .lightMode .themeOption {
   color: rgba(13, 14, 30, 0.8);
 }
 
-.themeOption:hover:not(:has(.comingSoonBadge)) {
+.themeOption:not(:disabled):hover {
   background-color: rgba(147, 51, 234, 0.1);
   color: rgba(255, 255, 255, 1);
 }
 
-.lightMode .themeOption:hover:not(:has(.comingSoonBadge)) {
+.lightMode .themeOption:not(:disabled):hover {
   background-color: rgba(147, 51, 234, 0.05);
   color: rgba(13, 14, 30, 1);
+}
+
+.themeOption:disabled {
+  cursor: not-allowed;
 }
 
 .activeTheme {

@@ -12,6 +12,7 @@ import { themeValidationManager } from "./theme-validation-manager";
 import { ThemeAcquisitionManager } from "./theme-acquisition-manager";
 import { ThemeCacheService } from "../services/theme-cache-service";
 import { THEME_STORAGE_CONSTANTS } from "../constants/storage/theme-storage-constants";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 
 /**
  * Manages the global theme state using the Singleton pattern.
@@ -52,7 +53,7 @@ export class ThemeStateManager {
     // Then configure and initialize the state
     this.config = {
       ...config,
-      themeName: config.themeName || "classic",
+      themeName: config.themeName || DEFAULT_THEME_NAME,
       mode: config.mode || "dark",
       direction: config.direction || "ltr",
       version: config.version || "1.0.0",
@@ -122,7 +123,7 @@ export class ThemeStateManager {
    */
   private initializeState(): void {
     // Set defaults initially
-    this.currentThemeName = "classic";
+    this.currentThemeName = THEME_STORAGE_CONSTANTS.DEFAULTS.THEME_NAME;
     this.currentMode = "dark";
     this.systemMode = this.getInitialSystemMode();
     this.useSystem = false;
@@ -131,15 +132,19 @@ export class ThemeStateManager {
   private async getStoredOrDefaultThemeName(): Promise<ThemeName> {
     try {
       const storedTheme = await ThemeStorageManager.getThemeName();
-      return storedTheme && themeValidationManager.isValidThemeName(storedTheme)
-        ? storedTheme
-        : "classic";
+      if (storedTheme && themeValidationManager.isValidThemeName(storedTheme)) {
+        return storedTheme;
+      }
+
+      const defaultTheme = THEME_STORAGE_CONSTANTS.DEFAULTS.THEME_NAME;
+      await ThemeStorageManager.saveThemeName(defaultTheme);
+      return defaultTheme;
     } catch (error) {
       console.error(
         "[ThemeStateManager] Error getting stored theme name:",
         error,
       );
-      return "classic";
+      return THEME_STORAGE_CONSTANTS.DEFAULTS.THEME_NAME;
     }
   }
 
