@@ -1,79 +1,56 @@
+import { Theme, ThemeColors, ThemeScheme } from "@/theme/types";
+import { createTheme } from "@/theme/core/theme";
 import {
-  ComponentVariants,
-  Theme,
-  ThemeBorders,
-  ThemeBreakpoints,
-  ThemeColors,
-  ThemeConfig,
-  ThemeScheme,
-  ThemeShadows,
-  ThemeSpacing,
-  ThemeTransitions,
-  ThemeTypography,
-  ThemeVariables,
-  ThemeZIndex,
-} from "@/theme/types";
-import ColorUtils from "@/theme/utils/color-utils";
-import { bluePalette, createColor, grayPalette, redPalette } from "./colors";
+  createColor,
+  grayPalette,
+  redPalette,
+} from "./colors";
 import orangePalette from "./colors/orange";
 import yellowPalette from "./colors/yellow";
-import { defaultTheme } from "./default";
-
-// Type assertion for defaultTheme to make its properties accessible
-const typedDefaultTheme = defaultTheme as Omit<Theme, "colors"> & {
-  typography: ThemeTypography;
-  spacing: ThemeSpacing;
-  borders: ThemeBorders;
-  shadows: ThemeShadows;
-  breakpoints: ThemeBreakpoints;
-  transitions: ThemeTransitions;
-  zIndex: ThemeZIndex;
-  variables: ThemeVariables;
-  components: ComponentVariants;
-  config: ThemeConfig;
-};
+import { bluePalette } from "./colors/blue";
 
 /**
  * Phoenix Theme Color Scheme
- * A vibrant, energetic color scheme based on orange and red tones
+ * A vibrant, incandescent color scheme based on volcanic obsidian,
+ * molten amber, solar gold, and vermilion tones.
  */
 export const phoenixColorScheme: ThemeScheme = {
   base: {
     primary: orangePalette,
     secondary: redPalette,
-    accent: ColorUtils.createColorShades("#F97316"),
+    accent: yellowPalette,
     neutral: grayPalette,
     gray: grayPalette,
   },
   light: {
-    background: createColor("#FFFFFF"),
+    background: createColor("#FCF8F2"),
     text: {
-      primary: createColor("#0F172A"),
-      secondary: createColor("#64748B"),
+      primary: createColor("#1C130D"),
+      secondary: createColor("#785645"),
     },
-    muted: createColor("#64748B"),
-    border: createColor("#E2E8F0"),
-    surface: createColor("#F8FAFC"),
-    overlay: createColor("rgba(0, 0, 0, 0.5)"),
-    hover: createColor("rgba(249, 115, 22, 0.04)"),
-    active: createColor("rgba(249, 115, 22, 0.08)"),
-    focus: createColor("rgba(249, 115, 22, 0.5)"),
-    disabled: createColor("rgba(0, 0, 0, 0.26)"),
+    muted: createColor("#8C6B5A"),
+    border: createColor("#EADCCE"),
+    surface: createColor("#FFFFFF"),
+    overlay: createColor("#1C130D"),
+    hover: createColor("#FFF3E6"),
+    active: createColor("#FFE4CC"),
+    focus: createColor("#F97316"),
+    disabled: createColor("#B7BDCA"),
   },
   dark: {
-    background: createColor("#0F172A"),
+    background: createColor("#090708"),
     text: {
-      primary: createColor("#F8FAFC"),
-      secondary: createColor("#94A3B8"),
+      primary: createColor("#FFF5EE"),
+      secondary: createColor("#B89D91"),
     },
-    muted: createColor("#94A3B8"),
-    border: createColor("#334155"),
-    surface: createColor("#1E293B"),
-    overlay: createColor("rgba(0, 0, 0, 0.7)"),
-    hover: createColor("rgba(255, 255, 255, 0.08)"),
-    active: createColor("rgba(255, 255, 255, 0.16)"),
-    focus: createColor("rgba(249, 115, 22, 0.6)"),
-    disabled: createColor("rgba(255, 255, 255, 0.3)"),
+    muted: createColor("#8D766C"),
+    border: createColor("#2F1F1C"),
+    surface: createColor("#140E10"),
+    overlay: createColor("#040203"),
+    hover: createColor("#261411"),
+    active: createColor("#381B15"),
+    focus: createColor("#FB923C"),
+    disabled: createColor("#555968"),
   },
 };
 
@@ -82,52 +59,48 @@ export const phoenixColorScheme: ThemeScheme = {
  */
 export const phoenixColors: ThemeColors = {
   schemes: {
+    phoenix: phoenixColorScheme,
     default: phoenixColorScheme,
   },
   semantic: {
-    success: createColor(yellowPalette[500].hex),
-    warning: createColor(orangePalette[500].hex),
-    error: createColor(redPalette[500].hex),
+    success: createColor("#22C55E"),
+    warning: createColor("#F59E0B"),
+    error: createColor("#EF4444"),
     info: createColor(bluePalette[400].hex),
   },
 };
 
+const phoenixBaseTheme = createTheme(
+  {
+    name: "Phoenix",
+    themeName: "phoenix",
+    mode: "dark",
+    useSystem: false,
+    version: "1.0.0",
+  },
+  phoenixColors,
+);
+
 /**
  * Phoenix Theme
- * A vibrant, energetic theme with a focus on orange and red tones,
- * creating a warm and dynamic aesthetic.
+ * A vibrant, energetic theme with a focus on orange, vermilion, and obsidian tones,
+ * creating a warm and dynamic rebirth aesthetic.
  */
 export const phoenixTheme: Theme = {
-  ...typedDefaultTheme,
-  colors: phoenixColors,
+  ...phoenixBaseTheme,
   typography: {
+    ...phoenixBaseTheme.typography,
     fontFamily: {
-      base: "\"Nunito\", system-ui, sans-serif",
-      heading: "\"Raleway\", sans-serif",
-      monospace: "\"Fira Code\", monospace",
+      base: "'Outfit', system-ui, sans-serif",
+      heading: "'Space Grotesk', 'Outfit', system-ui, sans-serif",
+      monospace: "'Fira Code', monospace",
     },
-    fontSize: typedDefaultTheme.typography.fontSize,
-    fontWeight: typedDefaultTheme.typography.fontWeight,
-    lineHeight: typedDefaultTheme.typography.lineHeight,
-    letterSpacing: typedDefaultTheme.typography.letterSpacing,
-  },
-  borders: {
-    radius: {
-      none: typedDefaultTheme.borders.radius.none,
-      sm: typedDefaultTheme.borders.radius.sm,
-      md: "0.25rem",
-      lg: typedDefaultTheme.borders.radius.lg,
-      full: typedDefaultTheme.borders.radius.full,
-    },
-    width: typedDefaultTheme.borders.width,
-    style: typedDefaultTheme.borders.style,
   },
   shadows: {
-    none: typedDefaultTheme.shadows.none,
-    sm: typedDefaultTheme.shadows.sm,
-    md: "0 4px 12px rgba(249, 115, 22, 0.15)",
-    lg: "0 10px 25px rgba(249, 115, 22, 0.2)",
-    xl: typedDefaultTheme.shadows.xl,
+    ...phoenixBaseTheme.shadows,
+    md: "0 12px 32px rgba(234, 88, 12, 0.22)",
+    lg: "0 20px 52px rgba(185, 28, 28, 0.3)",
+    xl: "0 28px 80px rgba(9, 7, 8, 0.55)",
   },
 };
 
