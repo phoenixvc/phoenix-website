@@ -1,9 +1,7 @@
 import {
-  useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
   type PointerEvent as ReactPointerEvent,
   type ReactElement,
 } from "react";
@@ -20,13 +18,9 @@ import {
 } from "./phoenixScene";
 import {
   PHOENIX_OVERVIEW_CAMERA,
-  cameraForPhoenixNode,
   createPhoenixNodes,
   lerpPhoenixCamera,
-  pickPhoenixNode,
-  worldToScreen,
   type PhoenixCamera,
-  type PhoenixNode,
 } from "./phoenixWorld";
 import styles from "./phoenixEnvironment.module.css";
 
@@ -70,11 +64,6 @@ const PhoenixEnvironment = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<PhoenixPointer | null>(null);
   const cameraRef = useRef<PhoenixCamera>({ ...PHOENIX_OVERVIEW_CAMERA });
-  const [hoveredNode, setHoveredNode] = useState<PhoenixNode | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(
-    null,
-  );
-  const [activeFocus, setActiveFocus] = useState<string>("overview");
 
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? PHOENIX_DEFAULT_SEED;
@@ -87,23 +76,6 @@ const PhoenixEnvironment = ({
     [seed, resolvedQuality],
   );
   const nodes = useMemo(() => createPhoenixNodes(), []);
-
-  const setCameraTarget = useCallback(
-    (target: Pick<PhoenixCamera, "cx" | "cy" | "zoom">, focusId: string) => {
-      cameraRef.current.target = target;
-      if (reducedMotion || paused || fixedTimestamp !== undefined) {
-        cameraRef.current.cx = target.cx;
-        cameraRef.current.cy = target.cy;
-        cameraRef.current.zoom = target.zoom;
-      }
-      setActiveFocus(focusId);
-    },
-    [fixedTimestamp, paused, reducedMotion],
-  );
-
-  const resetOverview = useCallback(() => {
-    setCameraTarget(PHOENIX_OVERVIEW_CAMERA, "overview");
-  }, [setCameraTarget]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -148,7 +120,6 @@ const PhoenixEnvironment = ({
         reducedMotion,
         camera: cameraRef.current,
         nodes,
-        hoveredNode,
       });
     };
 
@@ -175,9 +146,7 @@ const PhoenixEnvironment = ({
       window.removeEventListener("resize", resize);
     };
   }, [
-    activeFocus,
     fixedTimestamp,
-    hoveredNode,
     isDarkMode,
     nodes,
     paused,
@@ -192,62 +161,11 @@ const PhoenixEnvironment = ({
     if (reducedMotion || paused) {
       return;
     }
-    const pointer = { x: event.clientX, y: event.clientY };
-    pointerRef.current = pointer;
-
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const hit = pickPhoenixNode(
-        pointer.x,
-        pointer.y,
-        nodes,
-        cameraRef.current,
-        canvas.clientWidth,
-        canvas.clientHeight,
-      );
-      setHoveredNode(hit);
-      if (hit) {
-        const screen = worldToScreen(
-          hit.x,
-          hit.y,
-          cameraRef.current,
-          canvas.clientWidth,
-          canvas.clientHeight,
-        );
-        setTooltipPos({
-          x: Math.min(Math.max(screen.x, 150), canvas.clientWidth - 150),
-          y: Math.max(screen.y - 45, 60),
-        });
-      } else {
-        setTooltipPos(null);
-      }
-    }
+    pointerRef.current = { x: event.clientX, y: event.clientY };
   };
 
   const handlePointerLeave = (): void => {
     pointerRef.current = null;
-    setHoveredNode(null);
-    setTooltipPos(null);
-  };
-
-  const handleCanvasClick = (
-    event: ReactPointerEvent<HTMLDivElement>,
-  ): void => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const hit = pickPhoenixNode(
-      event.clientX,
-      event.clientY,
-      nodes,
-      cameraRef.current,
-      canvas.clientWidth,
-      canvas.clientHeight,
-    );
-
-    if (hit) {
-      setCameraTarget(cameraForPhoenixNode(hit), hit.id);
-    }
   };
 
   return (
@@ -262,11 +180,10 @@ const PhoenixEnvironment = ({
         data-mode={isDarkMode ? "dark" : "light"}
         data-frame-budget={PHOENIX_FRAME_BUDGET_MS[resolvedQuality]}
         data-phoenix-zoom={cameraRef.current.zoom.toFixed(2)}
-        data-phoenix-focus={activeFocus}
+        data-phoenix-focus="overview"
         data-phoenix-node-count={nodes.length}
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
-        onClick={handleCanvasClick}
       >
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
 

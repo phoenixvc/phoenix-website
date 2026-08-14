@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactElement } from "react";
 import ThemeEnvironment from "./ThemeEnvironment";
-import { PHOENIX_ENVIRONMENT } from "./registry";
 
 const meta = {
   title: "Themes/Phoenix/Environment",

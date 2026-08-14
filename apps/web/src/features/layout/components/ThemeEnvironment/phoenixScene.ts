@@ -2,7 +2,6 @@ import type { EnvironmentQualityTier } from "./types";
 import {
   type PhoenixCamera,
   type PhoenixNode,
-  worldToScreen,
 } from "./phoenixWorld";
 
 export const PHOENIX_FRAME_BUDGET_MS = {
@@ -300,115 +299,6 @@ const drawAsh = (
   ctx.restore();
 };
 
-const drawNodes = (
-  ctx: CanvasRenderingContext2D,
-  nodes: PhoenixNode[],
-  camera: PhoenixCamera,
-  width: number,
-  height: number,
-  timeMs: number,
-  palette: PhoenixPalette,
-  hoveredNode: PhoenixNode | null | undefined,
-  reducedMotion: boolean,
-): void => {
-  const minSize = Math.min(width, height);
-  const seconds = timeMs / 1000;
-
-  // 1. Constellation / Hearth connection lines
-  const nodeMap = new Map<string, PhoenixNode>();
-  nodes.forEach((n) => nodeMap.set(n.id, n));
-
-  ctx.save();
-  nodes.forEach((node) => {
-    if (!node.parentId) return;
-    const parent = nodeMap.get(node.parentId);
-    if (!parent) return;
-
-    const from = worldToScreen(parent.x, parent.y, camera, width, height);
-    const to = worldToScreen(node.x, node.y, camera, width, height);
-
-    ctx.beginPath();
-    ctx.moveTo(from.x, from.y);
-    ctx.lineTo(to.x, to.y);
-    ctx.strokeStyle = palette.nodeRing;
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 6]);
-    ctx.lineDashOffset = reducedMotion ? 0 : -seconds * 12;
-    ctx.globalAlpha = 0.35;
-    ctx.stroke();
-  });
-  ctx.restore();
-
-  // 2. Nodes
-  nodes.forEach((node) => {
-    const screen = worldToScreen(node.x, node.y, camera, width, height);
-    const baseRadius = Math.max(
-      node.kind === "sanctuary" ? 24 : 14,
-      node.radius * camera.zoom * minSize,
-    );
-    const isHovered = hoveredNode?.id === node.id;
-    const hoverScale = isHovered ? 1.25 : 1.0;
-    const radius = baseRadius * hoverScale;
-    const pulse = reducedMotion
-      ? 1
-      : 0.92 + 0.08 * Math.sin(seconds * 2.5 + node.x * 10);
-
-    // Node outer atmospheric flare
-    const outerRadius = radius * 2.2 * pulse;
-    const glow = ctx.createRadialGradient(
-      screen.x,
-      screen.y,
-      radius * 0.4,
-      screen.x,
-      screen.y,
-      outerRadius,
-    );
-    glow.addColorStop(0, node.color);
-    glow.addColorStop(0.5, palette.nodeGlow);
-    glow.addColorStop(1, "rgba(0,0,0,0)");
-
-    ctx.save();
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(screen.x, screen.y, outerRadius, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Node core disc
-    ctx.fillStyle = node.color;
-    ctx.globalAlpha = isHovered ? 0.95 : 0.75;
-    ctx.beginPath();
-    ctx.arc(screen.x, screen.y, radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Node inner white-hot hearth
-    ctx.fillStyle = palette.emberCore;
-    ctx.globalAlpha = isHovered ? 0.9 : 0.6;
-    ctx.beginPath();
-    ctx.arc(screen.x, screen.y, radius * 0.45, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Node border ring
-    ctx.strokeStyle = palette.nodeRing;
-    ctx.lineWidth = isHovered ? 2.5 : 1.5;
-    ctx.globalAlpha = 0.85;
-    ctx.beginPath();
-    ctx.arc(screen.x, screen.y, radius * 1.15, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Initials / Monogram
-    if (node.initials && radius > 12) {
-      ctx.fillStyle = palette.nodeText;
-      ctx.globalAlpha = 1;
-      ctx.font = `bold ${Math.max(10, Math.floor(radius * 0.75))}px 'Outfit', sans-serif`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(node.initials, screen.x, screen.y);
-    }
-
-    ctx.restore();
-  });
-};
-
 export const drawPhoenixScene = ({
   ctx,
   width,
@@ -419,9 +309,9 @@ export const drawPhoenixScene = ({
   qualityTier,
   pointer,
   reducedMotion,
-  camera,
-  nodes,
-  hoveredNode,
+  camera: _camera,
+  nodes: _nodes,
+  hoveredNode: _hoveredNode,
 }: DrawPhoenixSceneOptions): void => {
   const phase = resolvePhoenixDayPhase(timeMs);
   const palette = createPhoenixPalette(isDarkMode, phase, scene.atmosphere);
