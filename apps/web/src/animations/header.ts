@@ -6,7 +6,7 @@ export const headerAnimations = {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   },
@@ -26,7 +26,7 @@ export const headerAnimations = {
       x: "100%",
       transition: {
         duration: 0.3,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
       },
     },
   },

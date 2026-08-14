@@ -7,7 +7,7 @@ export const navAnimations = {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   },
@@ -18,7 +18,7 @@ export const navAnimations = {
       y: 0,
       transition: {
         duration: 0.3,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
     exit: {
@@ -26,7 +26,7 @@ export const navAnimations = {
       y: -20,
       transition: {
         duration: 0.2,
-        ease: "easeIn",
+        ease: "easeIn" as const,
       },
     },
   },
@@ -37,7 +37,7 @@ export const navAnimations = {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
+        ease: "easeOut" as const,
         staggerChildren: 0.2,
       },
     },
@@ -49,7 +49,7 @@ export const navAnimations = {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   },

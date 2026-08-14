@@ -343,7 +343,7 @@ export interface ContainerBounds {
 }
 
 export interface HeroStarfieldProps {
-  containerRef?: React.RefObject<HTMLDivElement>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
   colorScheme?: string;
   starDensity?: number;
   starSize?: number;
@@ -401,7 +401,7 @@ export interface UseDebugControlsProps {
 
 // Component props
 export interface AnimationLoopProps {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
   dimensions: { width: number; height: number };
   stars: Star[];
   blackHoles: BlackHole[];
@@ -481,7 +481,7 @@ export interface StarfieldProps {
   employeeDisplayStyle?: "initials" | "avatar" | "both";
   blackHoleSize?: number;
   heroMode?: boolean;
-  containerRef?: React.RefObject<HTMLElement> | null;
+  containerRef?: React.RefObject<HTMLElement | null> | null;
   lineConnectionDistance?: number;
   lineOpacity?: number;
   mouseEffectRadius?: number;
