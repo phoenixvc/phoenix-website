@@ -26,7 +26,11 @@ export function readStoredThemeName(): ThemeName | null {
     }
 
     const parsed: unknown = JSON.parse(raw);
-    return isAvailableThemeName(parsed) ? parsed : null;
+    if (isAvailableThemeName(parsed)) {
+      return parsed;
+    }
+    localStorage.removeItem(THEME_STORAGE_CONSTANTS.KEYS.THEME_NAME);
+    return null;
   } catch {
     return null;
   }
@@ -37,10 +41,14 @@ export function persistThemeName(themeName: ThemeName): void {
     return;
   }
 
-  localStorage.setItem(
-    THEME_STORAGE_CONSTANTS.KEYS.THEME_NAME,
-    JSON.stringify(themeName),
-  );
+  try {
+    localStorage.setItem(
+      THEME_STORAGE_CONSTANTS.KEYS.THEME_NAME,
+      JSON.stringify(themeName),
+    );
+  } catch {
+    // Private mode, quota, or blocked storage must not crash first paint.
+  }
 }
 
 export function resolveInitialThemeName(
@@ -52,5 +60,11 @@ export function resolveInitialThemeName(
     return fromQuery;
   }
 
-  return readStoredThemeName() ?? fallback;
+  const stored = readStoredThemeName();
+  if (stored) {
+    return stored;
+  }
+
+  persistThemeName(fallback);
+  return fallback;
 }

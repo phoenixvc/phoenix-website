@@ -102,8 +102,9 @@ export const createForestNodes = (): ForestNode[] => {
       color: area.color,
       parentId: "focus-areas-grove",
       initials: area.label
-        .split(" ")
-        .map((part) => part[0])
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part[0] ?? "")
         .join("")
         .slice(0, 2),
     };

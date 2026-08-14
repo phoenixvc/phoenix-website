@@ -850,11 +850,7 @@
 }
 
 .themeColorIndicator[data-theme="cosmic-frontier"] {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--color-primary)),
-    hsl(var(--color-primary))
-  );
+  background: linear-gradient(135deg, #9333ea, #7c3aed);
 }
 
 .themeColorIndicator[data-theme="neon-city"] {

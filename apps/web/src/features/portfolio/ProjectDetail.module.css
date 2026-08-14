@@ -19,7 +19,7 @@
   --detail-gradient-start: hsl(var(--color-primary));
   --detail-gradient-end: hsl(var(--color-accent));
   background-color: hsl(var(--color-background) / 0.98);
-  color: rgba(255, 255, 255, 0.9);
+  color: hsl(var(--color-text) / 0.9);
 }
 
 .light {

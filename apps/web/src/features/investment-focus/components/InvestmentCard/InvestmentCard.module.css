@@ -18,25 +18,25 @@
 
 /* Dark mode card styling - improved contrast and glow */
 .card.darkMode {
-  background-color: hsl(var(--color-surface) / 0.55);
+  background-color: hsl(var(--color-background)) / 0.55);
   border: 1px solid hsl(var(--color-primary) / 0.25);
   box-shadow: 0 4px 20px hsl(var(--color-primary) / 0.15);
 }
 
 .card.darkMode:hover {
-  background-color: hsl(var(--color-surface) / 0.72);
+  background-color: hsl(var(--color-background)) / 0.72);
   border: 1px solid hsl(var(--color-primary) / 0.35);
   box-shadow: 0 8px 30px hsl(var(--color-primary) / 0.25);
 }
 
 .card.lightMode {
-  background: hsl(var(--color-surface) / 0.78);
+  background: hsl(var(--color-background)) / 0.78);
   box-shadow: 0 4px 20px hsl(var(--color-primary) / 0.1);
   border: 1px solid hsl(var(--color-primary) / 0.08);
 }
 
 .card.lightMode:hover {
-  background: hsl(var(--color-surface) / 0.9);
+  background: hsl(var(--color-background)) / 0.9);
   box-shadow: 0 8px 25px hsl(var(--color-primary) / 0.2);
   border: 1px solid hsl(var(--color-primary) / 0.15);
 }

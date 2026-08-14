@@ -99,21 +99,26 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
 
   useLayoutEffect(() => {
     const requested = readQueryThemeName();
-    if (!requested || requested === state.themeName) {
+    if (!requested) {
       return;
     }
     persistThemeName(requested);
-    setState((prev) => ({
-      ...prev,
-      themeName: requested,
-      previous: {
-        themeName: prev.themeName,
-        mode: prev.mode,
-      },
-      initialized: false,
-      timestamp: Date.now(),
-    }));
-  }, [state.themeName]);
+    setState((prev) => {
+      if (prev.themeName === requested) {
+        return prev;
+      }
+      return {
+        ...prev,
+        themeName: requested,
+        previous: {
+          themeName: prev.themeName,
+          mode: prev.mode,
+        },
+        initialized: false,
+        timestamp: Date.now(),
+      };
+    });
+  }, []);
 
   // Get systemMode from context instead of using useSystemMode hook
   const {

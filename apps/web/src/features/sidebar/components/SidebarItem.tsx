@@ -54,7 +54,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       return pathname === "/" && hash === href.substring(1);
     }
 
-    return pathname.startsWith(href) && !pathname.includes("#");
+    return pathname.startsWith(href) && !hash;
   }, [active, href, location.hash, location.pathname]);
 
   // Get component style from theme

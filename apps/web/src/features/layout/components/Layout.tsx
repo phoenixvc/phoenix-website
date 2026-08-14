@@ -81,10 +81,13 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
 
   useEffect(() => {
     const requested = new URLSearchParams(location.search).get("theme");
-    if (isAvailableThemeName(requested) && requested !== themeName) {
+    if (isAvailableThemeName(requested)) {
       setThemeName(requested);
     }
-  }, [location.search, setThemeName, themeName]);
+    // Apply only when the URL query changes. Including setThemeName re-locks
+    // Forest after a menu switch because that callback is recreated on theme change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- URL is the only trigger
+  }, [location.search]);
 
   // Check if we're on mobile on mount and when window resizes
   useEffect(() => {

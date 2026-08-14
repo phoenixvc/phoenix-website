@@ -250,6 +250,46 @@ test.describe("Forest theme contract", () => {
       .toBe("forest");
   });
 
+  test("lets the theme menu leave a query-selected Forest theme", async ({
+    page,
+  }) => {
+    await page.goto("/?theme=forest", { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".theme-wrapper")).toHaveAttribute(
+      "data-theme",
+      "forest",
+    );
+
+    await page.getByRole("button", { name: "Profile menu" }).click();
+    await page.getByRole("button", { name: "Theme Selection" }).click();
+    await page.getByRole("button", { name: "Cosmic Frontier" }).click();
+
+    await expect(page.locator(".theme-wrapper")).toHaveAttribute(
+      "data-theme",
+      "cosmic-frontier",
+    );
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            JSON.parse(localStorage.getItem("theme_name") ?? "null") as
+              | string
+              | null,
+        ),
+      )
+      .toBe("cosmic-frontier");
+  });
+
+  test("ignores a reserved theme query and stored name", async ({ page }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("theme_name", JSON.stringify("classic")),
+    );
+    await page.goto("/?theme=classic", { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".theme-wrapper")).toHaveAttribute(
+      "data-theme",
+      "cosmic-frontier",
+    );
+  });
+
   test("keeps Cosmic as the default when Forest is not selected", async ({
     page,
   }) => {

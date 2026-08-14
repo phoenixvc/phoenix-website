@@ -6,6 +6,7 @@ import {
   useState,
   type ReactElement,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import type { EnvironmentMotionMode, EnvironmentQualityTier } from "./types";
 import {
   FOREST_DEFAULT_SEED,
@@ -80,11 +81,14 @@ const ForestEnvironment = ({
     () => createForestScene(seed, resolvedQuality),
     [seed, resolvedQuality],
   );
+  const navigate = useNavigate();
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [hovered, setHovered] = useState<ForestNode | null>(null);
   const [hoverPoint, setHoverPoint] = useState({ x: 0, y: 0 });
   const [zoomLabel, setZoomLabel] = useState(FOREST_OVERVIEW_CAMERA.zoom);
   const hoveredIdRef = useRef<string | null>(null);
+  const focusedIdRef = useRef<string | null>(null);
+  focusedIdRef.current = focusedId;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -128,7 +132,7 @@ const ForestEnvironment = ({
         scene,
         nodes,
         camera: cameraRef.current,
-        focusedId,
+        focusedId: focusedIdRef.current,
         hoveredId: hoveredIdRef.current,
         timeMs,
         isDarkMode,
@@ -162,7 +166,6 @@ const ForestEnvironment = ({
     };
   }, [
     fixedTimestamp,
-    focusedId,
     isDarkMode,
     nodes,
     paused,
@@ -201,7 +204,7 @@ const ForestEnvironment = ({
       }
       return Boolean(
         target.closest(
-          "[data-forest-canopy], [data-starfield-passthrough='true'], section[aria-label='hero section'], header, aside",
+          "[data-forest-canopy], [data-starfield-passthrough='true']",
         ),
       );
     };
@@ -249,7 +252,11 @@ const ForestEnvironment = ({
         return;
       }
       event.preventDefault();
+      const alreadyFocused = focusedIdRef.current === node.id;
       focusNode(node);
+      if (node.kind === "clearing" || alreadyFocused) {
+        void navigate(node.href);
+      }
     };
 
     const onWheel = (event: WheelEvent): void => {
@@ -284,7 +291,7 @@ const ForestEnvironment = ({
       window.removeEventListener("wheel", onWheel, true);
       document.body.style.cursor = "";
     };
-  }, [focusNode, nodes, paused, reducedMotion]);
+  }, [focusNode, navigate, nodes, paused, reducedMotion]);
 
   return (
     <>
@@ -302,7 +309,11 @@ const ForestEnvironment = ({
         data-forest-hover={hovered?.id ?? "none"}
         data-forest-node-count={nodes.length}
       >
-        <canvas ref={canvasRef} className={styles.canvas} />
+        <canvas
+          ref={canvasRef}
+          className={styles.canvas}
+          aria-hidden="true"
+        />
         <svg
           className={styles.canopy}
           viewBox="0 0 1440 900"
@@ -411,8 +422,8 @@ const ForestEnvironment = ({
         <div
           className={styles.tooltip}
           style={{
-            left: hoverPoint.x + 16,
-            top: hoverPoint.y + 16,
+            left: Math.min(hoverPoint.x + 16, window.innerWidth - 260),
+            top: Math.min(hoverPoint.y + 16, window.innerHeight - 96),
           }}
           data-forest-tooltip={hovered.id}
         >
