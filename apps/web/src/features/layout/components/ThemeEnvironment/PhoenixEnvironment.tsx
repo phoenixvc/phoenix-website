@@ -2,7 +2,7 @@ import {
   useEffect,
   useMemo,
   useRef,
-  type PointerEvent as ReactPointerEvent,
+  useState,
   type ReactElement,
 } from "react";
 import type {
@@ -21,6 +21,7 @@ import {
   createPhoenixNodes,
   lerpPhoenixCamera,
   pickPhoenixNode,
+  worldToScreen,
   type PhoenixCamera,
   type PhoenixNode,
 } from "./phoenixWorld";
@@ -33,6 +34,12 @@ export interface PhoenixEnvironmentProps {
   paused: boolean;
   randomSeed?: number;
   fixedTimestamp?: number;
+}
+
+interface TooltipState {
+  node: PhoenixNode;
+  x: number;
+  y: number;
 }
 
 const resolveQualityTier = (
@@ -67,6 +74,7 @@ export const PhoenixEnvironment = ({
   const pointerRef = useRef<PhoenixPointer | null>(null);
   const hoveredNodeRef = useRef<PhoenixNode | null>(null);
   const cameraRef = useRef<PhoenixCamera>({ ...PHOENIX_OVERVIEW_CAMERA });
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
 
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? PHOENIX_DEFAULT_SEED;
@@ -138,6 +146,43 @@ export const PhoenixEnvironment = ({
       }
     };
 
+    const handleGlobalPointerMove = (event: PointerEvent): void => {
+      if (reducedMotion || paused) {
+        return;
+      }
+      const canvasEl = canvasRef.current;
+      pointerRef.current = { x: event.clientX, y: event.clientY };
+      if (canvasEl) {
+        const picked = pickPhoenixNode(
+          event.clientX,
+          event.clientY,
+          nodes,
+          cameraRef.current,
+          canvasEl.clientWidth,
+          canvasEl.clientHeight,
+        );
+        hoveredNodeRef.current = picked;
+        if (picked) {
+          const screen = worldToScreen(
+            picked.x,
+            picked.y,
+            cameraRef.current,
+            canvasEl.clientWidth,
+            canvasEl.clientHeight,
+          );
+          setTooltip({ node: picked, x: screen.x, y: screen.y });
+        } else {
+          setTooltip(null);
+        }
+      }
+    };
+
+    const handleGlobalPointerLeave = (): void => {
+      pointerRef.current = null;
+      hoveredNodeRef.current = null;
+      setTooltip(null);
+    };
+
     resize();
     paint(fixedTimestamp ?? 0);
     if (!paused && !reducedMotion && fixedTimestamp === undefined) {
@@ -145,9 +190,18 @@ export const PhoenixEnvironment = ({
     }
 
     window.addEventListener("resize", resize);
+    window.addEventListener("pointermove", handleGlobalPointerMove, {
+      passive: true,
+    });
+    window.addEventListener("pointerleave", handleGlobalPointerLeave, {
+      passive: true,
+    });
+
     return (): void => {
       window.cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", handleGlobalPointerMove);
+      window.removeEventListener("pointerleave", handleGlobalPointerLeave);
     };
   }, [
     fixedTimestamp,
@@ -158,31 +212,6 @@ export const PhoenixEnvironment = ({
     resolvedQuality,
     scene,
   ]);
-
-  const handlePointerMove = (
-    event: ReactPointerEvent<HTMLDivElement>,
-  ): void => {
-    if (reducedMotion || paused) {
-      return;
-    }
-    const canvas = canvasRef.current;
-    pointerRef.current = { x: event.clientX, y: event.clientY };
-    if (canvas) {
-      hoveredNodeRef.current = pickPhoenixNode(
-        event.clientX,
-        event.clientY,
-        nodes,
-        cameraRef.current,
-        canvas.clientWidth,
-        canvas.clientHeight,
-      );
-    }
-  };
-
-  const handlePointerLeave = (): void => {
-    pointerRef.current = null;
-    hoveredNodeRef.current = null;
-  };
 
   return (
     <>
@@ -198,10 +227,33 @@ export const PhoenixEnvironment = ({
         data-phoenix-zoom={cameraRef.current.zoom.toFixed(2)}
         data-phoenix-focus="overview"
         data-phoenix-node-count={nodes.length}
-        onPointerMove={handlePointerMove}
-        onPointerLeave={handlePointerLeave}
       >
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
+
+        {tooltip && (
+          <div
+            className={styles.nodeTooltip}
+            style={{
+              left: `${Math.max(130, Math.min(window.innerWidth - 130, tooltip.x))}px`,
+              top: `${tooltip.y}px`,
+            }}
+          >
+            <div className={styles.tooltipBadge}>
+              {tooltip.node.kind === "sanctuary"
+                ? "Solar Sanctuary"
+                : tooltip.node.kind === "altar"
+                  ? "Focus Altar"
+                  : "Portfolio Beacon"}
+            </div>
+            <h4 className={styles.tooltipTitle}>{tooltip.node.name}</h4>
+            <p className={styles.tooltipDesc}>{tooltip.node.description}</p>
+            {tooltip.node.href && (
+              <a href={tooltip.node.href} className={styles.tooltipLink}>
+                Explore Sector &rarr;
+              </a>
+            )}
+          </div>
+        )}
 
         <div className={styles.overlay} aria-hidden="true">
           {/* Left Stylized Phoenix Wing Motif */}

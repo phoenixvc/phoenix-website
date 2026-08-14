@@ -54,17 +54,22 @@ export interface PhoenixPalette {
   nodeText: string;
 }
 
-interface Ember {
+interface PhoenixFeather {
   x: number;
   y: number;
-  size: number;
+  length: number;
+  width: number;
   speed: number;
+  drift: number;
   sway: number;
   swayFreq: number;
+  rotation: number;
+  spin: number;
+  flutterSpeed: number;
   phase: number;
-  luminosity: number;
+  curve: number;
   color: "emberA" | "emberB" | "emberC";
-  sparkleSpeed: number;
+  alpha: number;
 }
 
 interface Ash {
@@ -98,7 +103,7 @@ interface Ridge {
 export interface PhoenixScene {
   seed: number;
   atmosphere: PhoenixAtmosphere;
-  embers: Ember[];
+  feathers: PhoenixFeather[];
   ashFlakes: Ash[];
   ribbons: SolarRibbon[];
   ridges: Ridge[];
@@ -212,27 +217,35 @@ export const createPhoenixScene = (
   const limits = PHOENIX_SCENE_LIMITS[qualityTier];
   const atmosphere: PhoenixAtmosphere = rng() > 0.4 ? "radiant" : "smoldering";
 
-  const embers: Ember[] = Array.from({ length: limits.embers }, () => ({
-    x: rng(),
-    y: rng(),
-    size: 1.8 + rng() * 3.6,
-    speed: 0.025 + rng() * 0.065,
-    sway: 12 + rng() * 26,
-    swayFreq: 0.8 + rng() * 1.6,
-    phase: rng() * Math.PI * 2,
-    luminosity: 0.6 + rng() * 0.4,
-    color: (["emberA", "emberB", "emberC"] as const)[Math.floor(rng() * 3)],
-    sparkleSpeed: 2.5 + rng() * 5.0,
-  }));
+  const feathers: PhoenixFeather[] = Array.from(
+    { length: Math.round(limits.embers * 0.75) },
+    () => ({
+      x: rng(),
+      y: rng(),
+      length: 16 + rng() * 26,
+      width: 5 + rng() * 9,
+      speed: 0.014 + rng() * 0.032, // Reduced speed for majestic floating
+      drift: (rng() - 0.5) * 0.012,
+      sway: 14 + rng() * 28,
+      swayFreq: 0.5 + rng() * 0.9,
+      rotation: rng() * Math.PI * 2,
+      spin: (rng() - 0.5) * 0.4,
+      flutterSpeed: 1.2 + rng() * 2.2,
+      phase: rng() * Math.PI * 2,
+      curve: (rng() - 0.5) * 0.6,
+      color: (["emberA", "emberB", "emberC"] as const)[Math.floor(rng() * 3)],
+      alpha: 0.55 + rng() * 0.45,
+    }),
+  );
 
   const ashFlakes: Ash[] = Array.from({ length: limits.ash }, () => ({
     x: rng(),
     y: rng(),
-    size: 2.0 + rng() * 4.2,
-    fallSpeed: -0.008 + rng() * 0.022,
-    driftSpeed: (rng() - 0.5) * 0.015,
+    size: 2.0 + rng() * 3.8,
+    fallSpeed: -0.005 + rng() * 0.014,
+    driftSpeed: (rng() - 0.5) * 0.009,
     rotation: rng() * Math.PI * 2,
-    spin: (rng() - 0.5) * 0.8,
+    spin: (rng() - 0.5) * 0.4,
     phase: rng() * Math.PI * 2,
     color: (["ashA", "ashB"] as const)[Math.floor(rng() * 2)],
   }));
@@ -241,15 +254,15 @@ export const createPhoenixScene = (
     x: 0.15 + rng() * 0.7,
     width: 60 + rng() * 120,
     height: 180 + rng() * 260,
-    curvature: (rng() - 0.5) * 0.4,
+    curvature: (rng() - 0.5) * 0.35,
     phase: rng() * Math.PI * 2,
-    alpha: 0.12 + rng() * 0.15,
+    alpha: 0.10 + rng() * 0.14,
   }));
 
   return {
     seed,
     atmosphere,
-    embers,
+    feathers,
     ashFlakes,
     ribbons,
     ridges: [
@@ -260,27 +273,75 @@ export const createPhoenixScene = (
   };
 };
 
-const drawEmber = (
+const drawPhoenixFeather = (
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
-  size: number,
+  length: number,
+  width: number,
+  rotation: number,
+  curve: number,
   color: string,
   coreColor: string,
   alpha: number,
 ): void => {
   ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
   ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
 
-  const grad = ctx.createRadialGradient(x, y, size * 0.15, x, y, size * 2.2);
-  grad.addColorStop(0, coreColor);
-  grad.addColorStop(0.35, color);
+  // Central glowing rachis / quill
+  ctx.beginPath();
+  ctx.moveTo(0, length * 0.5);
+  ctx.quadraticCurveTo(curve * 10, 0, 0, -length * 0.5);
+  ctx.strokeStyle = coreColor;
+  ctx.lineWidth = 1.0;
+  ctx.stroke();
+
+  // Vane outline with soft feather taper
+  const grad = ctx.createLinearGradient(-width, 0, width, 0);
+  grad.addColorStop(0, "rgba(0,0,0,0)");
+  grad.addColorStop(0.3, color);
+  grad.addColorStop(0.5, coreColor);
+  grad.addColorStop(0.7, color);
   grad.addColorStop(1, "rgba(0,0,0,0)");
 
-  ctx.fillStyle = grad;
   ctx.beginPath();
-  ctx.arc(x, y, size * 2.2, 0, Math.PI * 2);
+  ctx.moveTo(0, length * 0.5);
+  ctx.bezierCurveTo(
+    -width * 1.2 + curve * 5,
+    length * 0.18,
+    -width + curve * 3,
+    -length * 0.2,
+    0,
+    -length * 0.5,
+  );
+  ctx.bezierCurveTo(
+    width + curve * 3,
+    -length * 0.2,
+    width * 1.2 + curve * 5,
+    length * 0.18,
+    0,
+    length * 0.5,
+  );
+  ctx.closePath();
+  ctx.fillStyle = grad;
   ctx.fill();
+
+  // Subtle barb filaments
+  ctx.strokeStyle = "rgba(255, 251, 235, 0.35)";
+  ctx.lineWidth = 0.5;
+  const steps = 4;
+  for (let i = -steps; i <= steps; i++) {
+    const py = (i / (steps + 1)) * length * 0.35;
+    const pw = (1 - Math.abs(i) / (steps + 2)) * width * 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, py);
+    ctx.lineTo(-pw, py - 3);
+    ctx.moveTo(0, py);
+    ctx.lineTo(pw, py - 3);
+    ctx.stroke();
+  }
 
   ctx.restore();
 };
@@ -579,52 +640,54 @@ export const drawPhoenixScene = ({
     drawAsh(ctx, posX, posY, ash.size, rot, palette[ash.color]);
   });
 
-  // 7. Rising Embers & Thermal Updraft
-  scene.embers.forEach((ember) => {
+  // 7. Rising Phoenix Plumes & Molten Feathers
+  scene.feathers.forEach((feather) => {
     const travel = reducedMotion
-      ? ember.y
-      : (ember.y - seconds * ember.speed + 1000.0) % 1.15;
-    const rawY = travel * height - ember.size;
+      ? feather.y
+      : (feather.y - seconds * feather.speed + 1000.0) % 1.15;
+    const rawY = travel * height - feather.length;
 
     let swayOffset =
-      Math.sin(seconds * ember.swayFreq + ember.phase) *
-      (reducedMotion ? 0 : ember.sway);
+      Math.sin(seconds * feather.swayFreq + feather.phase) *
+      (reducedMotion ? 0 : feather.sway);
     let extraSpeedY = 0;
 
     if (pointer && !reducedMotion) {
-      const dx = pointer.x - (ember.x * width + swayOffset);
+      const dx = pointer.x - (feather.x * width + swayOffset);
       const dy = pointer.y - rawY;
       const dist = Math.hypot(dx, dy);
-      if (dist < 180 && dist > 1) {
-        const force = (1 - dist / 180) * 25;
+      if (dist < 200 && dist > 1) {
+        const force = (1 - dist / 200) * 30;
         swayOffset -= (dx / dist) * force;
-        extraSpeedY = -(dy / dist) * force * 0.4;
+        extraSpeedY = -(dy / dist) * force * 0.35;
       }
     }
 
     const posX =
-      (ember.x * width + swayOffset + pointerX * parallax * 12 + width) % width;
+      (feather.x * width + swayOffset + pointerX * parallax * 12 + width) % width;
     const posY = rawY + extraSpeedY;
 
-    const flicker = reducedMotion
-      ? ember.luminosity
-      : ember.luminosity *
-        (0.65 +
-          0.35 * Math.sin(seconds * ember.sparkleSpeed + ember.phase));
+    const dynamicRotation = reducedMotion
+      ? feather.rotation
+      : feather.rotation +
+        Math.sin(seconds * feather.flutterSpeed + feather.phase) * 0.25 +
+        seconds * feather.spin;
 
-    drawEmber(
+    drawPhoenixFeather(
       ctx,
       posX,
       posY,
-      ember.size,
-      palette[ember.color],
+      feather.length,
+      feather.width,
+      dynamicRotation,
+      feather.curve,
+      palette[feather.color],
       palette.emberCore,
-      flicker,
+      feather.alpha,
     );
   });
 
-  // 8. Vignette Framing
+  // 8. Bottom Magma Seam Vignette (Seamless top, subtle bottom atmospheric depth)
   ctx.fillStyle = palette.vignette;
-  ctx.fillRect(0, 0, width, height * 0.14);
-  ctx.fillRect(0, height * 0.86, width, height * 0.14);
+  ctx.fillRect(0, height * 0.88, width, height * 0.12);
 };
