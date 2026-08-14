@@ -3,18 +3,18 @@ import type { ReactElement } from "react";
 import ThemeEnvironment from "./ThemeEnvironment";
 
 const meta = {
-  title: "Themes/Cosmic Frontier/Environment",
+  title: "Themes/Environment",
   component: ThemeEnvironment,
   parameters: { layout: "fullscreen" },
   decorators: [
     (Story): ReactElement => (
-      <div style={{ minHeight: "100vh", background: "#080b18" }}>
+      <div style={{ minHeight: "100vh", position: "relative" }}>
         <Story />
       </div>
     ),
   ],
   args: {
-    themeName: "cosmic-frontier",
+    themeName: "phoenix",
     isDarkMode: true,
     sidebarWidth: 0,
     gameMode: false,
@@ -25,10 +25,40 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const DeterministicStaticFrame: Story = {
+export const PhoenixInteractive: Story = {
   args: {
+    themeName: "phoenix",
+    isDarkMode: true,
+  },
+};
+
+export const PhoenixLightMode: Story = {
+  args: {
+    themeName: "phoenix",
+    isDarkMode: false,
+  },
+};
+
+export const PhoenixDeterministicStaticFrame: Story = {
+  args: {
+    themeName: "phoenix",
+    isDarkMode: true,
     fixture: {
-      seed: 20260809,
+      seed: 20260814,
+      timeMs: 15000,
+      qualityTier: "low",
+      motionMode: "reduced",
+      paused: true,
+    },
+  },
+};
+
+export const PhoenixReducedMotion: Story = {
+  args: {
+    themeName: "phoenix",
+    isDarkMode: true,
+    fixture: {
+      seed: 20260814,
       timeMs: 12000,
       qualityTier: "low",
       motionMode: "reduced",
@@ -37,4 +67,9 @@ export const DeterministicStaticFrame: Story = {
   },
 };
 
-export const InteractiveAdaptive: Story = {};
+export const CosmicFrontierInteractive: Story = {
+  args: {
+    themeName: "cosmic-frontier",
+    isDarkMode: true,
+  },
+};

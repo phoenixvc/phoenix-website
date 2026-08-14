@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useState } from "react";
 import { useReducedMotion } from "@/hooks";
 import type { StarfieldRef } from "../Starfield/Starfield";
 import CosmicFrontierEnvironment from "./CosmicFrontierEnvironment";
+import PhoenixEnvironment from "./PhoenixEnvironment";
 import { COSMIC_FRONTIER_ENVIRONMENT, THEME_ENVIRONMENTS } from "./registry";
 import type { ThemeEnvironmentProps } from "./types";
 
@@ -41,15 +42,26 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
         data-motion={motionMode}
         data-lifecycle={paused ? "paused" : "running"}
       >
-        <CosmicFrontierEnvironment
-          {...runtimeProps}
-          ref={ref}
-          motionMode={motionMode}
-          paused={paused}
-          qualityTier={fixture?.qualityTier}
-          randomSeed={fixture?.seed}
-          fixedTimestamp={fixture?.timeMs}
-        />
+        {definition.rendererId === "phoenix-reign" ? (
+          <PhoenixEnvironment
+            isDarkMode={runtimeProps.isDarkMode}
+            motionMode={motionMode}
+            paused={paused}
+            qualityTier={fixture?.qualityTier}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        ) : (
+          <CosmicFrontierEnvironment
+            {...runtimeProps}
+            ref={ref}
+            motionMode={motionMode}
+            paused={paused}
+            qualityTier={fixture?.qualityTier}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
       </div>
     );
   },

@@ -57,10 +57,12 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
   const starfieldRef = useRef<StarfieldRef>(null);
   const environmentFixture: EnvironmentFixture | undefined =
     import.meta.env.DEV &&
-    new URLSearchParams(window.location.search).get("cosmic-fixture") ===
-      "static"
+    (new URLSearchParams(window.location.search).get("cosmic-fixture") ===
+      "static" ||
+      new URLSearchParams(window.location.search).get("phoenix-fixture") ===
+        "static")
       ? {
-          seed: 20260809,
+          seed: 20260814,
           timeMs: 12000,
           qualityTier: "low",
           motionMode: "reduced",

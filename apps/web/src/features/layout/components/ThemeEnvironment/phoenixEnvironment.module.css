@@ -1,0 +1,125 @@
+.wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: auto;
+  z-index: 0;
+  user-select: none;
+  background-color: #070406;
+  transition: background-color 0.4s ease;
+}
+
+.wrapper[data-mode="light"] {
+  background-color: #fdf6ee;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.wingLeft,
+.wingRight {
+  position: absolute;
+  top: 0;
+  width: min(34vw, 460px);
+  height: auto;
+  opacity: 0.38;
+  transition:
+    opacity 0.5s ease,
+    filter 0.5s ease;
+  filter: drop-shadow(0 0 16px rgba(249, 115, 22, 0.28));
+}
+
+.wingLeft {
+  left: 0;
+}
+
+.wingRight {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.wrapper[data-mode="light"] .wingLeft,
+.wrapper[data-mode="light"] .wingRight {
+  opacity: 0.24;
+  filter: drop-shadow(0 0 12px rgba(217, 119, 6, 0.2));
+}
+
+.solarCrest {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(22vw, 260px);
+  height: auto;
+  opacity: 0.32;
+  filter: drop-shadow(0 0 20px rgba(251, 146, 60, 0.35));
+  animation: crestPulse 7s ease-in-out infinite alternate;
+}
+
+.wrapper[data-mode="light"] .solarCrest {
+  opacity: 0.22;
+  filter: drop-shadow(0 0 14px rgba(234, 88, 12, 0.22));
+}
+
+.emberPlumeGlow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(249, 115, 22, 0.18) 0%,
+    rgba(239, 68, 68, 0.08) 45%,
+    transparent 75%
+  );
+  pointer-events: none;
+}
+
+.wrapper[data-mode="light"] .emberPlumeGlow {
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(245, 158, 11, 0.14) 0%,
+    rgba(251, 146, 60, 0.06) 45%,
+    transparent 75%
+  );
+}
+
+@keyframes crestPulse {
+  0% {
+    opacity: 0.22;
+    transform: translateX(-50%) scale(0.98);
+  }
+  100% {
+    opacity: 0.42;
+    transform: translateX(-50%) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solarCrest {
+    animation: none;
+    opacity: 0.28;
+  }
+  .wingLeft,
+  .wingRight {
+    transition: none;
+  }
+}

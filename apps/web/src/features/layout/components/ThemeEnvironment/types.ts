@@ -4,6 +4,11 @@ import type { Star } from "../Starfield/types";
 export type EnvironmentQualityTier = "low" | "medium" | "high";
 export type EnvironmentMotionMode = "full" | "reduced";
 
+export type ThemeRendererId =
+  | "cosmic-starfield"
+  | "forest-canopy"
+  | "phoenix-reign";
+
 export interface EnvironmentFixture {
   seed: number;
   timeMs: number;
@@ -15,7 +20,7 @@ export interface EnvironmentFixture {
 export interface ThemeEnvironmentDefinition {
   themeName: ThemeName;
   displayName: string;
-  rendererId: "cosmic-starfield";
+  rendererId: ThemeRendererId;
   capabilities: {
     deterministic: {
       seed: boolean;

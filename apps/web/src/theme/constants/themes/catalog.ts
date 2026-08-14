@@ -41,8 +41,9 @@ export const THEME_CATALOG = {
   phoenix: {
     id: "phoenix",
     displayName: "Phoenix",
-    availability: "coming-soon",
-    description: "Planned rebirth, fire, and ember environment.",
+    availability: "available",
+    description:
+      "Immersive rebirth environment with rising embers, thermal radiance, and solar feather motifs.",
   },
   lavender: {
     id: "lavender",
@@ -70,6 +71,7 @@ export const THEME_CATALOG_ORDER = [
 
 export const AVAILABLE_THEME_NAMES = [
   "cosmic-frontier",
+  "phoenix",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";
