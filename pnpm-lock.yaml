@@ -60,7 +60,7 @@ importers:
         specifier: ^8.50.0
         version: 8.50.0(eslint@9.39.5(jiti@2.6.1))(typescript@5.9.3)
       '@vitejs/plugin-react':
-        specifier: ^4.3.4
+        specifier: ^4.7.0
         version: 4.7.0(vite@6.4.3(@types/node@26.2.0)(jiti@2.6.1)(terser@5.47.1))
       eslint:
         specifier: ^9.39.2
@@ -182,7 +182,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(@types/react@19.2.18)
       '@vitejs/plugin-react':
-        specifier: ^4.2.1
+        specifier: ^4.7.0
         version: 4.7.0(vite@6.4.3(@types/node@26.2.0)(jiti@1.21.7)(terser@5.47.1))
       '@vitest/browser-playwright':
         specifier: ^4.0.15
@@ -239,7 +239,7 @@ importers:
         specifier: ^1.1.2
         version: 1.2.4(@types/react@19.2.18)(react@19.2.8)
       '@vitejs/plugin-react':
-        specifier: ^4.3.4
+        specifier: ^4.7.0
         version: 4.7.0(vite@6.4.3(@types/node@22.13.5)(jiti@2.6.1)(terser@5.47.1))
       class-variance-authority:
         specifier: ^0.7.1
@@ -4603,10 +4603,10 @@ snapshots:
       '@babel/helper-compilation-targets': 7.29.7
       '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.6)
       '@babel/helpers': 7.29.7
-      '@babel/parser': 7.29.3
+      '@babel/parser': 7.29.8
       '@babel/template': 7.29.7
       '@babel/traverse': 7.29.8
-      '@babel/types': 7.29.0
+      '@babel/types': 7.29.8
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
       debug: 4.4.3
