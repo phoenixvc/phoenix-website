@@ -140,6 +140,7 @@ export interface DrawPhoenixSceneOptions {
   dragSparks?: PhoenixDragSpark[];
   scrollY?: number;
   modeProgress?: number; // 0.0 (full light) -> 1.0 (full dark)
+  pinnedNodeIds?: string[];
 }
 
 const createRng = (seed: number): (() => number) => {
@@ -484,6 +485,7 @@ const drawSolarBeacons = (
   palette: PhoenixPalette,
   hoveredNode: PhoenixNode | null | undefined,
   reducedMotion: boolean,
+  pinnedNodeIds?: string[],
 ): void => {
   const seconds = timeMs / 1000;
 
@@ -534,12 +536,13 @@ const drawSolarBeacons = (
     const screen = worldToScreen(node.x, node.y, camera, width, height);
     const isSanctuary = node.kind === "sanctuary";
     const isHovered = hoveredNode?.id === node.id;
+    const isPinned = pinnedNodeIds ? pinnedNodeIds.includes(node.id) : false;
     const pulse = reducedMotion ? 1 : 0.88 + 0.12 * Math.sin(seconds * 2.2 + node.x * 8);
 
     ctx.save();
 
     if (isSanctuary) {
-      const starRadius = (isHovered ? 28 : 22) * pulse;
+      const starRadius = (isHovered || isPinned ? 28 : 22) * pulse;
       const glowRadius = starRadius * 3.5;
 
       const flareGrad = ctx.createRadialGradient(
@@ -560,7 +563,7 @@ const drawSolarBeacons = (
       ctx.arc(screen.x, screen.y, glowRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      const rayLen = starRadius * (isHovered ? 3.0 : 2.2) * pulse;
+      const rayLen = starRadius * (isHovered || isPinned ? 3.0 : 2.2) * pulse;
       ctx.strokeStyle = "rgba(255, 251, 235, 0.4)";
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -575,14 +578,14 @@ const drawSolarBeacons = (
       ctx.arc(screen.x, screen.y, starRadius * 0.4, 0, Math.PI * 2);
       ctx.fill();
 
-      if (isHovered) {
+      if (isHovered || isPinned) {
         ctx.fillStyle = "#fffbeb";
         ctx.font = "600 12px 'Cinzel', serif";
         ctx.textAlign = "center";
         ctx.fillText(node.name.toUpperCase(), screen.x, screen.y + starRadius * 1.5 + 14);
       }
     } else {
-      const orbRadius = (isHovered ? 7 : 4.5) * (reducedMotion ? 1 : 0.9 + 0.1 * Math.sin(seconds * 3 + node.y * 6));
+      const orbRadius = (isHovered || isPinned ? 7 : 4.5) * (reducedMotion ? 1 : 0.9 + 0.1 * Math.sin(seconds * 3 + node.y * 6));
       const auraRadius = orbRadius * 3.2;
 
       const auraGrad = ctx.createRadialGradient(
@@ -602,17 +605,49 @@ const drawSolarBeacons = (
       ctx.arc(screen.x, screen.y, auraRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = isHovered ? "#fffbeb" : node.color;
+      ctx.fillStyle = isHovered || isPinned ? "#fffbeb" : node.color;
       ctx.beginPath();
       ctx.arc(screen.x, screen.y, orbRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      if (isHovered) {
+      if (isHovered || isPinned) {
         ctx.fillStyle = "#fef3c7";
         ctx.font = "500 11px 'Outfit', sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(node.name, screen.x, screen.y - orbRadius - 8);
       }
+    }
+
+    if (isPinned) {
+      // Radiant Pinned Halo Ring
+      const ringRadius = (isSanctuary ? 38 : 16) * pulse;
+      ctx.save();
+      ctx.strokeStyle = "#fbbf24";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.lineDashOffset = reducedMotion ? 0 : -seconds * 14;
+      ctx.shadowColor = "rgba(245, 158, 11, 0.9)";
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(screen.x, screen.y, ringRadius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Cardinal Pin Notch Tick Marks
+      ctx.strokeStyle = "#fffbeb";
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([]);
+      const tickLen = 4;
+      ctx.beginPath();
+      ctx.moveTo(screen.x, screen.y - ringRadius - tickLen);
+      ctx.lineTo(screen.x, screen.y - ringRadius + 1);
+      ctx.moveTo(screen.x, screen.y + ringRadius - 1);
+      ctx.lineTo(screen.x, screen.y + ringRadius + tickLen);
+      ctx.moveTo(screen.x - ringRadius - tickLen, screen.y);
+      ctx.lineTo(screen.x - ringRadius + 1, screen.y);
+      ctx.moveTo(screen.x + ringRadius - 1, screen.y);
+      ctx.lineTo(screen.x + ringRadius + tickLen, screen.y);
+      ctx.stroke();
+      ctx.restore();
     }
 
     ctx.restore();
@@ -635,6 +670,7 @@ export const drawPhoenixScene = ({
   dragSparks,
   scrollY = 0,
   modeProgress,
+  pinnedNodeIds,
 }: DrawPhoenixSceneOptions): void => {
   const phase = resolvePhoenixDayPhase(timeMs);
   const palette = createPhoenixPalette(
@@ -755,6 +791,7 @@ export const drawPhoenixScene = ({
       palette,
       hoveredNode,
       reducedMotion,
+      pinnedNodeIds,
     );
   }
 

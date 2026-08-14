@@ -96,6 +96,8 @@ export const PhoenixEnvironment = ({
     [seed, resolvedQuality],
   );
   const nodes = useMemo(() => createPhoenixNodes(), []);
+  const pinnedNodesRef = useRef<PhoenixNode[]>([]);
+  pinnedNodesRef.current = pinnedNodes;
 
   const handleTogglePin = (node: PhoenixNode): void => {
     setPinnedNodes((prev) => {
@@ -194,6 +196,7 @@ export const PhoenixEnvironment = ({
         dragSparks: dragSparksRef.current,
         scrollY: scrollYRef.current,
         modeProgress: modeProgressRef.current,
+        pinnedNodeIds: pinnedNodesRef.current.map((n) => n.id),
       });
     };
 
