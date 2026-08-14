@@ -448,3 +448,35 @@ textarea.dark,
   overflow: hidden;
   pointer-events: none;
 }
+
+/* Phoenix Theme Overrides */
+:global([data-theme="phoenix"]) .card.dark {
+  background: rgba(18, 11, 14, 0.75);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15), 0 0 20px rgba(245, 158, 11, 0.1);
+}
+
+:global([data-theme="phoenix"]) .card.dark .input,
+:global([data-theme="phoenix"]) .card.dark .textarea,
+:global([data-theme="phoenix"]) .card.dark .select {
+  background-color: rgba(28, 15, 18, 0.8) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  color: #fef3c7 !important;
+}
+
+:global([data-theme="phoenix"]) .card.dark .input:focus,
+:global([data-theme="phoenix"]) .card.dark .textarea:focus,
+:global([data-theme="phoenix"]) .card.dark .select:focus {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25), 0 0 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+:global([data-theme="phoenix"]) .button {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+}
+
+:global([data-theme="phoenix"]) .button:hover {
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.5), 0 0 20px rgba(239, 68, 68, 0.4);
+}
