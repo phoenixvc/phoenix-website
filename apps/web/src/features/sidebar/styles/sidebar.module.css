@@ -286,3 +286,53 @@
     transform: translateX(0);
   }
 }
+
+/* ============================================================
+   Highveld theme overrides. Root-scoped: this module has no
+   .darkMode class (only .lightMode), so the base rules are the
+   dark ones and both need covering.
+   ============================================================ */
+:global(html[data-theme="highveld"]) .sidebar {
+  background: #0f1216;
+  border-right: 1px solid rgba(232, 181, 74, 0.12);
+}
+
+:global(html[data-theme="highveld"].light) .sidebar {
+  background: #faf6ee;
+  border-right: 1px solid rgba(200, 145, 47, 0.16);
+}
+
+:global(html[data-theme="highveld"]) .sidebarHeader {
+  border-bottom: 1px solid rgba(232, 181, 74, 0.12);
+}
+
+:global(html[data-theme="highveld"]) .sidebarLogo {
+  background: linear-gradient(90deg, #e8b54a 0%, #e0653a 100%);
+  text-shadow: 0 0 10px rgba(232, 181, 74, 0.28);
+}
+
+:global(html[data-theme="highveld"]) .sidebarSectionTitle {
+  color: rgba(232, 181, 74, 0.85);
+}
+
+:global(html[data-theme="highveld"].light) .sidebarSectionTitle {
+  color: rgba(176, 123, 24, 0.95);
+}
+
+:global(html[data-theme="highveld"]) .sidebarLinkActive {
+  background: rgba(200, 145, 47, 0.18);
+}
+
+:global(html[data-theme="highveld"]) .sidebarLinkActive::before {
+  background: linear-gradient(180deg, #e8b54a, #e0653a);
+  box-shadow: 0 0 8px rgba(232, 181, 74, 0.5);
+}
+
+:global(html[data-theme="highveld"]) .sidebarLink:hover {
+  background: rgba(200, 145, 47, 0.12);
+}
+
+:global(html[data-theme="highveld"]) .sidebarToggle:hover,
+:global(html[data-theme="highveld"]) .closeButton:hover {
+  background: rgba(200, 145, 47, 0.2);
+}

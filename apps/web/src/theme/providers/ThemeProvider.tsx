@@ -146,7 +146,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = (props) => {
   return (
     <ThemeErrorBoundary>
       <SystemModeProvider>
-        <ThemeProviderInner {...restProps} />
+        <ThemeProviderInner
+          themeRegistry={themeRegistry}
+          componentRegistry={componentRegistry}
+          config={config}
+          {...restProps}
+        />
       </SystemModeProvider>
     </ThemeErrorBoundary>
   );

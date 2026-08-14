@@ -865,6 +865,10 @@
   background: linear-gradient(135deg, #9333ea, #7c3aed);
 }
 
+.themeColorIndicator[data-theme="highveld"] {
+  background: linear-gradient(135deg, #e8b54a, #4a6079);
+}
+
 .themeColorIndicator[data-theme="neon-city"] {
   background: linear-gradient(135deg, #00ffcc, #0077ff);
 }
@@ -896,4 +900,82 @@
   .profileDropdown {
     right: -16px;
   }
+}
+
+/* ============================================================
+   Highveld theme overrides.
+   Scoped to the root element so they out-specify both the
+   .lightMode compounds and the @media(max-width:768px) block
+   that re-declares most of this file with Cosmic colours.
+   ============================================================ */
+:global(html[data-theme="highveld"]) .header {
+  background-color: rgba(15, 18, 22, 0.92);
+  border-bottom: 1px solid rgba(232, 181, 74, 0.18);
+}
+
+:global(html[data-theme="highveld"]) .headerScrolled {
+  background-color: rgba(15, 18, 22, 0.75);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.18),
+    0 0 10px rgba(232, 181, 74, 0.06);
+}
+
+:global(html[data-theme="highveld"].light) .header {
+  background-color: rgba(250, 246, 238, 0.95);
+  border-bottom: 1px solid rgba(200, 145, 47, 0.2);
+}
+
+:global(html[data-theme="highveld"]) .header .logoText {
+  background: linear-gradient(90deg, #e8b54a 0%, #e0653a 100%);
+  text-shadow: 0 0 10px rgba(232, 181, 74, 0.28);
+}
+
+:global(html[data-theme="highveld"]) .activeNavLink::after {
+  background: linear-gradient(90deg, #e8b54a, #e0653a);
+  box-shadow: 0 0 8px rgba(232, 181, 74, 0.5);
+}
+
+:global(html[data-theme="highveld"]) .menuButton:hover,
+:global(html[data-theme="highveld"]) .themeToggleButton:hover {
+  background-color: rgba(200, 145, 47, 0.22);
+}
+
+:global(html[data-theme="highveld"]) .profileButton.active,
+:global(html[data-theme="highveld"]) .activeTheme,
+:global(html[data-theme="highveld"]) .themeOption:not(:disabled):hover,
+:global(html[data-theme="highveld"]) .dropdownItem:hover {
+  background-color: rgba(200, 145, 47, 0.18);
+}
+
+:global(html[data-theme="highveld"]) .profileDropdown {
+  background-color: rgba(20, 24, 30, 0.95);
+  border: 1px solid rgba(232, 181, 74, 0.22);
+}
+
+:global(html[data-theme="highveld"].light) .profileDropdown {
+  background-color: rgba(252, 249, 242, 0.97);
+  border: 1px solid rgba(200, 145, 47, 0.22);
+}
+
+:global(html[data-theme="highveld"]) .themeSubmenu {
+  background-color: rgba(15, 18, 22, 0.5);
+  border-top: 1px solid rgba(232, 181, 74, 0.12);
+}
+
+:global(html[data-theme="highveld"]) .profileImageContainer {
+  border: 2px solid rgba(232, 181, 74, 0.6);
+  box-shadow: 0 0 10px rgba(232, 181, 74, 0.3);
+}
+
+:global(html[data-theme="highveld"]) .profileImage,
+:global(html[data-theme="highveld"]) .profileImageLarge {
+  background: linear-gradient(135deg, #c8912f, #4a6079);
+}
+
+:global(html[data-theme="highveld"]) .dropdownItemIcon {
+  color: rgba(232, 181, 74, 0.85);
+}
+
+:global(html[data-theme="highveld"]) .comingSoonBadge {
+  background-color: rgba(200, 145, 47, 0.2);
 }

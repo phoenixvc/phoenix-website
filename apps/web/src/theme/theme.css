@@ -241,6 +241,27 @@
     --theme-cosmic-dark-border: 227 32.78688524590164% 23.921568627450977%;
     --theme-cosmic-dark-hover: 249 37.86407766990291% 20.19607843137255%;
     --theme-cosmic-dark-active: 215 53.06122448979591% 19.215686274509807%;
+
+    /* Highveld Theme — veld gold, thunderhead slate, aloe ember */
+    --theme-highveld-light-primary: 39 62% 48.4%;
+    --theme-highveld-light-secondary: 212 21% 44.5%;
+    --theme-highveld-light-accent: 16 73% 55.3%;
+    --theme-highveld-light-background: 41 55% 95.7%;
+    --theme-highveld-light-text: 37 22% 11.6%;
+    --theme-highveld-light-muted: 40 11% 44.3%;
+    --theme-highveld-light-border: 38 31% 84.1%;
+    --theme-highveld-light-hover: 41 51% 91.2%;
+    --theme-highveld-light-active: 41 48% 86.3%;
+
+    --theme-highveld-dark-primary: 41 78% 60%;
+    --theme-highveld-dark-secondary: 211 27% 65.5%;
+    --theme-highveld-dark-accent: 16 85% 62%;
+    --theme-highveld-dark-background: 213 19% 7.3%;
+    --theme-highveld-dark-text: 40 37% 92%;
+    --theme-highveld-dark-muted: 38 8% 51.2%;
+    --theme-highveld-dark-border: 213 19% 23.2%;
+    --theme-highveld-dark-hover: 213 19% 16.9%;
+    --theme-highveld-dark-active: 213 18% 21.2%;
   }
 }
 
@@ -417,6 +438,30 @@
     --color-border: var(--theme-cosmic-dark-border);
     --color-hover: var(--theme-cosmic-dark-hover);
     --color-active: var(--theme-cosmic-dark-active);
+  }
+
+  /* Highveld Theme */
+  .theme-highveld-light {
+    --color-primary: var(--theme-highveld-light-primary);
+    --color-secondary: var(--theme-highveld-light-secondary);
+    --color-accent: var(--theme-highveld-light-accent);
+    --color-background: var(--theme-highveld-light-background);
+    --color-text: var(--theme-highveld-light-text);
+    --color-muted: var(--theme-highveld-light-muted);
+    --color-border: var(--theme-highveld-light-border);
+    --color-hover: var(--theme-highveld-light-hover);
+    --color-active: var(--theme-highveld-light-active);
+  }
+  .theme-highveld-dark {
+    --color-primary: var(--theme-highveld-dark-primary);
+    --color-secondary: var(--theme-highveld-dark-secondary);
+    --color-accent: var(--theme-highveld-dark-accent);
+    --color-background: var(--theme-highveld-dark-background);
+    --color-text: var(--theme-highveld-dark-text);
+    --color-muted: var(--theme-highveld-dark-muted);
+    --color-border: var(--theme-highveld-dark-border);
+    --color-hover: var(--theme-highveld-dark-hover);
+    --color-active: var(--theme-highveld-dark-active);
   }
 }
 

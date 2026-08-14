@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import { ThemeProvider } from "@/theme";
 import { DEFAULT_THEME_NAME } from "@/theme/constants/themes/catalog";
 import { createBuiltInThemeRegistry } from "@/theme/constants/themes/registry";
+import { themeNameFromQuery } from "@/features/layout/components/ThemeEnvironment/environmentQuery";
 import "./theme/theme.css";
 import { logger } from "@/utils/logger";
 import { initWebVitals } from "@/utils/performance";
@@ -39,14 +40,25 @@ window.setTimeout(resetChunkReloadCounter, 5000);
 // Initialize Core Web Vitals monitoring
 initWebVitals();
 
+/**
+ * `?theme=<name>` makes an environment shareable as a link. Resolved before the
+ * first render — seeding both storage and the provider default — because the
+ * provider's own initialisation would otherwise overwrite a later change, and a
+ * post-mount switch would flash the previous theme's environment.
+ */
+const queryThemeName = themeNameFromQuery(window.location.search);
+const startupThemeName = queryThemeName ?? DEFAULT_THEME_NAME;
+
 function PhoenixApp(): ReactElement {
-  const [themeRegistry] = useState(createBuiltInThemeRegistry);
+  const [themeRegistry] = useState(() =>
+    createBuiltInThemeRegistry(startupThemeName),
+  );
 
   return (
     <ThemeProvider
       themeRegistry={themeRegistry}
       config={{
-        defaultThemeName: DEFAULT_THEME_NAME,
+        defaultThemeName: startupThemeName,
         defaultMode: "dark",
         useSystem: false,
         storage: {

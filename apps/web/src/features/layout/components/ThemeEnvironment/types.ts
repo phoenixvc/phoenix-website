@@ -15,7 +15,14 @@ export interface EnvironmentFixture {
 export interface ThemeEnvironmentDefinition {
   themeName: ThemeName;
   displayName: string;
-  rendererId: "cosmic-starfield";
+  rendererId: "cosmic-starfield" | "highveld-plateau";
+  /**
+   * Dev-only query parameter that pins this environment to `staticFixture`.
+   * Declared per theme so Layout does not need a branch for each renderer.
+   */
+  fixtureParam: string;
+  /** The single deterministic frame `fixtureParam` produces. */
+  staticFixture: EnvironmentFixture;
   capabilities: {
     deterministic: {
       seed: boolean;

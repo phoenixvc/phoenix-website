@@ -415,3 +415,55 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ============================================================
+   Highveld theme overrides. The hero panel keeps content
+   readable against a bright, storm-lit sky.
+   ============================================================ */
+:global(html[data-theme="highveld"]) .darkInner {
+  background-color: rgba(15, 18, 22, 0.82);
+  border: 1px solid rgba(232, 181, 74, 0.16);
+}
+
+:global(html[data-theme="highveld"].light) .lightInner {
+  background-color: rgba(250, 246, 238, 0.85);
+  border: 1px solid rgba(200, 145, 47, 0.22);
+}
+
+/*
+ * The title gradient is a Tailwind utility applied in Hero.tsx, so it is
+ * overridden here by specificity rather than by editing the class list.
+ */
+:global(html[data-theme="highveld"]) .heroTitle {
+  background-image: linear-gradient(90deg, #e8b54a 0%, #e0653a 100%);
+}
+
+:global(html[data-theme="highveld"]) .scrollIndicator {
+  background-color: rgba(200, 145, 47, 0.65);
+  box-shadow: 0 0 10px rgba(232, 181, 74, 0.3);
+}
+
+:global(html[data-theme="highveld"]) .scrollIndicator:hover {
+  background-color: rgba(200, 145, 47, 0.85);
+  box-shadow: 0 5px 15px rgba(232, 181, 74, 0.4);
+}
+
+:global(html[data-theme="highveld"]) .heroButton {
+  box-shadow: 0 0 15px rgba(224, 101, 58, 0.3);
+}
+
+:global(html[data-theme="highveld"]) .mouseTrackingEnabled::after {
+  background: radial-gradient(
+    circle,
+    rgba(232, 181, 74, 0.09) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+}
+
+/*
+ * The minimized title carries the same Tailwind gradient utility as the full
+ * one, applied in Hero.tsx, so it needs its own override.
+ */
+:global(html[data-theme="highveld"]) .minimizedTitle {
+  background-image: linear-gradient(90deg, #e8b54a 0%, #e0653a 100%);
+}

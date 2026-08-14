@@ -5,7 +5,7 @@ import { Footer } from "./Footer/Footer";
 import Header from "./Header/Header";
 import styles from "./layout.module.css";
 import { type StarfieldRef } from "./Starfield/Starfield";
-import { ThemeEnvironment, type EnvironmentFixture } from "./ThemeEnvironment";
+import { ThemeEnvironment, resolveEnvironmentFixture } from "./ThemeEnvironment";
 import { CosmicNavigationState, Star } from "./Starfield/types";
 import { logger } from "@/utils/logger";
 import Disclaimer from "@/components/ui/Disclaimer";
@@ -55,18 +55,11 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
 
   // Create a ref to the starfield component
   const starfieldRef = useRef<StarfieldRef>(null);
-  const environmentFixture: EnvironmentFixture | undefined =
-    import.meta.env.DEV &&
-    new URLSearchParams(window.location.search).get("cosmic-fixture") ===
-      "static"
-      ? {
-          seed: 20260809,
-          timeMs: 12000,
-          qualityTier: "low",
-          motionMode: "reduced",
-          paused: true,
-        }
-      : undefined;
+  // Each environment declares its own `<theme>-fixture=static` parameter and the
+  // deterministic frame it produces, so this stays theme-agnostic.
+  const environmentFixture = import.meta.env.DEV
+    ? resolveEnvironmentFixture(window.location.search, themeName)
+    : undefined;
 
   // Check if we're on mobile on mount and when window resizes
   useEffect(() => {

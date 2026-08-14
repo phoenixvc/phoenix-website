@@ -315,3 +315,56 @@
     margin-top: 2rem;
   }
 }
+
+/* ============================================================
+   Highveld theme overrides. This module uses .dark / .light
+   (not .darkMode / .lightMode) and both are always present.
+   ============================================================ */
+:global(html[data-theme="highveld"]) .dark {
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 18, 22, 0.4),
+    rgba(15, 18, 22, 0.85)
+  );
+  border-top: 1px solid rgba(232, 181, 74, 0.14);
+}
+
+:global(html[data-theme="highveld"]) .light {
+  background: linear-gradient(
+    to bottom,
+    rgba(250, 246, 238, 0.6),
+    rgba(250, 246, 238, 0.92)
+  );
+  border-top: 1px solid rgba(200, 145, 47, 0.16);
+}
+
+:global(html[data-theme="highveld"]) .footerGlow {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(232, 181, 74, 0.5),
+    transparent
+  );
+  box-shadow: 0 0 15px 2px rgba(232, 181, 74, 0.28);
+}
+
+:global(html[data-theme="highveld"]) .footer .logoText,
+:global(html[data-theme="highveld"]) .light .logoText {
+  background: linear-gradient(90deg, #e8b54a 0%, #e0653a 100%);
+  text-shadow: 0 0 10px rgba(232, 181, 74, 0.28);
+}
+
+:global(html[data-theme="highveld"]) .logoWrapper::after,
+:global(html[data-theme="highveld"]) .sectionTitle::after,
+:global(html[data-theme="highveld"]) .link::before {
+  background: linear-gradient(90deg, #e8b54a, #e0653a);
+}
+
+:global(html[data-theme="highveld"]) .socialIcon {
+  background: rgba(200, 145, 47, 0.18);
+}
+
+:global(html[data-theme="highveld"]) .socialIcon:hover {
+  background: rgba(200, 145, 47, 0.32);
+  box-shadow: 0 4px 12px rgba(232, 181, 74, 0.25);
+}

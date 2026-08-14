@@ -56,10 +56,18 @@ export const THEME_CATALOG = {
     availability: "coming-soon",
     description: "Reserved supporting palette.",
   },
+  highveld: {
+    id: "highveld",
+    displayName: "Highveld",
+    availability: "available",
+    description:
+      "Storm-lit plateau: vast sky, seeded lightning, and a wind-run veld.",
+  },
 } as const satisfies Record<ThemeName, ThemeCatalogEntry>;
 
 export const THEME_CATALOG_ORDER = [
   "cosmic-frontier",
+  "highveld",
   "classic",
   "forest",
   "phoenix",
@@ -70,6 +78,7 @@ export const THEME_CATALOG_ORDER = [
 
 export const AVAILABLE_THEME_NAMES = [
   "cosmic-frontier",
+  "highveld",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";
