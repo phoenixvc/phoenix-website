@@ -43,8 +43,6 @@ interface TooltipState {
   y: number;
 }
 
-const SPARK_COLORS = ["#fffbeb", "#fbbf24", "#f97316", "#ef4444", "#fed7aa"];
-
 const resolveQualityTier = (
   requested: EnvironmentQualityTier | undefined,
 ): EnvironmentQualityTier => {
@@ -63,6 +61,46 @@ const resolveQualityTier = (
     return "high";
   }
   return "medium";
+};
+
+const SPARK_COLORS = ["#fffbeb", "#fbbf24", "#f97316", "#ef4444", "#fed7aa"];
+
+const playEmberChime = (type: "pin" | "focus" = "pin"): void => {
+  try {
+    if (typeof window === "undefined") return;
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    const now = ctx.currentTime;
+    if (type === "pin") {
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.exponentialRampToValueAtTime(1760, now + 0.12);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    } else {
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(1040, now + 0.2);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+    }
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.25);
+  } catch {
+    // Audio autoplay gracefully handled
+  }
+  try {
+    navigator?.vibrate?.(12);
+  } catch {
+    // Ignore haptic fallback
+  }
 };
 
 export const PhoenixEnvironment = ({
@@ -84,6 +122,7 @@ export const PhoenixEnvironment = ({
   const modeProgressRef = useRef<number>(isDarkMode ? 1.0 : 0.0);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   const [pinnedNodes, setPinnedNodes] = useState<PhoenixNode[]>([]);
+  const [isDockCollapsed, setIsDockCollapsed] = useState(false);
 
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? PHOENIX_DEFAULT_SEED;
@@ -100,6 +139,7 @@ export const PhoenixEnvironment = ({
   pinnedNodesRef.current = pinnedNodes;
 
   const handleTogglePin = (node: PhoenixNode): void => {
+    playEmberChime("pin");
     setPinnedNodes((prev) => {
       const exists = prev.some((p) => p.id === node.id);
       if (exists) {
@@ -115,6 +155,25 @@ export const PhoenixEnvironment = ({
 
   const handleCloseAllPinned = (): void => {
     setPinnedNodes([]);
+    cameraRef.current = {
+      ...cameraRef.current,
+      target: { cx: 0.5, cy: 0.5, zoom: 1 },
+    };
+  };
+
+  const handleFocusNode = (node: PhoenixNode): void => {
+    playEmberChime("focus");
+    cameraRef.current = {
+      ...cameraRef.current,
+      target: { cx: node.x, cy: node.y, zoom: 1.5 },
+    };
+  };
+
+  const handleResetCamera = (): void => {
+    cameraRef.current = {
+      ...cameraRef.current,
+      target: { cx: 0.5, cy: 0.5, zoom: 1 },
+    };
   };
 
   useEffect(() => {
@@ -383,46 +442,79 @@ export const PhoenixEnvironment = ({
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
 
         {/* Pinned Projects Dock */}
-        {pinnedNodes.length > 0 && (
-          <div className={styles.pinnedDock}>
-            {pinnedNodes.length > 1 && (
-              <button
-                className={styles.closeAllButton}
-                onClick={handleCloseAllPinned}
-              >
-                Close All ({pinnedNodes.length})
-              </button>
-            )}
-            {pinnedNodes.map((node) => (
-              <div key={node.id} className={styles.pinnedCard}>
-                <div className={styles.tooltipHeader}>
-                  <span className={styles.tooltipBadge}>
-                    {node.kind === "sanctuary"
-                      ? "Solar Sanctuary"
-                      : node.kind === "altar"
-                        ? "Focus Altar"
-                        : "Portfolio Beacon"}
-                  </span>
+        {pinnedNodes.length > 0 &&
+          (isDockCollapsed ? (
+            <button
+              className={styles.collapseTogglePill}
+              onClick={() => setIsDockCollapsed(false)}
+              title="Expand pinned sectors"
+            >
+              &#x1f4cc; {pinnedNodes.length} Pinned Sectors &#x25be;
+            </button>
+          ) : (
+            <div className={styles.pinnedDock}>
+              <div className={styles.dockControlsHeader}>
+                <div style={{ display: "flex", gap: "6px" }}>
                   <button
-                    className={styles.unpinButton}
-                    onClick={() => handleUnpin(node.id)}
-                    aria-label={`Unpin ${node.name}`}
-                    title="Unpin project"
+                    className={styles.actionIconBtn}
+                    onClick={handleResetCamera}
+                    title="Reset starfield camera to overview"
                   >
-                    &times;
+                    Overview &#x29bf;
+                  </button>
+                  <button
+                    className={styles.actionIconBtn}
+                    onClick={() => setIsDockCollapsed(true)}
+                    title="Minimize dock"
+                  >
+                    Minimize &mdash;
                   </button>
                 </div>
-                <h4 className={styles.tooltipTitle}>{node.name}</h4>
-                <p className={styles.tooltipDesc}>{node.description}</p>
-                {node.href && (
-                  <a href={node.href} className={styles.tooltipLink}>
-                    Explore Sector &rarr;
-                  </a>
+                {pinnedNodes.length > 1 && (
+                  <button
+                    className={styles.closeAllButton}
+                    onClick={handleCloseAllPinned}
+                  >
+                    Close All ({pinnedNodes.length})
+                  </button>
                 )}
               </div>
-            ))}
-          </div>
-        )}
+              {pinnedNodes.map((node) => (
+                <div key={node.id} className={styles.pinnedCard}>
+                  <div className={styles.tooltipHeader}>
+                    <span className={styles.tooltipBadge}>
+                      {node.kind === "sanctuary"
+                        ? "Solar Sanctuary"
+                        : node.kind === "altar"
+                          ? "Focus Altar"
+                          : "Portfolio Beacon"}
+                    </span>
+                    <button
+                      className={styles.unpinButton}
+                      onClick={() => handleUnpin(node.id)}
+                      aria-label={`Unpin ${node.name}`}
+                      title="Unpin project"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <button
+                    className={styles.cardFocusBtn}
+                    onClick={() => handleFocusNode(node)}
+                    title="Center celestial starfield on this beacon"
+                  >
+                    <h4 className={styles.tooltipTitle}>{node.name}</h4>
+                  </button>
+                  <p className={styles.tooltipDesc}>{node.description}</p>
+                  {node.href && (
+                    <a href={node.href} className={styles.tooltipLink}>
+                      Explore Sector &rarr;
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
 
         {/* Hover Tooltip */}
         {tooltip && (

@@ -777,6 +777,23 @@ export const drawPhoenixScene = ({
   ctx.globalAlpha = (0.45 + scrollProgress * 0.25) * pulse;
   ctx.fillStyle = magmaGrad;
   ctx.fillRect(0, height - magmaHeight, width, magmaHeight);
+
+  // Heat Mirage Shimmer Wave on Scroll
+  if (scrollProgress > 0.05 && !reducedMotion) {
+    const shimmerIntensity = scrollProgress * 5;
+    ctx.strokeStyle = palette.heatShimmer;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let x = 0; x <= width; x += 15) {
+      const sy =
+        height -
+        magmaHeight +
+        Math.sin(seconds * 4 + x * 0.04) * shimmerIntensity;
+      if (x === 0) ctx.moveTo(x, sy);
+      else ctx.lineTo(x, sy);
+    }
+    ctx.stroke();
+  }
   ctx.restore();
 
   // 5. Celestial Solar Beacons & Hearth Stars

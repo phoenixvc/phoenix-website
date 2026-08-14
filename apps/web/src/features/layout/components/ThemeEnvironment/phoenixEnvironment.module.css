@@ -374,8 +374,91 @@
   color: rgba(44, 26, 20, 0.6);
 }
 
+.dockControlsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.actionIconBtn {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.actionIconBtn:hover {
+  background: rgba(245, 158, 11, 0.35);
+  border-color: rgba(245, 158, 11, 0.8);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.collapseTogglePill {
+  position: fixed;
+  top: 85px;
+  right: 24px;
+  z-index: 9999;
+  background: rgba(18, 11, 14, 0.92);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  color: #fbbf24;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    0 0 16px rgba(245, 158, 11, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.collapseTogglePill:hover {
+  background: rgba(28, 15, 18, 0.98);
+  border-color: #fbbf24;
+  transform: translateY(-1px);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.7),
+    0 0 22px rgba(245, 158, 11, 0.45);
+}
+
+.wrapper[data-mode="light"] .collapseTogglePill {
+  background: rgba(254, 252, 248, 0.95);
+  border-color: rgba(234, 88, 12, 0.4);
+  color: #c2410c;
+  box-shadow: 0 8px 24px rgba(120, 86, 69, 0.15);
+}
+
+.cardFocusBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  width: 100%;
+}
+
+.cardFocusBtn:hover .tooltipTitle {
+  color: #f59e0b;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
 .closeAllButton {
-  align-self: flex-end;
   background: rgba(245, 158, 11, 0.18);
   border: 1px solid rgba(245, 158, 11, 0.4);
   color: #fbbf24;
