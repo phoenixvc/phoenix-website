@@ -1,0 +1,35 @@
+[data-theme="classic"] button,
+[data-theme="classic"] a,
+[data-theme="classic"] .card,
+[data-theme="classic"] [role="button"] {
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+[data-theme="classic"] button:hover,
+[data-theme="classic"] a:hover,
+[data-theme="classic"] [role="button"]:hover {
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.22);
+}
+
+[data-theme="classic"][data-mode="dark"] button:hover,
+[data-theme="classic"][data-mode="dark"] a:hover,
+[data-theme="classic"][data-mode="dark"] [role="button"]:hover {
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.28);
+}
+
+[data-theme="classic"] main {
+  text-shadow: 0 1px 12px rgba(9, 13, 22, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="classic"] button,
+  [data-theme="classic"] a,
+  [data-theme="classic"] .card,
+  [data-theme="classic"] [role="button"] {
+    transition: none;
+  }
+}
