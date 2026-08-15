@@ -13,20 +13,36 @@ import type { EnvironmentFixture } from "./types";
  */
 
 export const themeNameFromQuery = (search: string): ThemeName | null => {
-  const requested = new URLSearchParams(search).get("theme");
-  return requested && isAvailableThemeName(requested) ? requested : null;
+  const params = new URLSearchParams(search);
+  const requested = params.get("theme");
+  if (requested && isAvailableThemeName(requested)) {
+    return requested;
+  }
+  for (const [theme, def] of Object.entries(THEME_ENVIRONMENTS)) {
+    if (
+      params.get(def.fixtureParam) === "static" &&
+      isAvailableThemeName(theme)
+    ) {
+      return theme as ThemeName;
+    }
+  }
+  return null;
 };
 
 export const resolveEnvironmentFixture = (
   search: string,
   themeName: ThemeName,
 ): EnvironmentFixture | undefined => {
+  const params = new URLSearchParams(search);
   const definition =
     THEME_ENVIRONMENTS[themeName as keyof typeof THEME_ENVIRONMENTS];
-  if (!definition) {
-    return undefined;
+  if (definition && params.get(definition.fixtureParam) === "static") {
+    return definition.staticFixture;
   }
-  return new URLSearchParams(search).get(definition.fixtureParam) === "static"
-    ? definition.staticFixture
-    : undefined;
+  for (const def of Object.values(THEME_ENVIRONMENTS)) {
+    if (params.get(def.fixtureParam) === "static") {
+      return def.staticFixture;
+    }
+  }
+  return undefined;
 };

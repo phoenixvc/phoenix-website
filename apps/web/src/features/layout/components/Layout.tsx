@@ -9,13 +9,13 @@ import { type StarfieldRef } from "./Starfield/Starfield";
 import {
   ThemeEnvironment,
   resolveEnvironmentFixture,
+  themeNameFromQuery,
   type EnvironmentFixture,
 } from "./ThemeEnvironment";
 import { CosmicNavigationState, Star } from "./Starfield/types";
 import { logger } from "@/utils/logger";
 import Disclaimer from "@/components/ui/Disclaimer";
 import { useTheme } from "@/theme";
-import { isAvailableThemeName } from "@/theme/constants/themes/catalog";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -62,15 +62,18 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
 
   // Create a ref to the starfield component
   const starfieldRef = useRef<StarfieldRef>(null);
-  const environmentFixture: EnvironmentFixture | undefined = import.meta.env
-    .DEV
+  const environmentFixture: EnvironmentFixture | undefined = import.meta.env.DEV
     ? resolveEnvironmentFixture(location.search, themeName)
     : undefined;
 
+  const prevSearchRef = useRef<string | null>(null);
   useEffect(() => {
-    const requested = new URLSearchParams(location.search).get("theme");
-    if (requested && isAvailableThemeName(requested)) {
-      setThemeName(requested);
+    if (prevSearchRef.current !== location.search) {
+      prevSearchRef.current = location.search;
+      const requested = themeNameFromQuery(location.search);
+      if (requested) {
+        setThemeName(requested);
+      }
     }
   }, [location.search, setThemeName]);
 

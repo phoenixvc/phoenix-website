@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   height: 100vh;
-  background: hsl(var(--color-surface, var(--color-background)));
+  background: hsl(var(--color-background));
   border-right: 1px solid hsl(var(--color-primary) / 0.08);
   display: flex;
   flex-direction: column;
@@ -19,7 +19,7 @@
 }
 
 .sidebar.lightMode {
-  background: hsl(var(--color-surface, var(--color-background)));
+  background: hsl(var(--color-background));
   border-right: 1px solid hsl(var(--color-primary) / 0.08);
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
 }

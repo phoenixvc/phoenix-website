@@ -126,23 +126,6 @@ export class ThemeCore {
       });
     }
 
-    // Set default theme if provided, but ONLY if stateManager is available
-    if (themeRegistry && themeRegistry.defaults && this.stateManager) {
-      const { themeName, mode } = themeRegistry.defaults;
-      if (themeName) {
-        // Handle promise properly to avoid ESLint error
-        void this.setColorScheme(themeName);
-      }
-      if (mode) {
-        // Handle promise properly to avoid ESLint error
-        void this.setMode(mode);
-      }
-    } else if (themeRegistry && themeRegistry.defaults) {
-      console.warn(
-        "[ThemeCore] Cannot set default theme/mode because state manager is not connected yet",
-      );
-    }
-
     // Log initialization
     console.log("[ThemeCore] Initialized with registries:", {
       themes: themeRegistry ? Object.keys(themeRegistry.themes || {}) : [],

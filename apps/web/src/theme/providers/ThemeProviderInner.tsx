@@ -66,11 +66,28 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
   // Get singleton instances once
   const themeCore = useMemo(() => ThemeCore.getInstance(), []);
 
-  const [state, setState] = useState<ThemeState>({
-    ...defaultState,
-    ...config,
-    themeName: config.defaultThemeName ?? defaultState.themeName,
-    mode: config.defaultMode ?? defaultState.mode,
+  const [state, setState] = useState<ThemeState>(() => {
+    try {
+      const stateManager = ThemeStateManager.getInstance();
+      const current = stateManager.getState();
+      return {
+        ...defaultState,
+        ...config,
+        ...current,
+        themeName:
+          current.themeName ||
+          config.defaultThemeName ||
+          defaultState.themeName,
+        mode: current.mode || config.defaultMode || defaultState.mode,
+      };
+    } catch {
+      return {
+        ...defaultState,
+        ...config,
+        themeName: config.defaultThemeName ?? defaultState.themeName,
+        mode: config.defaultMode ?? defaultState.mode,
+      };
+    }
   });
   const [error, setError] = useState<Error | null>(null);
   const [loadingTheme, setLoadingTheme] = useState<boolean>(false);
@@ -84,12 +101,6 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
     createComponentRegistry(componentRegistry),
   );
 
-  // Acquisition is a singleton used by ThemeStateManager. Give it the same
-  // registry before passive initialization effects can request a theme.
-  useLayoutEffect(() => {
-    ThemeAcquisitionManager.getInstance().setThemeRegistry(themes);
-  }, [themes]);
-
   // Get systemMode from context instead of using useSystemMode hook
   const {
     systemMode,
@@ -97,6 +108,34 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
     setUseSystemMode: setUseSystemModeContext,
   } = useSystemModeContext();
   const { applyCssVariables, getCssVariable } = useCssVariables();
+
+  // Acquisition is a singleton used by ThemeStateManager. Give it the same
+  // registry before passive initialization effects can request a theme.
+  useLayoutEffect(() => {
+    ThemeAcquisitionManager.getInstance().setThemeRegistry(themes);
+  }, [themes]);
+
+  // Apply theme CSS variables and root attributes synchronously before first paint
+  useLayoutEffect(() => {
+    const themeData = themes?.themes?.[state.themeName];
+    if (themeData) {
+      try {
+        const variables = generateThemeVariables(themeData, state.mode);
+        applyCssVariables(variables.computed);
+        if (typeof document !== "undefined") {
+          const root = document.documentElement;
+          root.classList.remove("light", "dark");
+          root.classList.add(state.mode);
+          root.setAttribute("data-theme", state.themeName);
+        }
+      } catch (err) {
+        logger.error(
+          "[ThemeProvider] Error applying CSS variables in layoutEffect:",
+          err,
+        );
+      }
+    }
+  }, [state.themeName, state.mode, themes, applyCssVariables]);
 
   // Define callbacks before useEffect hooks to avoid TDZ errors
   const setMode = useCallback(
@@ -288,61 +327,44 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
     }
   }, [themes, components, themeManagerReady, themeCore]);
 
-  // Effect to load stored theme settings from localStorage on mount
+  // Effect to load stored theme settings and subscribe to ThemeStateManager changes
   useEffect(() => {
     if (!themeManagerReady) return;
 
-    // Small delay to ensure ThemeStateManager's async initialization has completed
-    const timeoutId = setTimeout(() => {
-      try {
-        // Get the state manager's current state which includes localStorage values
-        const stateManager = ThemeStateManager.getInstance();
-        const storedState = stateManager.getState();
+    const stateManager = ThemeStateManager.getInstance();
+    const syncState = (): void => {
+      const storedState = stateManager.getState();
+      setState((prev) => {
+        let changed = false;
+        const updates: Partial<ThemeState> = {};
 
-        logger.debug(
-          "[ThemeProvider] Loading stored theme settings:",
-          storedState,
-        );
+        if (storedState.themeName && storedState.themeName !== prev.themeName) {
+          updates.themeName = storedState.themeName;
+          changed = true;
+        }
 
-        // Update React state with stored values if they differ
-        setState((prev) => {
-          const updates: Partial<ThemeState> = {};
+        if (storedState.mode && storedState.mode !== prev.mode) {
+          updates.mode = storedState.mode;
+          changed = true;
+        }
 
-          if (
-            storedState.themeName &&
-            storedState.themeName !== prev.themeName
-          ) {
-            updates.themeName = storedState.themeName;
-          }
+        if (
+          storedState.useSystem !== undefined &&
+          storedState.useSystem !== prev.useSystem
+        ) {
+          updates.useSystem = storedState.useSystem;
+          changed = true;
+        }
 
-          if (storedState.mode && storedState.mode !== prev.mode) {
-            updates.mode = storedState.mode;
-          }
+        if (changed) {
+          return { ...prev, ...updates, initialized: false };
+        }
+        return prev;
+      });
+    };
 
-          if (
-            storedState.useSystem !== undefined &&
-            storedState.useSystem !== prev.useSystem
-          ) {
-            updates.useSystem = storedState.useSystem;
-          }
-
-          // Only update if there are actual changes
-          if (Object.keys(updates).length > 0) {
-            logger.debug("[ThemeProvider] Applying stored settings:", updates);
-            return { ...prev, ...updates, initialized: false }; // Reset initialized to trigger re-init with new settings
-          }
-
-          return prev;
-        });
-      } catch (error) {
-        logger.error(
-          "[ThemeProvider] Failed to load stored theme settings:",
-          error,
-        );
-      }
-    }, 50); // Small delay for async initialization to complete
-
-    return (): void => clearTimeout(timeoutId);
+    syncState();
+    return stateManager.subscribe(syncState);
   }, [themeManagerReady]);
 
   // Effect to sync system mode with theme state - only when manager is ready
@@ -788,11 +810,14 @@ const ThemeProviderInner: React.FC<ThemeProviderProps> = ({
   return (
     <ThemeContext.Provider value={contextValue}>
       <div
-        className={`${className || ""} ${
+        className={[
+          className || "",
           themeManagerReady
             ? `${getThemeClassNames(state.themeName).base} ${getThemeClassNames(state.themeName)[state.mode]}`
-            : ""
-        }`}
+            : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         data-theme={state.themeName}
         data-mode={state.mode}
         data-loading={loadingTheme || !themeManagerReady ? "true" : "false"}

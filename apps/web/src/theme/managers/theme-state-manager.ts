@@ -111,22 +111,84 @@ export class ThemeStateManager {
    * Initialize the state with stored values or defaults.
    */
   private async initializeStateAsync(): Promise<void> {
-    this.currentThemeName = await this.getStoredOrDefaultThemeName();
+    const queryTheme =
+      typeof window !== "undefined"
+        ? this.getThemeFromQuery(window.location.search)
+        : null;
+    if (queryTheme) {
+      this.currentThemeName = queryTheme;
+      await ThemeStorageManager.saveThemeName(queryTheme);
+    } else {
+      this.currentThemeName = await this.getStoredOrDefaultThemeName();
+    }
     this.currentMode = await this.getStoredOrDefaultMode();
     this.systemMode = this.getInitialSystemMode();
     this.useSystem = await this.getStoredOrDefaultUseSystem();
   }
 
+  private getThemeFromQuery(search: string): ThemeName | null {
+    if (!search) return null;
+    try {
+      const params = new URLSearchParams(search);
+      const theme = params.get("theme");
+      if (theme && themeValidationManager.isValidThemeName(theme)) {
+        return theme as ThemeName;
+      }
+      const fixtureMap: Record<string, ThemeName> = {
+        "cosmic-fixture": "cosmic-frontier",
+        "forest-fixture": "forest",
+        "highveld-fixture": "highveld",
+        "phoenix-fixture": "phoenix",
+        "ocean-fixture": "ocean",
+        "cloud-fixture": "cloud",
+        "lavender-fixture": "lavender",
+        "classic-fixture": "classic",
+      };
+      for (const [fixtureParam, themeName] of Object.entries(fixtureMap)) {
+        if (params.get(fixtureParam) === "static") {
+          return themeName;
+        }
+      }
+    } catch {
+      // Ignore URL parsing errors
+    }
+    return null;
+  }
+
   /**
    * Synchronous initialization for constructor
-   * Uses defaults and then updates asynchronously
+   * Uses URL query, stored values, and defaults
    */
   private initializeState(): void {
-    // Set defaults initially
-    this.currentThemeName = THEME_STORAGE_CONSTANTS.DEFAULTS.THEME_NAME;
-    this.currentMode = "dark";
+    const queryTheme =
+      typeof window !== "undefined"
+        ? this.getThemeFromQuery(window.location.search)
+        : null;
+    const storedTheme = ThemeStorageManager.getThemeNameSync();
+
+    if (queryTheme) {
+      this.currentThemeName = queryTheme;
+      ThemeStorageManager.saveThemeNameSync(queryTheme);
+    } else if (
+      storedTheme &&
+      themeValidationManager.isValidThemeName(storedTheme)
+    ) {
+      this.currentThemeName = storedTheme;
+    } else {
+      this.currentThemeName =
+        this.config.themeName || THEME_STORAGE_CONSTANTS.DEFAULTS.THEME_NAME;
+    }
+
+    const storedMode = ThemeStorageManager.getThemeModeSync();
+    this.currentMode =
+      storedMode && themeValidationManager.isValidThemeMode(storedMode)
+        ? storedMode
+        : this.config.mode || "dark";
+
     this.systemMode = this.getInitialSystemMode();
-    this.useSystem = false;
+    this.useSystem =
+      ThemeStorageManager.getUseSystemSync() ??
+      (this.config.useSystem || false);
   }
 
   private async getStoredOrDefaultThemeName(): Promise<ThemeName> {

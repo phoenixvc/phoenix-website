@@ -170,6 +170,67 @@ export class ThemeStorageManager {
   }
 
   /**
+   * Synchronous get method for browser storage
+   * @param key storage key
+   * @returns parsed value or null
+   */
+  static getSync<T>(key: string): T | null {
+    if (typeof window === "undefined") return null;
+
+    try {
+      const prefixedKey = this._keyPrefix ? `${this._keyPrefix}:${key}` : key;
+      let value: string | null = null;
+
+      if (this._storageProvider === "sessionStorage") {
+        value = sessionStorage.getItem(prefixedKey);
+      } else if (
+        this._storageProvider === "localStorage" ||
+        !this._storageProvider
+      ) {
+        value = localStorage.getItem(prefixedKey);
+      } else {
+        return null;
+      }
+
+      if (!value) return null;
+
+      const parsed = JSON.parse(value) as T;
+
+      if (!this.isValidValue(key, parsed)) {
+        return null;
+      }
+
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Synchronous set method for browser storage
+   * @param key storage key
+   * @param value value to store
+   */
+  static setSync<T>(key: string, value: T): void {
+    if (typeof window === "undefined") return;
+
+    try {
+      if (!this.isValidValue(key, value)) return;
+
+      const prefixedKey = this._keyPrefix ? `${this._keyPrefix}:${key}` : key;
+      const serializedValue = JSON.stringify(value);
+
+      if (this._storageProvider === "sessionStorage") {
+        sessionStorage.setItem(prefixedKey, serializedValue);
+      } else {
+        localStorage.setItem(prefixedKey, serializedValue);
+      }
+    } catch (err) {
+      console.error(`[ThemeStorage] Failed to setSync ${key}:`, err);
+    }
+  }
+
+  /**
    * Generic get method with type safety
    * @param key storage key
    * @returns parsed value or null
@@ -303,6 +364,22 @@ export class ThemeStorageManager {
   }
 
   /**
+   * Get stored theme name synchronously
+   */
+  static getThemeNameSync(): ThemeName | null {
+    return this.getSync<ThemeName>(this.KEYS.THEME_NAME);
+  }
+
+  /**
+   * Save theme name to storage synchronously
+   */
+  static saveThemeNameSync(themeName: ThemeName): void {
+    if (this.isValidThemeName(themeName)) {
+      this.setSync(this.KEYS.THEME_NAME, themeName);
+    }
+  }
+
+  /**
    * Get stored theme name
    * @returns stored theme name or null if not found/invalid
    */
@@ -323,6 +400,22 @@ export class ThemeStorageManager {
   }
 
   /**
+   * Get stored theme mode synchronously
+   */
+  static getThemeModeSync(): ThemeMode | null {
+    return this.getSync<ThemeMode>(this.KEYS.THEME_MODE);
+  }
+
+  /**
+   * Save theme mode synchronously
+   */
+  static saveThemeModeSync(mode: ThemeMode): void {
+    if (this.isValidMode(mode)) {
+      this.setSync(this.KEYS.THEME_MODE, mode);
+    }
+  }
+
+  /**
    * Get stored theme mode
    * @returns stored mode or null if not found/invalid
    */
@@ -340,6 +433,22 @@ export class ThemeStorageManager {
       throw new Error(`Invalid mode: ${mode}`);
     }
     await this.set(this.KEYS.THEME_MODE, mode);
+  }
+
+  /**
+   * Get system preference setting synchronously
+   */
+  static getUseSystemSync(): boolean {
+    return this.getSync<boolean>(this.KEYS.USE_SYSTEM) ?? false;
+  }
+
+  /**
+   * Save system preference setting synchronously
+   */
+  static saveUseSystemSync(useSystem: boolean): void {
+    if (typeof useSystem === "boolean") {
+      this.setSync(this.KEYS.USE_SYSTEM, useSystem);
+    }
   }
 
   /**

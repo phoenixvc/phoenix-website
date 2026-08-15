@@ -1,6 +1,6 @@
 // components/Layout/Header/Header.tsx
 import React, { FC, useEffect, useState, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./header.module.css";
 import {
   Menu,
@@ -28,45 +28,20 @@ const Header: FC<HeaderProps> = ({
   isMobile = false,
   gameMode,
   onGameModeToggle,
-  debugMode = false,
+  debugMode,
   onDebugModeToggle,
 }): React.ReactElement => {
-  // Calculate header left offset based on sidebar state (desktop only)
-  const headerLeftOffset = isMobile ? 0 : isSidebarOpen ? sidebarWidth : 0;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activePath, setActivePath] = useState("");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
-  const { themeName, setThemeName } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { themeName, setThemeName } = useTheme();
 
+  // Close profile menu on outside click
   useEffect(() => {
-    const pathname = location.pathname;
-    const hash = location.hash;
-
-    if (pathname === "/" && hash) {
-      setActivePath(pathname + hash);
-    } else if (pathname === "/" && !hash) {
-      setActivePath(pathname);
-    } else {
-      setActivePath(pathname);
-    }
-  }, [location]);
-
-  // Handle scroll event to add transparency
-  useEffect(() => {
-    const handleScroll = (): void => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    // Close profile menu when clicking outside
     const handleClickOutside = (event: MouseEvent): void => {
       if (
         profileMenuRef.current &&
@@ -78,15 +53,38 @@ const Header: FC<HeaderProps> = ({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return (): void => {
-      window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [scrolled, profileMenuRef]);
+  }, []);
 
-  // Function to determine if a nav item is active
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = (): void => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return (): void => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // Calculate header left offset based on sidebar state
+  const headerLeftOffset = isMobile
+    ? 0
+    : isSidebarOpen
+      ? isSidebarCollapsed
+        ? 60
+        : sidebarWidth
+      : 0;
+
+  // Function to check if a link is active
   const isNavItemActive = (href: string): boolean => {
+    const activePath = location.hash
+      ? `${location.pathname}${location.hash}`
+      : location.pathname;
+
     if (href === "/") {
       return activePath === "/";
     }
@@ -102,6 +100,37 @@ const Header: FC<HeaderProps> = ({
     setThemeName(themeId);
     setThemeMenuOpen(false);
     setProfileMenuOpen(false);
+    if (location.search) {
+      const params = new URLSearchParams(location.search);
+      let changed = false;
+      const themeParams = [
+        "theme",
+        "forest-fixture",
+        "cosmic-fixture",
+        "highveld-fixture",
+        "phoenix-fixture",
+        "ocean-fixture",
+        "cloud-fixture",
+        "lavender-fixture",
+        "classic-fixture",
+      ];
+      themeParams.forEach((param) => {
+        if (params.has(param)) {
+          params.delete(param);
+          changed = true;
+        }
+      });
+      if (changed) {
+        void navigate(
+          {
+            pathname: location.pathname,
+            search: params.toString() ? `?${params.toString()}` : "",
+            hash: location.hash,
+          },
+          { replace: true },
+        );
+      }
+    }
   };
 
   // Handle mobile menu toggle

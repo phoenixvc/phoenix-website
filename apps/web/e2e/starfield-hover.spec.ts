@@ -32,8 +32,8 @@ test.describe("Starfield Sun Hover Functionality", () => {
     const canvas = page.locator("canvas");
     await expect(canvas).toBeVisible();
     // Canvas should have pointer-events: auto
-    const pointerEvents = await canvas.evaluate((el) =>
-      getComputedStyle(el).pointerEvents
+    const pointerEvents = await canvas.evaluate(
+      (el) => getComputedStyle(el).pointerEvents,
     );
     expect(pointerEvents).toBe("auto");
   });
@@ -47,7 +47,7 @@ test.describe("Starfield Sun Hover Functionality", () => {
     });
 
     // Click in the center of the canvas
-    await canvas.click({ position: { x: 500, y: 300 } });
+    await canvas.click({ position: { x: 500, y: 300 }, force: true });
     await page.waitForTimeout(500);
 
     // Should not have thrown any errors
@@ -83,7 +83,10 @@ test.describe("Starfield Sun Hover Functionality", () => {
       expect(sunPositions.length).toBeGreaterThan(0);
 
       const firstSun = sunPositions[0];
-      await canvas.hover({ position: { x: firstSun.x, y: firstSun.y } });
+      await canvas.hover({
+        position: { x: firstSun.x, y: firstSun.y },
+        force: true,
+      });
 
       // Wait for tooltip delay (200ms) plus animation
       await page.waitForTimeout(500);
@@ -93,7 +96,7 @@ test.describe("Starfield Sun Hover Functionality", () => {
       await expect(sunTooltip).toBeVisible({ timeout: 2000 });
     } else {
       // No API available - verify hover doesn't crash and use approximate positions
-      await canvas.hover({ position: { x: 400, y: 300 } });
+      await canvas.hover({ position: { x: 400, y: 300 }, force: true });
       await page.waitForTimeout(500);
 
       // Assert hover completed without errors
@@ -119,7 +122,7 @@ test.describe("Starfield Sun Hover Functionality", () => {
     const canvas = page.locator("canvas");
 
     // Hover somewhere on canvas
-    await canvas.hover({ position: { x: 500, y: 300 } });
+    await canvas.hover({ position: { x: 500, y: 300 }, force: true });
     await page.waitForTimeout(300);
 
     // Move mouse away from canvas entirely
@@ -127,7 +130,9 @@ test.describe("Starfield Sun Hover Functionality", () => {
     await page.waitForTimeout(400); // Wait for hide delay + animation
 
     // Any visible tooltips should be gone
-    const visibleTooltips = page.locator("[class*=\"Tooltip\"][class*=\"visible\"]");
+    const visibleTooltips = page.locator(
+      "[class*=\"Tooltip\"][class*=\"visible\"]",
+    );
     const count = await visibleTooltips.count();
 
     // Should have no visible tooltips (or very few)
@@ -151,6 +156,7 @@ test.describe("Starfield Sun Hover Functionality", () => {
           x: 200 + i * 100,
           y: 200 + i * 50,
         },
+        force: true,
       });
       await page.waitForTimeout(100);
     }
@@ -171,10 +177,10 @@ test.describe("Starfield Sun Hover Functionality", () => {
     // Get initial state - check for rotateIcon class or transform
     const chevron = toggleButton.locator("svg");
     const initialTransform = await chevron.evaluate(
-      (el: SVGElement) => getComputedStyle(el).transform
+      (el: SVGElement) => getComputedStyle(el).transform,
     );
     const hasRotateClassInitially = await chevron.evaluate((el: SVGElement) =>
-      el.classList.contains("rotateIcon")
+      el.classList.contains("rotateIcon"),
     );
 
     // Click to toggle sidebar
@@ -183,10 +189,10 @@ test.describe("Starfield Sun Hover Functionality", () => {
 
     // Get new state
     const newTransform = await chevron.evaluate(
-      (el: SVGElement) => getComputedStyle(el).transform
+      (el: SVGElement) => getComputedStyle(el).transform,
     );
     const hasRotateClassAfter = await chevron.evaluate((el: SVGElement) =>
-      el.classList.contains("rotateIcon")
+      el.classList.contains("rotateIcon"),
     );
 
     // Assert: Either class toggled OR transform changed
@@ -230,7 +236,7 @@ test.describe("Starfield Planet Hover Functionality", () => {
     ];
 
     for (const pos of positions) {
-      await canvas.hover({ position: pos });
+      await canvas.hover({ position: pos, force: true });
       await page.waitForTimeout(300);
     }
 
@@ -257,7 +263,7 @@ test.describe("Zoom Button Alignment", () => {
         const viewportWidth = page.viewportSize()?.width || 1280;
         // Center should be approximately at 50% of viewport
         const centerOffset = Math.abs(
-          scrollBox.x + scrollBox.width / 2 - viewportWidth / 2
+          scrollBox.x + scrollBox.width / 2 - viewportWidth / 2,
         );
         // Allow for sidebar offset (up to 110px for 220px sidebar)
         expect(centerOffset).toBeLessThan(150);

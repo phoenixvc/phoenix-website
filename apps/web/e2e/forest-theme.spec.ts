@@ -281,9 +281,11 @@ test.describe("Forest theme contract", () => {
 
   test("ignores a reserved theme query and stored name", async ({ page }) => {
     await page.addInitScript(() =>
-      localStorage.setItem("theme_name", JSON.stringify("classic")),
+      localStorage.setItem("theme_name", JSON.stringify("unsupported-theme")),
     );
-    await page.goto("/?theme=classic", { waitUntil: "domcontentloaded" });
+    await page.goto("/?theme=unsupported-theme", {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.locator(".theme-wrapper")).toHaveAttribute(
       "data-theme",
       "cosmic-frontier",

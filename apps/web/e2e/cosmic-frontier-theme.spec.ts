@@ -110,7 +110,10 @@ test.describe("Cosmic Frontier theme contract", () => {
     page,
   }) => {
     await page.addInitScript(() =>
-      localStorage.setItem("theme_name", JSON.stringify("classic")),
+      localStorage.setItem(
+        "theme_name",
+        JSON.stringify("stale-unsupported-theme"),
+      ),
     );
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
