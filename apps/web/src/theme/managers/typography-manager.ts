@@ -2,19 +2,16 @@
 
 import { TypographyPreset, TypographyScale } from "../mappings";
 import { ThemeMode } from "../types/core/base";
-import { TypographyRegistry } from "../registry/typography-registry";
+import {
+  TypographyRegistry,
+  createTypographyRegistry,
+} from "../registry/typography-registry";
 
 export class TypographyManager {
-  //TODO: private mapping: TypographyMapping;
   private registry: TypographyRegistry;
 
   constructor(registry?: TypographyRegistry) {
-    // this.mapping = mapping;
-    this.registry = registry || {
-      presets: new Map(),
-      scales: new Map(),
-      components: new Map(),
-    };
+    this.registry = registry || createTypographyRegistry();
   }
 
   // Get typography for a component

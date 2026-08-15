@@ -133,7 +133,7 @@ export class ThemeCacheService implements IThemeCacheService {
   ): ThemeColors {
     const mode = this.config.defaultMode;
 
-    if (this.isThemeSchemeInitial(input)) {
+    if (this.themeTransformationManager.isThemeSchemeInitial(input)) {
       // For ThemeSchemeInitial, use the transformation manager
       return this.themeTransformationManager.transformTheme(
         input,
@@ -247,19 +247,6 @@ export class ThemeCacheService implements IThemeCacheService {
         this.log.groupEnd();
       }
     }
-  }
-
-  /**
-   * Type guard to check if input is a ThemeSchemeInitial
-   * Reusing the same logic from ThemeTransformationManager
-   */
-  private isThemeSchemeInitial(input: unknown): input is ThemeSchemeInitial {
-    return (
-      input !== null &&
-      typeof input === "object" &&
-      "base" in input &&
-      !("schemes" in input)
-    );
   }
 
   /**

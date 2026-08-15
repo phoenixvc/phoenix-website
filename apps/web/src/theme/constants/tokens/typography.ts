@@ -1,5 +1,7 @@
 // constants/tokens/typography.ts
 
+import { TypographyPreset } from "../../mappings/typography-mappings";
+
 export const fontFamilies = {
   sans: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, `Segoe UI`, Roboto, `Helvetica Neue`, Arial, sans-serif",
   serif: "ui-serif, Georgia, Cambria, `Times New Roman`, Times, serif",
@@ -128,3 +130,64 @@ export const typography = {
     },
   },
 } as const;
+
+/**
+ * The single default TypographyPreset, derived entirely from the static token
+ * tables above. This is the real data behind TypographyManager's default
+ * registry (see theme/registry/typography-registry.ts) — every field traces
+ * back to a token here rather than being duplicated or invented ad hoc.
+ */
+export const defaultTypographyPreset: TypographyPreset = {
+  name: "default",
+  h1: { ...typography.heading.h1, fontFamily: fontFamilies.sans },
+  h2: { ...typography.heading.h2, fontFamily: fontFamilies.sans },
+  h3: { ...typography.heading.h3, fontFamily: fontFamilies.sans },
+  h4: { ...typography.heading.h4, fontFamily: fontFamilies.sans },
+  h5: { ...typography.heading.h5, fontFamily: fontFamilies.sans },
+  h6: { ...typography.heading.h6, fontFamily: fontFamilies.sans },
+  body1: {
+    ...typography.body.default,
+    letterSpacing: letterSpacings.normal,
+    fontFamily: fontFamilies.sans,
+  },
+  body2: {
+    ...typography.body.small,
+    letterSpacing: letterSpacings.normal,
+    fontFamily: fontFamilies.sans,
+  },
+  subtitle1: {
+    ...typography.body.large,
+    letterSpacing: letterSpacings.normal,
+    fontFamily: fontFamilies.sans,
+  },
+  subtitle2: {
+    ...typography.body.small,
+    letterSpacing: letterSpacings.normal,
+    fontFamily: fontFamilies.sans,
+  },
+  caption: {
+    ...typography.body.caption,
+    letterSpacing: letterSpacings.normal,
+    fontFamily: fontFamilies.sans,
+  },
+  overline: {
+    fontSize: fontSizes.xs,
+    lineHeight: lineHeights.normal,
+    fontWeight: fontWeights.medium,
+    letterSpacing: letterSpacings.widest,
+    fontFamily: fontFamilies.sans,
+    textTransform: "uppercase",
+  },
+  button: {
+    ...typography.button.default,
+    letterSpacing: letterSpacings.normal,
+    fontFamily: fontFamilies.sans,
+  },
+  code: {
+    fontSize: fontSizes.sm,
+    lineHeight: lineHeights.normal,
+    fontWeight: fontWeights.normal,
+    letterSpacing: letterSpacings.normal,
+    fontFamily: fontFamilies.mono,
+  },
+};

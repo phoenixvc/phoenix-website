@@ -666,6 +666,16 @@ export const ColorUtils = {
   },
 
   /**
+   * Classify a color as "dark" (needs light contrast text) via simple relative
+   * luminance compared against a threshold (0-1, default 0.5).
+   */
+  isColorDark(color: string, threshold: number = 0.5): boolean {
+    const { r, g, b } = ColorUtils.getRgbComponents(color);
+    const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    return luminance < threshold;
+  },
+
+  /**
    * [Optional debug] Print color details.
    */
   debugColor(color: string): void {
@@ -867,7 +877,7 @@ export const ColorUtils = {
     }
   },
 
-  createColorShades(baseColor: string): ColorShades {
+  createColorShades(baseColor: string, contrastThreshold: number = 0.5): ColorShades {
     // Generate a palette with 10 colors (for 50, 100, 200, ... 900)
     const palette = this.createPalette(baseColor, 10);
 
@@ -884,7 +894,9 @@ export const ColorUtils = {
       800: palette[8],
       900: palette[9],
       base: baseColor,
-      contrast: Array(10).fill("#FFFFFF"), // Default contrast colors
+      contrast: palette.map((shade) =>
+        this.isColorDark(shade.hex, contrastThreshold) ? "#FFFFFF" : "#000000",
+      ),
     };
   },
 
