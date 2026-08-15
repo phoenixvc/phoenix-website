@@ -44,6 +44,12 @@ export const THEME_CATALOG = {
     availability: "available",
     description: "Abyssal pelagic trench environment with bioluminescent jellyfish, caustics, and hydrothermal vents.",
   },
+  cloud: {
+    id: "cloud",
+    displayName: "Cloud",
+    availability: "available",
+    description: "Nebula stratosphere environment with volumetric drifting cumulus vapour and solar crepuscular rays.",
+  },
   classic: {
     id: "classic",
     displayName: "Classic",
@@ -56,12 +62,6 @@ export const THEME_CATALOG = {
     availability: "coming-soon",
     description: "Reserved supporting palette.",
   },
-  cloud: {
-    id: "cloud",
-    displayName: "Cloud",
-    availability: "coming-soon",
-    description: "Reserved supporting palette.",
-  },
 } as const satisfies Record<ThemeName, ThemeCatalogEntry>;
 
 export const THEME_CATALOG_ORDER = [
@@ -70,9 +70,9 @@ export const THEME_CATALOG_ORDER = [
   "highveld",
   "phoenix",
   "ocean",
+  "cloud",
   "classic",
   "lavender",
-  "cloud",
 ] as const satisfies readonly ThemeName[];
 
 export const AVAILABLE_THEME_NAMES = [
@@ -81,6 +81,7 @@ export const AVAILABLE_THEME_NAMES = [
   "highveld",
   "phoenix",
   "ocean",
+  "cloud",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";

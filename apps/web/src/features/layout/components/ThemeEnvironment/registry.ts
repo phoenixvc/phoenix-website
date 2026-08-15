@@ -155,10 +155,42 @@ export const OCEAN_ENVIRONMENT: ThemeEnvironmentDefinition = {
   },
 };
 
+export const CLOUD_ENVIRONMENT: ThemeEnvironmentDefinition = {
+  themeName: "cloud",
+  displayName: "Cloud",
+  rendererId: "cloud-strato",
+  fixtureParam: "cloud-fixture",
+  staticFixture: {
+    seed: 20260816,
+    timeMs: 12000,
+    qualityTier: "low",
+    motionMode: "reduced",
+    paused: true,
+  },
+  capabilities: {
+    deterministic: {
+      seed: true,
+      time: true,
+    },
+    lifecycle: {
+      pause: true,
+      resume: true,
+      dispose: true,
+    },
+    viewport: {
+      resize: true,
+      pointerInput: true,
+    },
+    reducedMotion: true,
+    adaptiveQuality: true,
+  },
+};
+
 export const THEME_ENVIRONMENTS = {
   "cosmic-frontier": COSMIC_FRONTIER_ENVIRONMENT,
   forest: FOREST_ENVIRONMENT,
   highveld: HIGHVELD_ENVIRONMENT,
   phoenix: PHOENIX_ENVIRONMENT,
   ocean: OCEAN_ENVIRONMENT,
+  cloud: CLOUD_ENVIRONMENT,
 } as const;

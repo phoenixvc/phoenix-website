@@ -6,6 +6,7 @@ import ForestEnvironment from "./ForestEnvironment";
 import HighveldEnvironment from "./HighveldEnvironment";
 import { PhoenixEnvironment } from "./PhoenixEnvironment";
 import { OceanEnvironment } from "./OceanEnvironment";
+import { CloudEnvironment } from "./CloudEnvironment";
 import { COSMIC_FRONTIER_ENVIRONMENT, THEME_ENVIRONMENTS } from "./registry";
 import type { ThemeEnvironmentProps } from "./types";
 
@@ -77,6 +78,16 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
         )}
         {definition.rendererId === "ocean-abyss" && (
           <OceanEnvironment
+            isDarkMode={isDarkMode}
+            motionMode={motionMode}
+            qualityTier={fixture?.qualityTier}
+            paused={paused}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
+        {definition.rendererId === "cloud-strato" && (
+          <CloudEnvironment
             isDarkMode={isDarkMode}
             motionMode={motionMode}
             qualityTier={fixture?.qualityTier}
