@@ -19,7 +19,8 @@ export interface ThemeEnvironmentDefinition {
     | "cosmic-starfield"
     | "forest-canopy"
     | "highveld-plateau"
-    | "phoenix-reign";
+    | "phoenix-reign"
+    | "ocean-abyss";
   fixtureParam: string;
   staticFixture: EnvironmentFixture;
   capabilities: {

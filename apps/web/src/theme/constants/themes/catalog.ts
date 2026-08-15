@@ -38,15 +38,15 @@ export const THEME_CATALOG = {
     availability: "available",
     description: "Incandescent volcanic rebirth environment with molten embers and solar beacons.",
   },
-  classic: {
-    id: "classic",
-    displayName: "Classic",
-    availability: "coming-soon",
-    description: "Reserved supporting palette.",
-  },
   ocean: {
     id: "ocean",
     displayName: "Ocean",
+    availability: "available",
+    description: "Abyssal pelagic trench environment with bioluminescent jellyfish, caustics, and hydrothermal vents.",
+  },
+  classic: {
+    id: "classic",
+    displayName: "Classic",
     availability: "coming-soon",
     description: "Reserved supporting palette.",
   },
@@ -69,8 +69,8 @@ export const THEME_CATALOG_ORDER = [
   "forest",
   "highveld",
   "phoenix",
-  "classic",
   "ocean",
+  "classic",
   "lavender",
   "cloud",
 ] as const satisfies readonly ThemeName[];
@@ -80,6 +80,7 @@ export const AVAILABLE_THEME_NAMES = [
   "forest",
   "highveld",
   "phoenix",
+  "ocean",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";

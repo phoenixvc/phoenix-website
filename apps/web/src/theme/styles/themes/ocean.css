@@ -1,27 +1,35 @@
-@layer base {
-    [data-theme="ocean"] {
-      /* Light mode */
-      --theme-background: 255 255 255;
-      --theme-foreground: 15 23 42;
-      --theme-primary: 59 130 246;
-      --theme-secondary: 37 99 235;
-      --theme-accent: 29 78 216;
-      --theme-muted: 100 116 139;
-      --theme-border: 226 232 240;
-      --theme-hover: 37 99 235;
-      --theme-active: 29 78 216;
-    }
+[data-theme="ocean"] button,
+[data-theme="ocean"] a,
+[data-theme="ocean"] .card,
+[data-theme="ocean"] [role="button"] {
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
 
-    [data-theme="ocean"].dark {
-      /* Dark mode */
-      --theme-background: 15 23 42;
-      --theme-foreground: 241 245 249;
-      --theme-primary: 96 165 250;
-      --theme-secondary: 59 130 246;
-      --theme-accent: 37 99 235;
-      --theme-muted: 148 163 184;
-      --theme-border: 51 65 85;
-      --theme-hover: 59 130 246;
-      --theme-active: 37 99 235;
-    }
+[data-theme="ocean"] button:hover,
+[data-theme="ocean"] a:hover,
+[data-theme="ocean"] [role="button"]:hover {
+  box-shadow: 0 8px 20px rgba(0, 240, 255, 0.22);
+}
+
+[data-theme="ocean"][data-mode="dark"] button:hover,
+[data-theme="ocean"][data-mode="dark"] a:hover,
+[data-theme="ocean"][data-mode="dark"] [role="button"]:hover {
+  box-shadow: 0 8px 24px rgba(0, 240, 255, 0.28);
+}
+
+[data-theme="ocean"] main {
+  text-shadow: 0 1px 12px rgba(3, 11, 23, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="ocean"] button,
+  [data-theme="ocean"] a,
+  [data-theme="ocean"] .card,
+  [data-theme="ocean"] [role="button"] {
+    transition: none;
   }
+}

@@ -1,252 +1,91 @@
-import {
-  ColorDefinition,
-  ColorShades,
-  ComponentVariants,
-  ShadeLevel,
-  Theme,
-  ThemeBorders,
-  ThemeBreakpoints,
-  ThemeColors,
-  ThemeConfig,
-  ThemeScheme,
-  ThemeShadows,
-  ThemeSpacing,
-  ThemeTransitions,
-  ThemeTypography,
-  ThemeVariables,
-  ThemeZIndex,
-} from "@/theme/types";
+import { Theme, ThemeColors, ThemeScheme } from "@/theme/types";
+import { createTheme } from "@/theme/core/theme";
 import ColorUtils from "@/theme/utils/color-utils";
-import {
-  bluePalette,
-  createColor,
-  grayPalette,
-  greenPalette,
-  purplePalette,
-  redPalette,
-} from "./colors";
-import { defaultTheme } from "./default";
-
-// Type assertion for defaultTheme to make its properties accessible
-const typedDefaultTheme = defaultTheme as Omit<Theme, "colors"> & {
-  typography: ThemeTypography;
-  spacing: ThemeSpacing;
-  borders: ThemeBorders;
-  shadows: ThemeShadows;
-  breakpoints: ThemeBreakpoints;
-  transitions: ThemeTransitions;
-  zIndex: ThemeZIndex;
-  variables: ThemeVariables;
-  components: ComponentVariants;
-  config: ThemeConfig;
-};
+import { createColor, grayPalette, greenPalette, redPalette } from "./colors";
+import yellowPalette from "./colors/yellow";
 
 /**
- * Ocean Theme Color Scheme
- * A cool, calming color scheme based on blue tones
+ * Ocean is the fifth complete environmental theme. Renderer code stays in
+ * the trusted environment registry; this object remains serializable theme
+ * data for the provider, persistence, and designer surfaces.
  */
 export const oceanColorScheme: ThemeScheme = {
   base: {
-    primary: bluePalette,
-    secondary: purplePalette,
-    accent: ColorUtils.createColorShades("#3B82F6"), // Use the new method
+    primary: ColorUtils.createColorShades("#00F0FF"),
+    secondary: ColorUtils.createColorShades("#0284C7"),
+    accent: ColorUtils.createColorShades("#14B8A6"),
     neutral: grayPalette,
     gray: grayPalette,
-    // Add any other required base colors
   },
   light: {
-    background: createColor("#FFFFFF"),
+    background: createColor("#F0F9FF"),
     text: {
-      primary: createColor("#111827"),
-      secondary: createColor("#9CA3AF"),
+      primary: createColor("#0A2540"),
+      secondary: createColor("#334155"),
     },
-    muted: createColor("#9CA3AF"),
-    border: createColor("#E5E7EB"),
-    surface: createColor("#F9FAFB"),
-    overlay: createColor("rgba(0, 0, 0, 0.5)"),
-    hover: createColor("rgba(0, 0, 0, 0.04)"),
-    active: createColor("rgba(0, 0, 0, 0.08)"),
-    focus: createColor("rgba(59, 130, 246, 0.5)"),
-    disabled: createColor("rgba(0, 0, 0, 0.26)"),
+    muted: createColor("#64748B"),
+    border: createColor("#BAE6FD"),
+    surface: createColor("#FFFFFF"),
+    overlay: createColor("#0A2540"),
+    hover: createColor("#E0F2FE"),
+    active: createColor("#BAE6FD"),
+    focus: createColor("#0284C7"),
+    disabled: createColor("#94A3B8"),
   },
   dark: {
-    background: createColor("#0F172A"),
+    background: createColor("#030B17"),
     text: {
-      primary: createColor("#F9FAFB"),
-      secondary: createColor("#9CA3AF"),
+      primary: createColor("#F0F9FF"),
+      secondary: createColor("#7DD3FC"),
     },
-    muted: createColor("#9CA3AF"),
-    border: createColor("#475569"),
-    surface: createColor("#1E293B"),
-    overlay: createColor("rgba(0, 0, 0, 0.7)"),
-    hover: createColor("rgba(255, 255, 255, 0.08)"),
-    active: createColor("rgba(255, 255, 255, 0.16)"),
-    focus: createColor("rgba(59, 130, 246, 0.6)"),
-    disabled: createColor("rgba(255, 255, 255, 0.3)"),
+    muted: createColor("#475569"),
+    border: createColor("#0C4A6E"),
+    surface: createColor("#081B2E"),
+    overlay: createColor("#02060D"),
+    hover: createColor("#0C2D48"),
+    active: createColor("#144272"),
+    focus: createColor("#00F0FF"),
+    disabled: createColor("#334155"),
   },
 };
 
-/**
- * Ocean Theme Colors
- */
 export const oceanColors: ThemeColors = {
-  schemes: {
-    default: oceanColorScheme,
-  },
+  schemes: { ocean: oceanColorScheme, default: oceanColorScheme },
   semantic: {
-    success: createColor(greenPalette.base),
-    warning: createColor("#F59E0B"),
-    error: createColor(redPalette.base),
-    info: createColor(bluePalette[400].hex),
+    success: createColor(greenPalette[600].hex),
+    warning: createColor(yellowPalette[500].hex),
+    error: createColor(redPalette[500].hex),
+    info: createColor("#00F0FF"),
   },
 };
 
-/**
- * Ocean Theme
- * A modern, professional theme with a focus on blue tones,
- * creating a calm and trustworthy aesthetic.
- */
+const oceanBaseTheme = createTheme(
+  {
+    name: "Ocean",
+    themeName: "ocean",
+    mode: "dark",
+    useSystem: false,
+    version: "1.0.0",
+  },
+  oceanColors,
+);
+
 export const oceanTheme: Theme = {
-  // Use the typed version of defaultTheme
-  ...typedDefaultTheme,
-
-  // Override specific properties
-  colors: oceanColors,
-
-  // Typography customizations
+  ...oceanBaseTheme,
   typography: {
+    ...oceanBaseTheme.typography,
     fontFamily: {
-      base: "\"Inter\", system-ui, -apple-system, sans-serif",
-      heading: "\"Montserrat\", sans-serif",
-      monospace: "\"Fira Code\", monospace",
+      base: "'Outfit', system-ui, sans-serif",
+      heading: "'Plus Jakarta Sans', system-ui, sans-serif",
+      monospace: "'Fira Code', monospace",
     },
-    fontSize: typedDefaultTheme.typography.fontSize,
-    fontWeight: typedDefaultTheme.typography.fontWeight,
-    lineHeight: typedDefaultTheme.typography.lineHeight,
-    letterSpacing: typedDefaultTheme.typography.letterSpacing,
   },
-
-  // Spacing customizations
-  spacing: typedDefaultTheme.spacing,
-
-  // Border customizations
-  borders: {
-    radius: {
-      none: typedDefaultTheme.borders.radius.none,
-      sm: typedDefaultTheme.borders.radius.sm,
-      md: "0.5rem", // Slightly larger medium radius for Ocean theme
-      lg: typedDefaultTheme.borders.radius.lg,
-      full: typedDefaultTheme.borders.radius.full,
-    },
-    width: typedDefaultTheme.borders.width,
-    style: typedDefaultTheme.borders.style,
-  },
-
-  // Shadow customizations
   shadows: {
-    none: typedDefaultTheme.shadows.none,
-    sm: typedDefaultTheme.shadows.sm,
-    md: "0 4px 12px rgba(59, 130, 246, 0.15)", // Blue-tinted shadows for Ocean theme
-    lg: "0 10px 25px rgba(59, 130, 246, 0.2)",
-    xl: typedDefaultTheme.shadows.xl,
+    ...oceanBaseTheme.shadows,
+    md: "0 8px 24px rgba(0, 240, 255, 0.18)",
+    lg: "0 16px 40px rgba(2, 132, 199, 0.28)",
+    xl: "0 28px 72px rgba(3, 11, 23, 0.55)",
   },
-
-  // Other required properties
-  breakpoints: typedDefaultTheme.breakpoints,
-  transitions: typedDefaultTheme.transitions,
-  zIndex: typedDefaultTheme.zIndex,
-  variables: typedDefaultTheme.variables,
-  components: typedDefaultTheme.components,
-  config: typedDefaultTheme.config,
-};
-
-/**
- * Helper functions for Ocean theme
- */
-
-/**
- * Get a primary color shade from the Ocean theme
- */
-export const getOceanPrimaryShade = (shade: ShadeLevel): ColorDefinition => {
-  return oceanColorScheme.base.primary[shade];
-};
-
-/**
- * Get the appropriate text color for a given background color in Ocean theme
- */
-export const getOceanTextColor = (
-  bgColor: ColorDefinition,
-  mode: "light" | "dark" = "light",
-): ColorDefinition => {
-  const textColors = oceanColorScheme[mode];
-
-  // Calculate contrast with both primary and secondary text
-  const primaryContrast = ColorUtils.getContrastRatio(
-    bgColor,
-    textColors.text.primary,
-  );
-  const secondaryContrast = ColorUtils.getContrastRatio(
-    bgColor,
-    textColors.text.secondary,
-  );
-
-  // Return the text with better contrast
-  return primaryContrast >= 4.5
-    ? textColors.text.primary
-    : secondaryContrast >= 4.5
-      ? textColors.text.secondary
-      : textColors.muted;
-};
-
-/**
- * Get a theme color variant based on the current mode
- */
-export const getOceanThemeColor = (
-  colorType:
-    | "primary"
-    | "secondary"
-    | "accent"
-    | "neutral"
-    | "success"
-    | "error"
-    | "warning"
-    | "info",
-  shade: ShadeLevel = 500,
-  mode: "light" | "dark" = "light",
-): ColorDefinition => {
-  // Handle semantic colors
-  if (
-    colorType === "success" ||
-    colorType === "error" ||
-    colorType === "warning" ||
-    colorType === "info"
-  ) {
-    return oceanColors.semantic?.[colorType] || createColor("#000000");
-  }
-
-  // Adjust shade based on mode for better visibility
-  const adjustedShade =
-    mode === "dark" ? (Math.max(300, shade - 200) as ShadeLevel) : shade;
-
-  // Check if the color type exists in the base object
-  const colorPalette = oceanColorScheme.base[colorType];
-  if (!colorPalette) {
-    console.warn(`Color type "${colorType}" not found in theme base colors`);
-    return createColor("#000000"); // Fallback color
-  }
-
-  // For ColorShades objects (like accent), we need to access by property
-  if ("50" in colorPalette && typeof colorPalette !== "function") {
-    // It"s a ColorShades object
-    return (
-      (colorPalette as ColorShades)[adjustedShade] ||
-      (colorPalette as ColorShades)[500] || // Fallback to 500 if specific shade doesn"t exist
-      createColor((colorPalette as ColorShades).base || "#000000")
-    );
-  }
-
-  // For regular palette arrays
-  return colorPalette[adjustedShade] || createColor("#000000");
 };
 
 export default oceanTheme;
