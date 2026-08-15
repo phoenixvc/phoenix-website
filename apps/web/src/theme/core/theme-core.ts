@@ -12,7 +12,6 @@ import {
 } from "../types";
 import { ComponentRegistryManager } from "../registry/component-registry-manager";
 import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
-import { ComponentManager } from "../managers/component-manager";
 import type { ThemeStateManager } from "../managers/theme-state-manager";
 import { ThemeStyleManager } from "../managers/theme-style-manager";
 import { TypographyManager } from "../managers/typography-manager";
@@ -30,7 +29,6 @@ export class ThemeCore {
   private stateManager: ThemeStateManager | null = null;
   private styleManager: ThemeStyleManager;
   private typographyManager: TypographyManager;
-  private componentManager: ComponentManager;
   private componentRegistryManager: ComponentRegistryManager;
   private transformationManager: ThemeTransformationManager;
   private initialized: boolean = false;
@@ -48,7 +46,6 @@ export class ThemeCore {
     // Initialize everything except stateManager
     this.componentRegistryManager = new ComponentRegistryManager();
     this.componentRegistry = this.componentRegistryManager.getRegistry();
-    this.componentManager = new ComponentManager(this.componentRegistry);
 
     // Initialize styling services
     const colorMapping = new ColorMapping();
@@ -57,7 +54,6 @@ export class ThemeCore {
 
     // Create style manager with dependencies
     this.styleManager = new ThemeStyleManager(
-      this.componentManager,
       this.componentRegistryManager,
       colorMapping,
       this.typographyManager,
@@ -436,10 +432,8 @@ export class ThemeCore {
   }
 
   getAllComponentVariants(): ComponentThemeRegistry {
-    // Return the new registry if available, otherwise fall back to the old one
-    return (
-      this.componentRegistry || this.componentManager.getAllComponentVariants()
-    );
+    // Return the new registry if available, otherwise fall back to a live snapshot
+    return this.componentRegistry || this.componentRegistryManager.getRegistry();
   }
 
   // TypographyManager methods

@@ -1,5 +1,7 @@
 // theme/registry/component-registry-manager.ts
+import type { CSSProperties } from "react";
 import {
+  CardVariant,
   ComponentVariants,
   ComponentVariantType,
 } from "../types/mappings/component-variants";
@@ -11,7 +13,14 @@ import {
 } from "./component-theme-registry";
 import { ColorDefinition } from "../types/core/colors";
 import ColorUtils from "../utils/color-utils";
-import { Theme } from "../types";
+import {
+  BaseStyles,
+  ComponentState,
+  Theme,
+  ThemeName,
+  ThemePropertyStyles,
+} from "../types";
+import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
 
 export interface ComponentRegistryManagerConfig {
   variantResolver?: VariantResolver;
@@ -322,5 +331,321 @@ export class ComponentRegistryManager {
    */
   registerVariantResolutionStrategy(strategy: VariantResolutionStrategy): void {
     this.variantResolver.registerStrategy(strategy);
+  }
+
+  /**
+   * Extract the resolvable base ComponentState from a variant config: either
+   * its `default` sub-state, or the variant itself when it's already a plain
+   * background/foreground/border state.
+   */
+  private extractBaseState(
+    variantConfig: ComponentVariantType,
+  ): ComponentState | undefined {
+    if ("default" in variantConfig && variantConfig.default) {
+      return variantConfig.default as ComponentState;
+    }
+
+    if (
+      "background" in variantConfig &&
+      "foreground" in variantConfig &&
+      "border" in variantConfig
+    ) {
+      return variantConfig as unknown as ComponentState;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Generate CSS variables for a single component variant, read live from the registry
+   */
+  generateComponentVariables(
+    component: string,
+    variant: string = "default",
+  ): Record<string, string> {
+    const parentVariant = this.getVariant(component, variant);
+    if (!parentVariant) return {};
+
+    const componentState = this.extractBaseState(parentVariant);
+    if (!componentState) return {};
+
+    const prefix = `--theme-${component}-${variant}`;
+    const variables: Record<string, string> = {};
+
+    if (componentState.background?.hex) {
+      variables[`${prefix}-bg`] = componentState.background.hex;
+    }
+    if (componentState.foreground?.hex) {
+      variables[`${prefix}-fg`] = componentState.foreground.hex;
+    }
+    if (componentState.border?.hex) {
+      variables[`${prefix}-border`] = componentState.border.hex;
+    }
+    if (componentState.shadow?.hex) {
+      variables[`${prefix}-shadow`] = componentState.shadow.hex;
+    }
+
+    if ("interactive" in parentVariant && parentVariant.interactive) {
+      const { hover, active } = parentVariant.interactive;
+      if (hover?.background?.hex) {
+        variables[`${prefix}-hover-bg`] = hover.background.hex;
+      }
+      if (hover?.foreground?.hex) {
+        variables[`${prefix}-hover-fg`] = hover.foreground.hex;
+      }
+      if (active?.background?.hex) {
+        variables[`${prefix}-active-bg`] = active.background.hex;
+      }
+      if (active?.foreground?.hex) {
+        variables[`${prefix}-active-fg`] = active.foreground.hex;
+      }
+    }
+
+    if ("style" in parentVariant && parentVariant.style) {
+      Object.entries(parentVariant.style).forEach(([key, value]) => {
+        variables[`${prefix}-${key}`] = String(value);
+      });
+    }
+
+    return variables;
+  }
+
+  /**
+   * Generate CSS variables for every registered component variant
+   */
+  generateAllVariables(): Record<string, string> {
+    const variables: Record<string, string> = {};
+
+    Object.entries(this.getRegistry()).forEach(([componentName, variants]) => {
+      if (!variants) return;
+
+      Object.keys(variants).forEach((variantName) => {
+        Object.assign(
+          variables,
+          this.generateComponentVariables(componentName, variantName),
+        );
+      });
+    });
+
+    return variables;
+  }
+
+  /**
+   * Generate CSS classes for a single component variant
+   */
+  generateComponentClasses(
+    component: string,
+    variant: string = "default",
+    scheme: ThemeName = DEFAULT_THEME_NAME,
+  ): Record<string, string> {
+    const parentVariant = this.getVariant(component, variant);
+    if (!parentVariant) return {};
+
+    const componentState = this.extractBaseState(parentVariant);
+    if (!componentState) return {};
+
+    const prefix = `theme-${scheme}-${component}-${variant}`;
+    const classes: Record<string, string> = {};
+
+    classes[prefix] = `
+      background-color: var(--theme-${component}-${variant}-bg);
+      color: var(--theme-${component}-${variant}-fg);
+      border-color: var(--theme-${component}-${variant}-border);
+    `.trim();
+
+    if ("interactive" in parentVariant && parentVariant.interactive) {
+      classes[`${prefix}:hover`] = `
+        background-color: var(--theme-${component}-${variant}-hover-bg);
+        color: var(--theme-${component}-${variant}-hover-fg);
+      `.trim();
+
+      classes[`${prefix}:active`] = `
+        background-color: var(--theme-${component}-${variant}-active-bg);
+        color: var(--theme-${component}-${variant}-active-fg);
+      `.trim();
+    }
+
+    if ("header" in parentVariant && parentVariant.header) {
+      classes[`${prefix}-header`] = `
+        background-color: var(--theme-${component}-${variant}-header-bg);
+        color: var(--theme-${component}-${variant}-header-fg);
+      `.trim();
+    }
+
+    if ("footer" in parentVariant && parentVariant.footer) {
+      classes[`${prefix}-footer`] = `
+        background-color: var(--theme-${component}-${variant}-footer-bg);
+        color: var(--theme-${component}-${variant}-footer-fg);
+      `.trim();
+    }
+
+    return classes;
+  }
+
+  /**
+   * Generate CSS classes for every registered component variant
+   */
+  generateAllClasses(
+    scheme: ThemeName = DEFAULT_THEME_NAME,
+  ): Record<string, string> {
+    const classes: Record<string, string> = {};
+
+    Object.entries(this.getRegistry()).forEach(([componentName, variants]) => {
+      if (!variants) return;
+
+      Object.keys(variants).forEach((variantName) => {
+        Object.assign(
+          classes,
+          this.generateComponentClasses(componentName, variantName, scheme),
+        );
+      });
+    });
+
+    return classes;
+  }
+
+  /**
+   * Resolve a component variant directly to a React style object for the given state
+   */
+  getComponentStyleFromVariant(
+    variant: unknown,
+    state: string = "default",
+  ): CSSProperties {
+    if (!variant || typeof variant !== "object") {
+      return {};
+    }
+
+    const variantObj = variant as Record<string, unknown>;
+
+    if ("default" in variantObj && variantObj.default) {
+      const stateStyles = this.extractStateStyles(variantObj, state);
+      return this.convertToCSSProperties(stateStyles);
+    }
+
+    if (
+      "background" in variantObj &&
+      "foreground" in variantObj &&
+      "border" in variantObj
+    ) {
+      return this.convertToCSSProperties(variantObj);
+    }
+
+    return {};
+  }
+
+  /**
+   * Get a direct React style object for a component/variant/state
+   */
+  getComponentStyle(
+    component: string,
+    variant: string = "default",
+    state: string = "default",
+  ): CSSProperties {
+    const componentVariant = this.getVariant(component, variant);
+    if (!componentVariant) return {};
+
+    return this.getComponentStyleFromVariant(componentVariant, state);
+  }
+
+  // Extract state-specific styles from a variant
+  private extractStateStyles(
+    variant: unknown,
+    state: string,
+  ): Record<string, unknown> {
+    if (!variant || typeof variant !== "object") {
+      return {};
+    }
+
+    // For card variants which have the structure we're looking for
+    if (this.isCardVariant(variant)) {
+      const cardVariant = variant as CardVariant;
+
+      const baseStyles = cardVariant.default
+        ? this.ensureObject(cardVariant.default)
+        : {};
+
+      if (cardVariant.interactive) {
+        if (state === "hover" && cardVariant.interactive.hover) {
+          return {
+            ...baseStyles,
+            ...this.ensureObject(cardVariant.interactive.hover),
+          };
+        }
+
+        if (state === "active" && cardVariant.interactive.active) {
+          return {
+            ...baseStyles,
+            ...this.ensureObject(cardVariant.interactive.active),
+          };
+        }
+      }
+
+      if (state === "header" && cardVariant.header) {
+        return { ...baseStyles, ...this.ensureObject(cardVariant.header) };
+      }
+
+      if (state === "footer" && cardVariant.footer) {
+        return { ...baseStyles, ...this.ensureObject(cardVariant.footer) };
+      }
+
+      return baseStyles;
+    }
+
+    return {};
+  }
+
+  // Helper method to ensure we have an object that can be spread
+  private ensureObject(value: unknown): Record<string, unknown> {
+    if (value && typeof value === "object") {
+      return value as Record<string, unknown>;
+    }
+    return {};
+  }
+
+  // Type guard to check if the variant is a CardVariant
+  private isCardVariant(variant: unknown): boolean {
+    if (!variant || typeof variant !== "object") {
+      return false;
+    }
+
+    const potentialCardVariant = variant as Partial<CardVariant>;
+
+    return (
+      "default" in potentialCardVariant &&
+      ("interactive" in potentialCardVariant ||
+        "header" in potentialCardVariant ||
+        "footer" in potentialCardVariant)
+    );
+  }
+
+  // Convert theme properties to CSS properties
+  private convertToCSSProperties(styles: unknown): BaseStyles {
+    const cssProps: BaseStyles = {};
+
+    if (styles && typeof styles === "object") {
+      const themeProps = styles as ThemePropertyStyles;
+
+      if (themeProps.background?.hex) {
+        cssProps.backgroundColor = themeProps.background.hex;
+      }
+
+      if (themeProps.foreground?.hex) {
+        cssProps.color = themeProps.foreground.hex;
+      }
+
+      if (themeProps.border?.hex) {
+        cssProps.borderColor = themeProps.border.hex;
+      }
+
+      if (themeProps.shadow?.hex) {
+        cssProps.boxShadow = themeProps.shadow.hex;
+      }
+
+      if (themeProps.opacity?.value !== undefined) {
+        cssProps.opacity = themeProps.opacity.value.toString();
+      }
+    }
+
+    return cssProps;
   }
 }
