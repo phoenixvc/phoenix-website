@@ -6,6 +6,7 @@ import { cosmicFrontierColors } from "./cosmicFrontier";
 import { forestColors } from "./forest";
 import { highveldColors } from "./highveld";
 import { phoenixColors } from "./phoenix";
+import { oceanColors } from "./ocean";
 import { DEFAULT_THEME_NAME, THEME_CATALOG } from "./catalog";
 import type { ThemeName } from "@/theme/types";
 
@@ -52,6 +53,16 @@ export function createBuiltInThemeRegistry(
     author: "Phoenix VC",
     version: "1.0.0",
     tags: ["environmental", "interactive", "phoenix", "rebirth", "first-party"],
+    compatibleModes: ["light", "dark"],
+  });
+
+  const ocean = THEME_CATALOG.ocean;
+  registry.registerTheme(ocean.id, oceanColors, {
+    displayName: ocean.displayName,
+    description: ocean.description,
+    author: "Phoenix VC",
+    version: "1.0.0",
+    tags: ["environmental", "interactive", "ocean", "abyss", "first-party"],
     compatibleModes: ["light", "dark"],
   });
 

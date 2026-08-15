@@ -124,9 +124,41 @@ export const PHOENIX_ENVIRONMENT: ThemeEnvironmentDefinition = {
   },
 };
 
+export const OCEAN_ENVIRONMENT: ThemeEnvironmentDefinition = {
+  themeName: "ocean",
+  displayName: "Ocean",
+  rendererId: "ocean-abyss",
+  fixtureParam: "ocean-fixture",
+  staticFixture: {
+    seed: 20260815,
+    timeMs: 12000,
+    qualityTier: "low",
+    motionMode: "reduced",
+    paused: true,
+  },
+  capabilities: {
+    deterministic: {
+      seed: true,
+      time: true,
+    },
+    lifecycle: {
+      pause: true,
+      resume: true,
+      dispose: true,
+    },
+    viewport: {
+      resize: true,
+      pointerInput: true,
+    },
+    reducedMotion: true,
+    adaptiveQuality: true,
+  },
+};
+
 export const THEME_ENVIRONMENTS = {
   "cosmic-frontier": COSMIC_FRONTIER_ENVIRONMENT,
   forest: FOREST_ENVIRONMENT,
   highveld: HIGHVELD_ENVIRONMENT,
   phoenix: PHOENIX_ENVIRONMENT,
+  ocean: OCEAN_ENVIRONMENT,
 } as const;

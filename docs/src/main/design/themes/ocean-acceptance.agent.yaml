@@ -1,0 +1,33 @@
+schema_version: "md-agent/v1"
+theme_id: "ocean"
+display_name: "Ocean"
+renderer_id: "ocean-abyss"
+availability: "available"
+status: "implementation-slice"
+
+deterministic_fixture:
+  seed: 20260815
+  time_ms: 12000
+  quality_tier: "low"
+  motion_mode: "reduced"
+  paused: true
+
+palette:
+  dark:
+    background: "#030b14"
+    surface: "#081b2e"
+    primary: "#00f0ff"
+    secondary: "#0284c7"
+    accent: "#14b8a6"
+  light:
+    background: "#f0f9ff"
+    surface: "#ffffff"
+    primary: "#0284c7"
+    secondary: "#0ea5e9"
+    accent: "#0d9488"
+
+budgets:
+  frame_ms:
+    low: 0
+    medium: 6
+    high: 8

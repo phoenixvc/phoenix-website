@@ -5,6 +5,7 @@ import CosmicFrontierEnvironment from "./CosmicFrontierEnvironment";
 import ForestEnvironment from "./ForestEnvironment";
 import HighveldEnvironment from "./HighveldEnvironment";
 import { PhoenixEnvironment } from "./PhoenixEnvironment";
+import { OceanEnvironment } from "./OceanEnvironment";
 import { COSMIC_FRONTIER_ENVIRONMENT, THEME_ENVIRONMENTS } from "./registry";
 import type { ThemeEnvironmentProps } from "./types";
 
@@ -66,6 +67,16 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
         )}
         {definition.rendererId === "phoenix-reign" && (
           <PhoenixEnvironment
+            isDarkMode={isDarkMode}
+            motionMode={motionMode}
+            qualityTier={fixture?.qualityTier}
+            paused={paused}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
+        {definition.rendererId === "ocean-abyss" && (
+          <OceanEnvironment
             isDarkMode={isDarkMode}
             motionMode={motionMode}
             qualityTier={fixture?.qualityTier}
