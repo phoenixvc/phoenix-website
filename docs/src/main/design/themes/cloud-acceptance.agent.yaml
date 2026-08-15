@@ -1,0 +1,33 @@
+schema_version: "md-agent/v1"
+theme_id: "cloud"
+display_name: "Cloud"
+renderer_id: "cloud-strato"
+availability: "available"
+status: "implementation-slice"
+
+deterministic_fixture:
+  seed: 20260816
+  time_ms: 12000
+  quality_tier: "low"
+  motion_mode: "reduced"
+  paused: true
+
+palette:
+  dark:
+    background: "#0b132b"
+    surface: "#1c2541"
+    primary: "#60a5fa"
+    secondary: "#818cf8"
+    accent: "#38bdf8"
+  light:
+    background: "#f8fafc"
+    surface: "#ffffff"
+    primary: "#0284c7"
+    secondary: "#38bdf8"
+    accent: "#60a5fa"
+
+budgets:
+  frame_ms:
+    low: 0
+    medium: 6
+    high: 8

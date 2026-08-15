@@ -7,6 +7,7 @@ import { forestColors } from "./forest";
 import { highveldColors } from "./highveld";
 import { phoenixColors } from "./phoenix";
 import { oceanColors } from "./ocean";
+import { cloudColors } from "./cloud";
 import { DEFAULT_THEME_NAME, THEME_CATALOG } from "./catalog";
 import type { ThemeName } from "@/theme/types";
 
@@ -63,6 +64,16 @@ export function createBuiltInThemeRegistry(
     author: "Phoenix VC",
     version: "1.0.0",
     tags: ["environmental", "interactive", "ocean", "abyss", "first-party"],
+    compatibleModes: ["light", "dark"],
+  });
+
+  const cloud = THEME_CATALOG.cloud;
+  registry.registerTheme(cloud.id, cloudColors, {
+    displayName: cloud.displayName,
+    description: cloud.description,
+    author: "Phoenix VC",
+    version: "1.0.0",
+    tags: ["environmental", "interactive", "cloud", "stratosphere", "first-party"],
     compatibleModes: ["light", "dark"],
   });
 

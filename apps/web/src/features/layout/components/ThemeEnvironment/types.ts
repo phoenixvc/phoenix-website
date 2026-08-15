@@ -20,7 +20,8 @@ export interface ThemeEnvironmentDefinition {
     | "forest-canopy"
     | "highveld-plateau"
     | "phoenix-reign"
-    | "ocean-abyss";
+    | "ocean-abyss"
+    | "cloud-strato";
   fixtureParam: string;
   staticFixture: EnvironmentFixture;
   capabilities: {

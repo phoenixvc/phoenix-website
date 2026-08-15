@@ -1,0 +1,240 @@
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: auto;
+}
+
+/* Tooltip overlay */
+.tooltip {
+  position: absolute;
+  pointer-events: auto;
+  transform: translate(-50%, -120%);
+  background: linear-gradient(
+    135deg,
+    rgba(11, 19, 43, 0.92) 0%,
+    rgba(28, 37, 65, 0.95) 100%
+  );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-width: 220px;
+  max-width: 320px;
+  box-shadow:
+    0 8px 32px rgba(96, 165, 250, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+  font-family: "Plus Jakarta Sans", "Outfit", system-ui, sans-serif;
+  z-index: 50;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  animation: tooltipFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -110%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -120%) scale(1);
+  }
+}
+
+.tooltipTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #60a5fa;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tooltipSubtitle {
+  font-size: 11px;
+  color: #93c5fd;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.tooltipDescription {
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(248, 250, 252, 0.85);
+  margin-bottom: 10px;
+}
+
+.tooltipFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(96, 165, 250, 0.2);
+  padding-top: 8px;
+  margin-top: 6px;
+}
+
+.tooltipMetric {
+  font-size: 11px;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.tooltipPinButton {
+  background: rgba(96, 165, 250, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  color: #93c5fd;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tooltipPinButton:hover {
+  background: rgba(96, 165, 250, 0.3);
+  border-color: #60a5fa;
+  color: #ffffff;
+}
+
+/* Skywatch Pinning Dock */
+.dock {
+  position: fixed;
+  top: 84px;
+  right: 20px;
+  width: 290px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  font-family: "Plus Jakarta Sans", "Outfit", system-ui, sans-serif;
+}
+
+.dockHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: auto;
+  background: rgba(11, 19, 43, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.dockTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.dockCloseAll {
+  background: none;
+  border: none;
+  color: rgba(248, 250, 252, 0.7);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.dockCloseAll:hover {
+  color: #ef4444;
+}
+
+.dockCard {
+  pointer-events: auto;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 19, 43, 0.9) 0%,
+    rgba(28, 37, 65, 0.92) 100%
+  );
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  color: #f8fafc;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.dockCard:hover {
+  border-color: #60a5fa;
+  transform: translateX(-3px);
+}
+
+.dockCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.dockCardName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.dockCardRemove {
+  background: none;
+  border: none;
+  color: rgba(248, 250, 252, 0.5);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.dockCardRemove:hover {
+  color: #ef4444;
+}
+
+.dockCardDescription {
+  font-size: 11px;
+  color: rgba(248, 250, 252, 0.8);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.dockCardActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dockFocusBtn {
+  background: rgba(96, 165, 250, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  color: #93c5fd;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dockFocusBtn:hover {
+  background: rgba(96, 165, 250, 0.3);
+  color: #ffffff;
+}
