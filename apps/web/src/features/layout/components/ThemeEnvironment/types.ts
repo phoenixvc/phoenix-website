@@ -22,7 +22,8 @@ export interface ThemeEnvironmentDefinition {
     | "phoenix-reign"
     | "ocean-abyss"
     | "cloud-strato"
-    | "lavender-meadow";
+    | "lavender-meadow"
+    | "classic-blueprint";
   fixtureParam: string;
   staticFixture: EnvironmentFixture;
   capabilities: {

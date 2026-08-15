@@ -59,8 +59,8 @@ export const THEME_CATALOG = {
   classic: {
     id: "classic",
     displayName: "Classic",
-    availability: "coming-soon",
-    description: "Reserved supporting palette.",
+    availability: "available",
+    description: "Minimalist architectural blueprint environment with precision vector grid schematics.",
   },
 } as const satisfies Record<ThemeName, ThemeCatalogEntry>;
 
@@ -83,6 +83,7 @@ export const AVAILABLE_THEME_NAMES = [
   "ocean",
   "cloud",
   "lavender",
+  "classic",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";

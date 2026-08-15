@@ -292,7 +292,7 @@ const Header: FC<HeaderProps> = ({
                             data-theme={theme.id}
                           />
                           <span>{theme.displayName}</span>
-                          {theme.availability === "coming-soon" && (
+                          {(theme.availability as string) === "coming-soon" && (
                             <span className={styles.comingSoonBadge}>
                               Coming Soon
                             </span>

@@ -217,6 +217,37 @@ export const LAVENDER_ENVIRONMENT: ThemeEnvironmentDefinition = {
   },
 };
 
+export const CLASSIC_ENVIRONMENT: ThemeEnvironmentDefinition = {
+  themeName: "classic",
+  displayName: "Classic",
+  rendererId: "classic-blueprint",
+  fixtureParam: "classic-fixture",
+  staticFixture: {
+    seed: 20260818,
+    timeMs: 12000,
+    qualityTier: "low",
+    motionMode: "reduced",
+    paused: true,
+  },
+  capabilities: {
+    deterministic: {
+      seed: true,
+      time: true,
+    },
+    lifecycle: {
+      pause: true,
+      resume: true,
+      dispose: true,
+    },
+    viewport: {
+      resize: true,
+      pointerInput: true,
+    },
+    reducedMotion: true,
+    adaptiveQuality: true,
+  },
+};
+
 export const THEME_ENVIRONMENTS = {
   "cosmic-frontier": COSMIC_FRONTIER_ENVIRONMENT,
   forest: FOREST_ENVIRONMENT,
@@ -225,4 +256,5 @@ export const THEME_ENVIRONMENTS = {
   ocean: OCEAN_ENVIRONMENT,
   cloud: CLOUD_ENVIRONMENT,
   lavender: LAVENDER_ENVIRONMENT,
+  classic: CLASSIC_ENVIRONMENT,
 } as const;
