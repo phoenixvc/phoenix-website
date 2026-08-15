@@ -50,15 +50,15 @@ export const THEME_CATALOG = {
     availability: "available",
     description: "Nebula stratosphere environment with volumetric drifting cumulus vapour and solar crepuscular rays.",
   },
-  classic: {
-    id: "classic",
-    displayName: "Classic",
-    availability: "coming-soon",
-    description: "Reserved supporting palette.",
-  },
   lavender: {
     id: "lavender",
     displayName: "Lavender",
+    availability: "available",
+    description: "Twilight flora meadow environment with drifting amethyst blossoms and bioluminescent pollen spores.",
+  },
+  classic: {
+    id: "classic",
+    displayName: "Classic",
     availability: "coming-soon",
     description: "Reserved supporting palette.",
   },
@@ -71,8 +71,8 @@ export const THEME_CATALOG_ORDER = [
   "phoenix",
   "ocean",
   "cloud",
-  "classic",
   "lavender",
+  "classic",
 ] as const satisfies readonly ThemeName[];
 
 export const AVAILABLE_THEME_NAMES = [
@@ -82,6 +82,7 @@ export const AVAILABLE_THEME_NAMES = [
   "phoenix",
   "ocean",
   "cloud",
+  "lavender",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";

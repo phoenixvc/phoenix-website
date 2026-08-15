@@ -8,6 +8,7 @@ import { highveldColors } from "./highveld";
 import { phoenixColors } from "./phoenix";
 import { oceanColors } from "./ocean";
 import { cloudColors } from "./cloud";
+import { lavenderColors } from "./lavender";
 import { DEFAULT_THEME_NAME, THEME_CATALOG } from "./catalog";
 import type { ThemeName } from "@/theme/types";
 
@@ -74,6 +75,16 @@ export function createBuiltInThemeRegistry(
     author: "Phoenix VC",
     version: "1.0.0",
     tags: ["environmental", "interactive", "cloud", "stratosphere", "first-party"],
+    compatibleModes: ["light", "dark"],
+  });
+
+  const lavender = THEME_CATALOG.lavender;
+  registry.registerTheme(lavender.id, lavenderColors, {
+    displayName: lavender.displayName,
+    description: lavender.description,
+    author: "Phoenix VC",
+    version: "1.0.0",
+    tags: ["environmental", "interactive", "lavender", "meadow", "first-party"],
     compatibleModes: ["light", "dark"],
   });
 

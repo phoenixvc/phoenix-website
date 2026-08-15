@@ -21,7 +21,8 @@ export interface ThemeEnvironmentDefinition {
     | "highveld-plateau"
     | "phoenix-reign"
     | "ocean-abyss"
-    | "cloud-strato";
+    | "cloud-strato"
+    | "lavender-meadow";
   fixtureParam: string;
   staticFixture: EnvironmentFixture;
   capabilities: {

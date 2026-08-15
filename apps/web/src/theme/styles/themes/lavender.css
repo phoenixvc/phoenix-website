@@ -1,0 +1,35 @@
+[data-theme="lavender"] button,
+[data-theme="lavender"] a,
+[data-theme="lavender"] .card,
+[data-theme="lavender"] [role="button"] {
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+[data-theme="lavender"] button:hover,
+[data-theme="lavender"] a:hover,
+[data-theme="lavender"] [role="button"]:hover {
+  box-shadow: 0 8px 20px rgba(192, 132, 252, 0.22);
+}
+
+[data-theme="lavender"][data-mode="dark"] button:hover,
+[data-theme="lavender"][data-mode="dark"] a:hover,
+[data-theme="lavender"][data-mode="dark"] [role="button"]:hover {
+  box-shadow: 0 8px 24px rgba(192, 132, 252, 0.28);
+}
+
+[data-theme="lavender"] main {
+  text-shadow: 0 1px 12px rgba(18, 13, 28, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="lavender"] button,
+  [data-theme="lavender"] a,
+  [data-theme="lavender"] .card,
+  [data-theme="lavender"] [role="button"] {
+    transition: none;
+  }
+}
