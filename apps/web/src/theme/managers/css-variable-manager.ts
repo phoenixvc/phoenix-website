@@ -134,15 +134,6 @@ class CssVariableManager {
 
     // Store in cache
     this.cache.set(normalizedName, colorValue);
-
-    // If we"re in a browser environment, also set the CSS variable
-    try {
-      if (typeof document !== "undefined") {
-        document.documentElement.style.setProperty(normalizedName, colorValue);
-      }
-    } catch (error) {
-      console.warn(`Could not set CSS variable ${normalizedName}`, error);
-    }
   }
 
   /**

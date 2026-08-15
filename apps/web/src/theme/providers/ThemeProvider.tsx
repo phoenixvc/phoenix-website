@@ -75,34 +75,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = (props) => {
 
         // Apply configuration if provided
         if (config) {
-          if (config.defaultThemeName) {
-            // Handle potential promises
-            void themeCore
-              .setColorScheme(config.defaultThemeName)
-              .catch((err) =>
-                console.error(
-                  "[ThemeProvider] Error setting color scheme:",
-                  err,
-                ),
-              );
-          }
-          if (config.defaultMode) {
-            void themeCore
-              .setMode(config.defaultMode)
-              .catch((err) =>
-                console.error("[ThemeProvider] Error setting mode:", err),
-              );
-          }
-          if (config.useSystem !== undefined) {
-            void themeCore
-              .setUseSystem(config.useSystem)
-              .catch((err) =>
-                console.error(
-                  "[ThemeProvider] Error setting system mode:",
-                  err,
-                ),
-              );
-          }
           if (config.storage) {
             const storageOptions = convertThemeStorageToOptions(config.storage);
             if (storageOptions) {

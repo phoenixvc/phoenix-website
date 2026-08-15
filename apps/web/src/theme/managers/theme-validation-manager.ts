@@ -380,8 +380,11 @@ export class ThemeValidationManager {
    * @param themeName The theme name to check
    * @returns Boolean indicating if the theme name is valid
    */
-  isValidThemeName(themeName: ThemeName): themeName is ThemeName {
-    return VALID_COLOR_SCHEMES.includes(themeName);
+  isValidThemeName(themeName: unknown): themeName is ThemeName {
+    return (
+      typeof themeName === "string" &&
+      (VALID_COLOR_SCHEMES as readonly string[]).includes(themeName)
+    );
   }
 
   /**
@@ -389,8 +392,11 @@ export class ThemeValidationManager {
    * @param mode The theme mode to check
    * @returns Boolean indicating if the theme mode is valid
    */
-  isValidThemeMode(mode: ThemeMode): mode is ThemeMode {
-    return VALID_MODES.includes(mode);
+  isValidThemeMode(mode: unknown): mode is ThemeMode {
+    return (
+      typeof mode === "string" &&
+      (VALID_MODES as readonly string[]).includes(mode)
+    );
   }
 
   /**

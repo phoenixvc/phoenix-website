@@ -301,7 +301,6 @@ export class ComponentRegistryManager {
   ): ComponentVariantType | undefined {
     const componentVariants = this.getComponentVariants(component);
     if (!componentVariants) {
-      console.warn(`Component not found to apply variant: ${component}`);
       return undefined;
     }
 

@@ -4,7 +4,13 @@ import { ThemeCore } from "../core/theme-core";
 export const getThemeClassNames = (
   scheme: ThemeName,
 ): Record<string, string> => {
-  return ThemeCore.getInstance().getThemeClasses(scheme);
+  const customClasses = ThemeCore.getInstance().getThemeClasses(scheme) || {};
+  return {
+    base: `theme-${scheme}`,
+    light: `theme-${scheme}-light`,
+    dark: `theme-${scheme}-dark`,
+    ...customClasses,
+  };
 };
 
 export const getSpecificClass = (
