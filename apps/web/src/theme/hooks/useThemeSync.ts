@@ -402,6 +402,10 @@ export function useThemeSync({
         setLoadingTheme(true);
 
         let themeData = null;
+        // Only themes acquired outside the registry need CSS variables
+        // applied here — useThemeDomEffect's layout effect already applies
+        // them synchronously for any theme already in `themes.themes`.
+        let needsCssVariables = false;
         if (themes && themes.themes && themes.themes[state.themeName]) {
           themeData = themes.themes[state.themeName];
           logger.debug("[ThemeProvider] Using theme from registry");
@@ -413,6 +417,7 @@ export function useThemeSync({
 
           if (theme.status === "success" && theme.data) {
             themeData = theme.data;
+            needsCssVariables = true;
           }
         }
 
@@ -420,10 +425,11 @@ export function useThemeSync({
           const _semantics = generateSchemeSemantics(themeData, state.mode);
           logger.debug("[ThemeProvider] Generated semantics");
 
-          const variables = generateThemeVariables(themeData, state.mode);
-          logger.debug("[ThemeProvider] Generated variables");
-
-          applyCssVariables(variables.computed);
+          if (needsCssVariables) {
+            const variables = generateThemeVariables(themeData, state.mode);
+            logger.debug("[ThemeProvider] Generated variables");
+            applyCssVariables(variables.computed);
+          }
 
           setState((prev) => ({ ...prev, initialized: true }));
         } else {
