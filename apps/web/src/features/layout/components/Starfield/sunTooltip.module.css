@@ -1,26 +1,44 @@
 /* Define CSS variables matching the site theme (from projectTooltip) */
 :root {
   /* Dark mode defaults */
-  --sun-tooltip-bg-dark: linear-gradient(135deg, rgba(25, 20, 40, 0.95) 0%, rgba(35, 25, 55, 0.95) 100%);
-  --sun-tooltip-border-dark: rgba(157, 78, 221, 0.3);
-  --sun-tooltip-border-left-dark: rgba(157, 78, 221, 0.8);
-  --sun-tooltip-shadow-dark: 0 8px 32px rgba(157, 78, 221, 0.3);
-  --sun-tooltip-text-dark: rgba(255, 255, 255, 0.9);
-  --sun-tooltip-subtext-dark: rgba(255, 255, 255, 0.7);
-  --sun-tooltip-hint-dark: rgba(157, 78, 221, 0.9);
-  --sun-tooltip-header-bg-dark: rgba(157, 78, 221, 0.15);
-  --sun-tooltip-glow-dark: rgba(157, 78, 221, 0.12);
+  --sun-tooltip-bg-dark:
+    linear-gradient(
+      135deg,
+      hsl(var(--color-primary) / 0.1) 0%,
+      hsl(var(--color-primary) / 0.24) 100%
+    ),
+    linear-gradient(
+      hsl(var(--color-background) / 0.95),
+      hsl(var(--color-background) / 0.95)
+    );
+  --sun-tooltip-border-dark: hsl(var(--color-primary) / 0.3);
+  --sun-tooltip-border-left-dark: hsl(var(--color-primary) / 0.8);
+  --sun-tooltip-shadow-dark: 0 8px 32px hsl(var(--color-primary) / 0.3);
+  --sun-tooltip-text-dark: hsl(var(--color-text) / 0.9);
+  --sun-tooltip-subtext-dark: hsl(var(--color-text) / 0.7);
+  --sun-tooltip-hint-dark: hsl(var(--color-primary) / 0.9);
+  --sun-tooltip-header-bg-dark: hsl(var(--color-primary) / 0.15);
+  --sun-tooltip-glow-dark: hsl(var(--color-primary) / 0.12);
 
   /* Light mode settings */
-  --sun-tooltip-bg-light: linear-gradient(135deg, rgba(250, 248, 255, 0.95) 0%, rgba(240, 235, 255, 0.95) 100%);
-  --sun-tooltip-border-light: rgba(123, 44, 191, 0.2);
-  --sun-tooltip-border-left-light: rgba(123, 44, 191, 0.6);
-  --sun-tooltip-shadow-light: 0 8px 32px rgba(123, 44, 191, 0.2);
-  --sun-tooltip-text-light: rgba(30, 30, 50, 0.9);
-  --sun-tooltip-subtext-light: rgba(30, 30, 50, 0.7);
-  --sun-tooltip-hint-light: rgba(123, 44, 191, 0.9);
-  --sun-tooltip-header-bg-light: rgba(123, 44, 191, 0.08);
-  --sun-tooltip-glow-light: rgba(123, 44, 191, 0.08);
+  --sun-tooltip-bg-light:
+    linear-gradient(
+      135deg,
+      hsl(var(--color-primary) / 0.04) 0%,
+      hsl(var(--color-primary) / 0.1) 100%
+    ),
+    linear-gradient(
+      hsl(var(--color-background) / 0.95),
+      hsl(var(--color-background) / 0.95)
+    );
+  --sun-tooltip-border-light: hsl(var(--color-primary) / 0.2);
+  --sun-tooltip-border-left-light: hsl(var(--color-primary) / 0.6);
+  --sun-tooltip-shadow-light: 0 8px 32px hsl(var(--color-primary) / 0.2);
+  --sun-tooltip-text-light: hsl(var(--color-text) / 0.9);
+  --sun-tooltip-subtext-light: hsl(var(--color-text) / 0.7);
+  --sun-tooltip-hint-light: hsl(var(--color-primary) / 0.9);
+  --sun-tooltip-header-bg-light: hsl(var(--color-primary) / 0.08);
+  --sun-tooltip-glow-light: hsl(var(--color-primary) / 0.08);
 }
 
 .sunTooltip {
@@ -52,7 +70,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(157, 78, 221, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, hsl(var(--color-primary) / 0.4), transparent);
 }
 
 .sunTooltip::after {
@@ -81,11 +99,11 @@
 
 .clickable:hover {
   transform: translateY(0) scale(1.02);
-  box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
+  box-shadow: 0 12px 40px hsl(var(--color-primary) / 0.4);
 }
 
 .lightMode.clickable:hover {
-  box-shadow: 0 12px 40px rgba(123, 44, 191, 0.3);
+  box-shadow: 0 12px 40px hsl(var(--color-primary) / 0.3);
 }
 
 .lightMode {
@@ -97,7 +115,12 @@
 }
 
 .lightMode::before {
-  background: linear-gradient(90deg, transparent, rgba(123, 44, 191, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--color-primary) / 0.3),
+    transparent
+  );
 }
 
 .lightMode::after {

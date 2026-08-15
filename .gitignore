@@ -59,3 +59,7 @@ __pycache__/
 *storybook.log
 storybook-static
 test-results/
+playwright-report/
+.serena/
+.worktrees/
+

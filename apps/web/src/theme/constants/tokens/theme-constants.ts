@@ -105,6 +105,10 @@ export const COLOR_SCHEME_CLASSES: Record<
     light: [getThemeClass("cosmic-frontier", "light")],
     dark: [getThemeClass("cosmic-frontier", "dark")],
   },
+  highveld: {
+    light: [getThemeClass("highveld", "light")],
+    dark: [getThemeClass("highveld", "dark")],
+  },
 } as const;
 
 export const THEME_CONSTANTS = {

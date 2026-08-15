@@ -4,6 +4,7 @@ export * from "./catalog";
 export * from "./cosmicFrontier";
 export * from "./default";
 export * from "./forest";
+export * from "./highveld";
 export * from "./lavender";
 export * from "./ocean";
 export * from "./phoenix";

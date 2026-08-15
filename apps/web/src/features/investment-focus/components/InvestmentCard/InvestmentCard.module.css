@@ -18,28 +18,27 @@
 
 /* Dark mode card styling - improved contrast and glow */
 .card.darkMode {
-  background-color: rgba(30, 30, 50, 0.5);
-  border: 1px solid rgba(157, 78, 221, 0.25);
-  box-shadow: 0 4px 20px rgba(157, 78, 221, 0.15);
+  background-color: hsl(var(--color-background) /  0.55);
+  border: 1px solid hsl(var(--color-primary) / 0.25);
+  box-shadow: 0 4px 20px hsl(var(--color-primary) / 0.15);
 }
 
 .card.darkMode:hover {
-  background-color: rgba(35, 35, 60, 0.6);
-  border: 1px solid rgba(157, 78, 221, 0.35);
-  box-shadow: 0 8px 30px rgba(157, 78, 221, 0.25);
+  background-color: hsl(var(--color-background) /  0.72);
+  border: 1px solid hsl(var(--color-primary) / 0.35);
+  box-shadow: 0 8px 30px hsl(var(--color-primary) / 0.25);
 }
 
-/* Light mode card styling - improved depth */
 .card.lightMode {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 20px rgba(114, 9, 183, 0.1);
-  border: 1px solid rgba(114, 9, 183, 0.08);
+  background: hsl(var(--color-background) /  0.78);
+  box-shadow: 0 4px 20px hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.08);
 }
 
 .card.lightMode:hover {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8px 25px rgba(114, 9, 183, 0.2);
-  border: 1px solid rgba(114, 9, 183, 0.15);
+  background: hsl(var(--color-background) /  0.9);
+  box-shadow: 0 8px 25px hsl(var(--color-primary) / 0.2);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 /* Card hover effect */
@@ -49,7 +48,7 @@
 
 /* Card underline effect - improved animation */
 .card::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -61,23 +60,14 @@
 }
 
 /* Light mode underline */
-.card.lightMode::after {
-  background: linear-gradient(
-    to right,
-    #5a189a,
-    #7b2cbf
-  );
-  box-shadow: 0 0 8px rgba(123, 44, 191, 0.4);
-}
-
-/* Dark mode underline */
+.card.lightMode::after,
 .card.darkMode::after {
   background: linear-gradient(
     to right,
-    #9d4edd,
-    #e0aaff
+    hsl(var(--color-primary)),
+    hsl(var(--color-accent))
   );
-  box-shadow: 0 0 12px rgba(224, 170, 255, 0.4);
+  box-shadow: 0 0 10px hsl(var(--color-primary) / 0.35);
 }
 
 .card:hover::after {
@@ -86,7 +76,7 @@
 
 /* Card background gradient */
 .card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -99,8 +89,8 @@
 .card.lightMode::before {
   background: linear-gradient(
     135deg,
-    rgba(114, 9, 183, 0.06) 0%,
-    rgba(157, 78, 221, 0.03) 100%
+    hsl(var(--color-primary) / 0.06) 0%,
+    hsl(var(--color-primary) / 0.03) 100%
   );
 }
 
@@ -108,8 +98,8 @@
 .card.darkMode::before {
   background: linear-gradient(
     135deg,
-    rgba(157, 78, 221, 0.08) 0%,
-    rgba(199, 125, 255, 0.05) 100%
+    hsl(var(--color-primary) / 0.08) 0%,
+    hsl(var(--color-accent) / 0.05) 100%
   );
 }
 
@@ -124,7 +114,7 @@
 }
 
 .card.lightMode::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -142,7 +132,7 @@
 }
 
 .card.darkMode::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -150,9 +140,9 @@
   height: 100%;
   background: linear-gradient(
     90deg,
-    rgba(157, 78, 221, 0),
-    rgba(157, 78, 221, 0.05),
-    rgba(157, 78, 221, 0)
+    hsl(var(--color-primary) / 0),
+    hsl(var(--color-primary) / 0.05),
+    hsl(var(--color-primary) / 0)
   );
   background-size: 200% 100%;
   animation: shimmer 8s infinite;
@@ -177,32 +167,33 @@
 .card.darkMode .icon {
   background: linear-gradient(
     135deg,
-    rgba(157, 78, 221, 0.25) 0%,
-    rgba(199, 125, 255, 0.2) 100%
+    hsl(var(--color-primary) / 0.25) 0%,
+    hsl(var(--color-accent) / 0.2) 100%
   );
-  box-shadow: 0 2px 15px rgba(199, 125, 255, 0.3),
-              inset 0 0 10px rgba(199, 125, 255, 0.15);
+  box-shadow:
+    0 2px 15px hsl(var(--color-primary) / 0.3),
+    inset 0 0 10px hsl(var(--color-primary) / 0.15);
 }
 
 .card.darkMode .icon svg {
-  color: #f0ccff;
-  filter: drop-shadow(0 0 8px rgba(224, 170, 255, 0.6));
+  color: hsl(var(--color-text));
+  filter: drop-shadow(0 0 8px hsl(var(--color-primary) / 0.55));
 }
 
-/* Light mode icon styling */
 .card.lightMode .icon {
   background: linear-gradient(
     135deg,
-    rgba(90, 24, 154, 0.12) 0%,
-    rgba(123, 44, 191, 0.08) 100%
+    hsl(var(--color-primary) / 0.12) 0%,
+    hsl(var(--color-accent) / 0.08) 100%
   );
-  box-shadow: 0 2px 10px rgba(114, 9, 183, 0.2),
-              inset 0 0 15px rgba(114, 9, 183, 0.1);
+  box-shadow:
+    0 2px 10px hsl(var(--color-primary) / 0.2),
+    inset 0 0 15px hsl(var(--color-primary) / 0.1);
 }
 
 .card.lightMode .icon svg {
-  color: #5a189a;
-  filter: drop-shadow(0 2px 4px rgba(90, 24, 154, 0.3));
+  color: hsl(var(--color-primary));
+  filter: drop-shadow(0 2px 4px hsl(var(--color-primary) / 0.3));
 }
 
 .icon svg {
@@ -226,10 +217,10 @@
 .card.darkMode .title {
   background-image: linear-gradient(
     to right,
-    #e0aaff,
-    #ffffff
+    hsl(var(--color-primary)),
+    hsl(var(--color-text))
   );
-  text-shadow: 0 0 12px rgba(224, 170, 255, 0.5);
+  text-shadow: 0 0 12px hsl(var(--color-primary) / 0.45);
   letter-spacing: 0.02em;
 }
 
@@ -237,10 +228,10 @@
 .card.lightMode .title {
   background-image: linear-gradient(
     to right,
-    #4a148c,
-    #7b2cbf
+    hsl(var(--color-primary)),
+    hsl(var(--color-accent))
   );
-  text-shadow: 0 1px 3px rgba(90, 24, 154, 0.3);
+  text-shadow: 0 1px 3px hsl(var(--color-primary) / 0.3);
 }
 
 /* Card description - IMPROVED readability with enhanced contrast */

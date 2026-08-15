@@ -20,29 +20,35 @@ export const THEME_CATALOG = {
     availability: "available",
     description: "Interactive deep-space environment and portfolio map.",
   },
+  forest: {
+    id: "forest",
+    displayName: "Forest",
+    availability: "available",
+    description: "Immersive canopy environment with leaves, fireflies, and groves.",
+  },
+  highveld: {
+    id: "highveld",
+    displayName: "Highveld",
+    availability: "available",
+    description: "Panoramic horizon plateau with dynamic seeded lightning and wind-swept veld.",
+  },
+  phoenix: {
+    id: "phoenix",
+    displayName: "Phoenix",
+    availability: "available",
+    description: "Incandescent volcanic rebirth environment with molten embers and solar beacons.",
+  },
   classic: {
     id: "classic",
     displayName: "Classic",
     availability: "coming-soon",
     description: "Reserved supporting palette.",
   },
-  forest: {
-    id: "forest",
-    displayName: "Forest",
-    availability: "coming-soon",
-    description: "Planned immersive forest environment.",
-  },
   ocean: {
     id: "ocean",
     displayName: "Ocean",
     availability: "coming-soon",
     description: "Reserved supporting palette.",
-  },
-  phoenix: {
-    id: "phoenix",
-    displayName: "Phoenix",
-    availability: "coming-soon",
-    description: "Planned rebirth, fire, and ember environment.",
   },
   lavender: {
     id: "lavender",
@@ -60,9 +66,10 @@ export const THEME_CATALOG = {
 
 export const THEME_CATALOG_ORDER = [
   "cosmic-frontier",
-  "classic",
   "forest",
+  "highveld",
   "phoenix",
+  "classic",
   "ocean",
   "lavender",
   "cloud",
@@ -70,6 +77,9 @@ export const THEME_CATALOG_ORDER = [
 
 export const AVAILABLE_THEME_NAMES = [
   "cosmic-frontier",
+  "forest",
+  "highveld",
+  "phoenix",
 ] as const satisfies readonly ThemeName[];
 
 export const DEFAULT_THEME_NAME: ThemeName = "cosmic-frontier";

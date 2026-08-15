@@ -1,0 +1,488 @@
+.wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: auto;
+  z-index: 0;
+  user-select: none;
+  background-color: #070406;
+  transition: background-color 0.4s ease;
+}
+
+.wrapper[data-mode="light"] {
+  background-color: #fdf6ee;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.wingLeft,
+.wingRight {
+  position: absolute;
+  top: 0;
+  width: min(34vw, 460px);
+  height: auto;
+  opacity: 0.38;
+  transition: opacity 0.5s ease, filter 0.5s ease;
+  filter: drop-shadow(0 0 16px rgba(249, 115, 22, 0.28));
+}
+
+.wingLeft {
+  left: 0;
+}
+
+.wingRight {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.wrapper[data-mode="light"] .wingLeft,
+.wrapper[data-mode="light"] .wingRight {
+  opacity: 0.24;
+  filter: drop-shadow(0 0 12px rgba(217, 119, 6, 0.20));
+}
+
+.solarCrest {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(22vw, 260px);
+  height: auto;
+  opacity: 0.32;
+  filter: drop-shadow(0 0 20px rgba(251, 146, 60, 0.35));
+  animation: crestPulse 7s ease-in-out infinite alternate;
+}
+
+.wrapper[data-mode="light"] .solarCrest {
+  opacity: 0.22;
+  filter: drop-shadow(0 0 14px rgba(234, 88, 12, 0.22));
+}
+
+.emberPlumeGlow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(249, 115, 22, 0.18) 0%,
+    rgba(239, 68, 68, 0.08) 45%,
+    transparent 75%
+  );
+  pointer-events: none;
+}
+
+.wrapper[data-mode="light"] .emberPlumeGlow {
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(245, 158, 11, 0.14) 0%,
+    rgba(251, 146, 60, 0.06) 45%,
+    transparent 75%
+  );
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 25;
+  max-width: 280px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.85rem;
+  background: rgba(14, 8, 10, 0.92);
+  color: #fff5ee;
+  border: 1px solid rgba(249, 115, 22, 0.45);
+  box-shadow: 0 12px 32px rgba(4, 2, 3, 0.45), 0 0 20px rgba(249, 115, 22, 0.2);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.wrapper[data-mode="light"] .tooltip {
+  background: rgba(254, 248, 242, 0.94);
+  color: #1c130d;
+  border: 1px solid rgba(234, 88, 12, 0.35);
+  box-shadow: 0 10px 28px rgba(120, 86, 69, 0.18), 0 0 16px rgba(249, 115, 22, 0.12);
+}
+
+.tooltip strong {
+  display: block;
+  font-family: 'Space Grotesk', 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(90deg, #f97316 0%, #ef4444 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tooltip span {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.88;
+  line-height: 1.35;
+}
+
+.hud {
+  position: fixed;
+  left: 50%;
+  bottom: 3.4rem;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.hudButton {
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  border-radius: 999px;
+  background: rgba(14, 8, 10, 0.85);
+  color: #fff5ee;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(4, 2, 3, 0.3);
+}
+
+.wrapper[data-mode="light"] .hudButton {
+  background: rgba(254, 248, 242, 0.88);
+  color: #1c130d;
+  border-color: rgba(234, 88, 12, 0.3);
+  box-shadow: 0 4px 12px rgba(120, 86, 69, 0.12);
+}
+
+.hudButton[aria-pressed="true"],
+.hudButton:hover,
+.hudButton:focus-visible {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.35), rgba(239, 68, 68, 0.25));
+  border-color: rgba(251, 146, 60, 0.85);
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.45);
+  transform: translateY(-1px);
+}
+
+@keyframes crestPulse {
+  0% {
+    opacity: 0.22;
+    transform: translateX(-50%) scale(0.98);
+  }
+  100% {
+    opacity: 0.42;
+    transform: translateX(-50%) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solarCrest {
+    animation: none;
+    opacity: 0.28;
+  }
+  .wingLeft,
+  .wingRight,
+  .hudButton {
+    transition: none;
+  }
+}
+
+.nodeTooltip {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  margin-top: -20px;
+  background: rgba(18, 11, 14, 0.94);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.65),
+    0 0 24px rgba(245, 158, 11, 0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 8px;
+  padding: 10px 14px;
+  max-width: 260px;
+  pointer-events: auto;
+  z-index: 10000;
+  animation: tooltipEntrance 0.2s ease-out;
+  transition: opacity 0.15s ease;
+}
+
+.wrapper[data-mode="light"] .nodeTooltip {
+  background: rgba(254, 252, 248, 0.95);
+  border-color: rgba(234, 88, 12, 0.35);
+  box-shadow:
+    0 12px 28px rgba(120, 86, 69, 0.18),
+    0 0 20px rgba(245, 158, 11, 0.18);
+}
+
+.tooltipBadge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  margin-bottom: 4px;
+}
+
+.wrapper[data-mode="light"] .tooltipBadge {
+  background: rgba(234, 88, 12, 0.12);
+  color: #c2410c;
+}
+
+.tooltipTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fffbeb;
+  font-family: "Cinzel", Georgia, serif;
+  margin: 0 0 4px;
+}
+
+.wrapper[data-mode="light"] .tooltipTitle {
+  color: #2c1a14;
+}
+
+.tooltipDesc {
+  font-size: 0.78rem;
+  color: rgba(255, 251, 235, 0.75);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.wrapper[data-mode="light"] .tooltipDesc {
+  color: rgba(44, 26, 20, 0.75);
+}
+
+.tooltipLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #f59e0b;
+  text-decoration: none;
+}
+
+.wrapper[data-mode="light"] .tooltipLink {
+  color: #ea580c;
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.pinButton {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s ease;
+}
+
+.pinButton:hover {
+  background: rgba(245, 158, 11, 0.35);
+  border-color: rgba(245, 158, 11, 0.8);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.pinnedDock {
+  position: fixed;
+  top: 85px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 290px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.pinnedCard {
+  background: rgba(18, 11, 14, 0.94);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(245, 158, 11, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 8px;
+  padding: 12px 14px;
+  position: relative;
+  animation: tooltipEntrance 0.25s ease-out;
+}
+
+.wrapper[data-mode="light"] .pinnedCard {
+  background: rgba(254, 252, 248, 0.96);
+  border-color: rgba(234, 88, 12, 0.4);
+  box-shadow:
+    0 8px 24px rgba(120, 86, 69, 0.15),
+    0 0 16px rgba(245, 158, 11, 0.15);
+}
+
+.unpinButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 251, 235, 0.6);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.15s ease;
+}
+
+.unpinButton:hover {
+  color: #ef4444;
+}
+
+.wrapper[data-mode="light"] .unpinButton {
+  color: rgba(44, 26, 20, 0.6);
+}
+
+.dockControlsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.actionIconBtn {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.actionIconBtn:hover {
+  background: rgba(245, 158, 11, 0.35);
+  border-color: rgba(245, 158, 11, 0.8);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.collapseTogglePill {
+  position: fixed;
+  top: 85px;
+  right: 24px;
+  z-index: 9999;
+  background: rgba(18, 11, 14, 0.92);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  color: #fbbf24;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    0 0 16px rgba(245, 158, 11, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.collapseTogglePill:hover {
+  background: rgba(28, 15, 18, 0.98);
+  border-color: #fbbf24;
+  transform: translateY(-1px);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.7),
+    0 0 22px rgba(245, 158, 11, 0.45);
+}
+
+.wrapper[data-mode="light"] .collapseTogglePill {
+  background: rgba(254, 252, 248, 0.95);
+  border-color: rgba(234, 88, 12, 0.4);
+  color: #c2410c;
+  box-shadow: 0 8px 24px rgba(120, 86, 69, 0.15);
+}
+
+.cardFocusBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  width: 100%;
+}
+
+.cardFocusBtn:hover .tooltipTitle {
+  color: #f59e0b;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.closeAllButton {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.closeAllButton:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.6);
+  color: #fff;
+}
+
+@keyframes tooltipEntrance {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -90%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+}

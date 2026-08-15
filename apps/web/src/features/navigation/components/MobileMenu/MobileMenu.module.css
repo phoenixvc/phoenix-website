@@ -20,14 +20,14 @@
 
 /* Dark mode styles - matches your dark theme */
 .darkMode {
-  background-color: rgba(18, 18, 24, 0.95);
-  border-bottom: 1px solid rgba(128, 90, 213, 0.2);
+  background-color: hsl(var(--color-background) / 0.95);
+  border-bottom: 1px solid hsl(var(--color-primary) / 0.2);
 }
 
 /* Light mode styles - matches your light theme */
 .lightMode {
-  background-color: rgba(245, 245, 250, 0.95);
-  border-bottom: 1px solid rgba(128, 90, 213, 0.1);
+  background-color: hsl(var(--color-background) / 0.95);
+  border-bottom: 1px solid hsl(var(--color-primary) / 0.1);
 }
 
 .menuNav {
@@ -55,38 +55,38 @@
 
 /* Dark mode link styles */
 .darkMode .navLink {
-  color: rgba(255, 255, 255, 0.9);
-  background-color: rgba(128, 90, 213, 0.1);
+  color: hsl(var(--color-text) / 0.9);
+  background-color: hsl(var(--color-primary) / 0.1);
 }
 
 .darkMode .navLink:active {
-  background-color: rgba(128, 90, 213, 0.2);
+  background-color: hsl(var(--color-primary) / 0.2);
 }
 
 /* Light mode link styles */
 .lightMode .navLink {
-  color: rgba(30, 30, 30, 0.9);
-  background-color: rgba(128, 90, 213, 0.05);
+  color: hsl(var(--color-text) / 0.9);
+  background-color: hsl(var(--color-primary) / 0.05);
 }
 
 .lightMode .navLink:active {
-  background-color: rgba(128, 90, 213, 0.1);
+  background-color: hsl(var(--color-primary) / 0.1);
 }
 
 /* Primary button style - for important actions like "Get in Touch" */
 .primaryButton {
-  background-color: #a855f7; /* Purple from your theme */
-  color: white;
+  background-color: hsl(var(--color-primary));
+  color: hsl(var(--color-background));
 }
 
 .darkMode .primaryButton:active,
 .lightMode .primaryButton:active {
-  background-color: #9333ea; /* Darker purple on active */
+  background-color: hsl(var(--color-primary));
 }
 
 /* Secondary button style - for secondary actions */
 .secondaryButton {
-  border: 1px solid rgba(128, 90, 213, 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
 }
 
 .darkMode .secondaryButton {
@@ -109,15 +109,15 @@
 
 /* Dark mode active state */
 .darkMode .activeItem {
-  background-color: rgba(128, 90, 213, 0.25) !important;
+  background-color: hsl(var(--color-primary) / 0.25) !important;
 }
 
 /* Light mode active state */
 .lightMode .activeItem {
-  background-color: rgba(128, 90, 213, 0.15) !important;
+  background-color: hsl(var(--color-primary) / 0.15) !important;
 }
 
 /* Primary button active state */
 .primaryButton.activeItem {
-  background-color: #8b5cf6 !important; /* Slightly darker purple */
+  background-color: hsl(var(--color-accent)) !important;
 }

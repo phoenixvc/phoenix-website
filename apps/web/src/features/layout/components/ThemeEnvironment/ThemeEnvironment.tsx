@@ -2,11 +2,14 @@ import { forwardRef, useEffect, useState } from "react";
 import { useReducedMotion } from "@/hooks";
 import type { StarfieldRef } from "../Starfield/Starfield";
 import CosmicFrontierEnvironment from "./CosmicFrontierEnvironment";
+import ForestEnvironment from "./ForestEnvironment";
+import HighveldEnvironment from "./HighveldEnvironment";
+import { PhoenixEnvironment } from "./PhoenixEnvironment";
 import { COSMIC_FRONTIER_ENVIRONMENT, THEME_ENVIRONMENTS } from "./registry";
 import type { ThemeEnvironmentProps } from "./types";
 
 const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
-  ({ themeName, fixture, ...runtimeProps }, ref) => {
+  ({ themeName, isDarkMode, fixture, ...runtimeProps }, ref) => {
     const prefersReducedMotion = useReducedMotion();
     const [pageVisible, setPageVisible] = useState(
       () => typeof document === "undefined" || !document.hidden,
@@ -41,15 +44,48 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
         data-motion={motionMode}
         data-lifecycle={paused ? "paused" : "running"}
       >
-        <CosmicFrontierEnvironment
-          {...runtimeProps}
-          ref={ref}
-          motionMode={motionMode}
-          paused={paused}
-          qualityTier={fixture?.qualityTier}
-          randomSeed={fixture?.seed}
-          fixedTimestamp={fixture?.timeMs}
-        />
+        {definition.rendererId === "forest-canopy" && (
+          <ForestEnvironment
+            isDarkMode={isDarkMode}
+            motionMode={motionMode}
+            qualityTier={fixture?.qualityTier}
+            paused={paused}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
+        {definition.rendererId === "highveld-plateau" && (
+          <HighveldEnvironment
+            isDarkMode={isDarkMode}
+            motionMode={motionMode}
+            qualityTier={fixture?.qualityTier}
+            paused={paused}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
+        {definition.rendererId === "phoenix-reign" && (
+          <PhoenixEnvironment
+            isDarkMode={isDarkMode}
+            motionMode={motionMode}
+            qualityTier={fixture?.qualityTier}
+            paused={paused}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
+        {definition.rendererId === "cosmic-starfield" && (
+          <CosmicFrontierEnvironment
+            {...runtimeProps}
+            ref={ref}
+            isDarkMode={isDarkMode}
+            motionMode={motionMode}
+            paused={paused}
+            qualityTier={fixture?.qualityTier}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
       </div>
     );
   },

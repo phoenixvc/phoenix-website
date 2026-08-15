@@ -132,7 +132,7 @@
   height: 100%;
   background: radial-gradient(
     ellipse at 70% 40%,
-    rgba(138, 43, 226, 0.08) 0%,
+    hsl(var(--color-primary) / 0.08) 0%,
     rgba(76, 0, 153, 0.05) 40%,
     transparent 70%
   );
@@ -150,7 +150,7 @@
   height: 60%;
   background: radial-gradient(
     ellipse at center,
-    rgba(138, 43, 226, 0.1) 0%,
+    hsl(var(--color-primary) / 0.1) 0%,
     rgba(76, 0, 153, 0.06) 40%,
     transparent 70%
   );
@@ -169,7 +169,7 @@
   height: 40%;
   background: radial-gradient(
     ellipse at center,
-    rgba(138, 43, 226, 0.06) 0%,
+    hsl(var(--color-primary) / 0.06) 0%,
     transparent 70%
   );
   filter: blur(80px);
@@ -219,7 +219,7 @@
   --background-color: #0a0a1a; /* Slightly more purple-blue */
   --nebula-primary: rgba(128, 0, 255, 0.15); /* More vibrant purple */
   --nebula-secondary: rgba(72, 61, 139, 0.12); /* Dark slate blue */
-  --nebula-tertiary: rgba(138, 43, 226, 0.1); /* Blue violet */
+  --nebula-tertiary: hsl(var(--color-primary) / 0.1); /* Blue violet */
   --frontier-glow: rgba(147, 112, 219, 0.08); /* Medium purple */
   --container-bg: rgba(10, 10, 26, 0.95); /* Matching background */
 }
@@ -274,7 +274,7 @@
   height: 30%;
   background: radial-gradient(
     ellipse at center,
-    rgba(138, 43, 226, 0.05) 0%,
+    hsl(var(--color-primary) / 0.05) 0%,
     transparent 70%
   );
   filter: blur(50px);
@@ -352,7 +352,7 @@
 .purpleAccent.light {
   background: radial-gradient(
     ellipse at center,
-    rgba(138, 43, 226, 0.02) 0%,
+    hsl(var(--color-primary) / 0.02) 0%,
     transparent 70%
   );
 }
@@ -499,11 +499,11 @@
 }
 
 .portfolioGalaxy {
-  --galaxy-color: #f59e0b; /* Golden/amber star clusters */
+  --galaxy-color: hsl(var(--color-accent)); /* Golden/amber star clusters */
 }
 
 .informationGalaxy {
-  --galaxy-color: #a855f7; /* Purple-pink cosmic clouds */
+  --galaxy-color: hsl(var(--color-primary)); /* Purple-pink cosmic clouds */
 }
 
 /* Navigation UI */
@@ -759,11 +759,11 @@
   font-size: 16px;
   text-align: center;
   color: #8a2be2;
-  text-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+  text-shadow: 0 0 5px hsl(var(--color-primary) / 0.5);
 }
 
 .zoomButton {
-  background-color: rgba(138, 43, 226, 0.7);
+  background-color: hsl(var(--color-primary) / 0.7);
   color: white;
   border: none;
   padding: 10px 15px;
@@ -771,7 +771,7 @@
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s ease;
-  box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+  box-shadow: 0 0 10px hsl(var(--color-primary) / 0.3);
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -780,7 +780,7 @@
 .zoomButton:hover {
   background-color: rgba(157, 62, 255, 0.9);
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+  box-shadow: 0 0 15px hsl(var(--color-primary) / 0.5);
 }
 
 .zoomButton:active {
@@ -1031,7 +1031,7 @@
   );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(157, 78, 221, 0.5);
+  border: 1px solid hsl(var(--color-primary) / 0.5);
   border-radius: 30px;
   color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
@@ -1040,7 +1040,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 8px 32px rgba(157, 78, 221, 0.3);
+  box-shadow: 0 8px 32px hsl(var(--color-primary) / 0.3);
   transition: all 0.3s ease;
   font-family:
     Inter,
@@ -1055,7 +1055,7 @@
     rgba(35, 30, 55, 0.98) 0%,
     rgba(45, 35, 70, 0.98) 100%
   );
-  box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
+  box-shadow: 0 12px 40px hsl(var(--color-primary) / 0.4);
   transform: translateX(-50%) scale(1.02);
 }
 
@@ -1162,7 +1162,7 @@
   );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(157, 78, 221, 0.3);
+  border: 1px solid hsl(var(--color-primary) / 0.3);
   border-radius: 20px;
   color: rgba(255, 255, 255, 0.95);
   font-size: 13px;
@@ -1173,7 +1173,7 @@
     BlinkMacSystemFont,
     sans-serif;
   box-shadow:
-    0 4px 16px rgba(157, 78, 221, 0.2),
+    0 4px 16px hsl(var(--color-primary) / 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -1223,8 +1223,8 @@
 
 .closeAllButton {
   align-self: flex-end;
-  background: rgba(138, 43, 226, 0.2);
-  border: 1px solid rgba(138, 43, 226, 0.5);
+  background: hsl(var(--color-primary) / 0.2);
+  border: 1px solid hsl(var(--color-primary) / 0.5);
   color: white;
   padding: 5px 10px;
   border-radius: 4px;
@@ -1237,5 +1237,5 @@
 }
 
 .closeAllButton:hover {
-  background: rgba(138, 43, 226, 0.4);
+  background: hsl(var(--color-primary) / 0.4);
 }

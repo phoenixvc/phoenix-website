@@ -12,7 +12,9 @@
 
 /* Dark mode - improved transparency to better show starfield */
 .section.darkMode {
-  background-color: rgba(13, 12, 34, 0.15); /* More transparent to show stars */
+  background-color: hsl(
+    var(--color-background) / 0.15
+  ); /* More transparent to show stars */
   position: relative;
   z-index: 1;
 }
@@ -20,13 +22,18 @@
 /* Add subtle section dividers for dark mode - reduced glow */
 .section.darkMode::before,
 .section.darkMode::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(157, 78, 221, 0.25), transparent);
-  box-shadow: 0 0 10px rgba(157, 78, 221, 0.2);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--color-primary) / 0.25),
+    transparent
+  );
+  box-shadow: 0 0 10px hsl(var(--color-primary) / 0.2);
 }
 
 .section.darkMode::before {
@@ -39,20 +46,30 @@
 
 /* Light mode styles - improved transition with subtle gradients */
 .section.lightMode {
-  background: linear-gradient(to bottom, rgba(250, 245, 255, 0.5), rgba(250, 245, 255, 0.7), rgba(250, 245, 255, 0.5));
-  box-shadow: inset 0 0 120px rgba(114, 9, 183, 0.1);
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--color-background) / 0.5),
+    hsl(var(--color-background) / 0.7),
+    hsl(var(--color-background) / 0.5)
+  );
+  box-shadow: inset 0 0 120px hsl(var(--color-primary) / 0.1);
   position: relative;
 }
 
 /* Add subtle section dividers for light mode */
 .section.lightMode::before,
 .section.lightMode::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 10%;
   right: 10%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(114, 9, 183, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--color-primary) / 0.2),
+    transparent
+  );
 }
 
 .section.lightMode::before {
@@ -77,27 +94,31 @@
   transition: transform 0.3s ease;
 }
 
-/* Dark mode heading - more subtle lavender to white gradient */
 .darkMode .heading {
   background-image: linear-gradient(
     to right,
-    #c8b6e2,
-    #f8f8ff
+    hsl(var(--color-primary)),
+    hsl(var(--color-text))
   );
-  text-shadow: 0 2px 10px rgba(200, 182, 226, 0.4);
+  text-shadow: 0 2px 10px hsl(var(--color-primary) / 0.35);
   letter-spacing: 0.02em;
 }
 
 /* Add subtle animation to heading in dark mode - reduced intensity */
 .darkMode .heading::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 30%;
   right: 30%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200, 182, 226, 0.4), transparent);
-  box-shadow: 0 0 8px rgba(200, 182, 226, 0.3);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--color-accent) / 0.4),
+    transparent
+  );
+  box-shadow: 0 0 8px hsl(var(--color-accent) / 0.3);
   animation: pulseGlow 4s infinite alternate;
 }
 
@@ -116,10 +137,10 @@
 .lightMode .heading {
   background-image: linear-gradient(
     to right,
-    #5a189a,
-    #7b2cbf
+    hsl(var(--color-primary)),
+    hsl(var(--color-accent))
   );
-  text-shadow: 0 2px 8px rgba(123, 44, 191, 0.3);
+  text-shadow: 0 2px 8px hsl(var(--color-primary) / 0.3);
 }
 
 /* Grid layout for focus area cards */
@@ -134,16 +155,28 @@
 
 /* Add more subtle cosmic dust effect behind the grid in dark mode */
 .darkMode .grid::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -20px;
   left: -20px;
   right: -20px;
   bottom: -20px;
   background-image:
-    radial-gradient(circle at 30% 40%, rgba(157, 78, 221, 0.08) 0%, transparent 70%),
-    radial-gradient(circle at 70% 60%, rgba(199, 125, 255, 0.08) 0%, transparent 70%),
-    radial-gradient(circle at 50% 50%, rgba(224, 170, 255, 0.05) 0%, transparent 80%);
+    radial-gradient(
+      circle at 30% 40%,
+      hsl(var(--color-primary) / 0.08) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      hsl(var(--color-accent) / 0.08) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      hsl(var(--color-primary) / 0.05) 0%,
+      transparent 80%
+    );
   filter: blur(35px);
   z-index: -1;
 }
@@ -154,7 +187,8 @@
 }
 
 @keyframes floatEffect {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -206,13 +240,13 @@
 
 /* Add subtle hover effect to the entire section */
 .section:hover .darkMode .heading {
-  text-shadow: 0 2px 12px rgba(200, 182, 226, 0.5);
+  text-shadow: 0 2px 12px hsl(var(--color-primary) / 0.5);
 }
 
 /* Add focus effect for accessibility */
 .section:focus-within .grid {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(157, 78, 221, 0.3);
+  box-shadow: 0 0 0 2px hsl(var(--color-primary) / 0.3);
   border-radius: 8px;
 }
 
@@ -244,17 +278,29 @@
 }
 
 .modal.darkMode {
-  background: linear-gradient(145deg, rgba(20, 18, 40, 0.98), rgba(30, 28, 60, 0.98));
-  border: 1px solid rgba(147, 51, 234, 0.2);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(147, 51, 234, 0.15);
+  background: linear-gradient(
+    145deg,
+    hsl(var(--color-background) / 0.98),
+    hsl(var(--color-background) / 0.94)
+  );
+  border: 1px solid hsl(var(--color-primary) / 0.2);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 30px hsl(var(--color-primary) / 0.15);
   color: rgba(255, 255, 255, 0.9);
 }
 
 .modal.lightMode {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(250, 245, 255, 0.98));
-  border: 1px solid rgba(163, 27, 255, 0.15);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 30px rgba(163, 27, 255, 0.1);
-  color: rgba(20, 18, 40, 0.9);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(250, 245, 255, 0.98)
+  );
+  border: 1px solid hsl(var(--color-primary) / 0.15);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 0 30px hsl(var(--color-primary) / 0.1);
+  color: hsl(var(--color-text) / 0.9);
 }
 
 /* Close Button */
@@ -272,12 +318,12 @@
 }
 
 .lightMode .closeButton {
-  color: rgba(20, 18, 40, 0.7);
+  color: hsl(var(--color-text) / 0.7);
 }
 
 .closeButton:hover {
-  background-color: rgba(147, 51, 234, 0.1);
-  color: #9333ea;
+  background-color: hsl(var(--color-primary) / 0.1);
+  color: hsl(var(--color-primary));
 }
 
 /* Modal Icon */
@@ -293,7 +339,7 @@
   font-weight: 700;
   margin-bottom: 1rem;
   text-align: center;
-  background: linear-gradient(90deg, #9333ea 0%, #ff6b00 100%);
+  background: var(--chrome-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -317,11 +363,11 @@
   font-weight: 600;
   margin-bottom: 0.75rem;
   text-align: center;
-  color: #9333ea;
+  color: hsl(var(--color-primary));
 }
 
 .lightMode .highlightsTitle {
-  color: #7c3aed;
+  color: hsl(var(--color-primary));
 }
 
 .highlightsTags {
@@ -333,17 +379,17 @@
 
 .highlightTag {
   padding: 0.35rem 0.85rem;
-  background: rgba(147, 51, 234, 0.1);
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  background: hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   border-radius: 2rem;
   font-size: 0.85rem;
-  color: #9333ea;
+  color: hsl(var(--color-primary));
 }
 
 .lightMode .highlightTag {
-  background: rgba(163, 27, 255, 0.08);
-  border-color: rgba(163, 27, 255, 0.15);
-  color: #7c3aed;
+  background: hsl(var(--color-primary) / 0.08);
+  border-color: hsl(var(--color-primary) / 0.15);
+  color: hsl(var(--color-primary));
 }
 
 /* Modal CTA */
@@ -351,18 +397,22 @@
   display: block;
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary)) 0%,
+    hsl(var(--color-primary)) 100%
+  );
   color: white;
   text-align: center;
   font-weight: 600;
   border-radius: 0.75rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 4px 15px hsl(var(--color-primary) / 0.3);
 }
 
 .modalCta:hover {
-  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+  box-shadow: 0 6px 20px hsl(var(--color-primary) / 0.4);
   transform: translateY(-2px);
 }
 

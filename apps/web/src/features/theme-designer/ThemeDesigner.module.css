@@ -10,28 +10,28 @@
 
 .dark {
   background: transparent;
-  color: #f5f5f5;
+  color: hsl(var(--color-text));
 }
 
 .light {
   background: transparent;
-  color: #1a1a2e;
+  color: hsl(var(--color-text));
 }
 
 .content {
   max-width: 600px;
   text-align: center;
   padding: 3rem;
-  background: rgba(20, 18, 40, 0.6);
+  background: hsl(var(--color-background) / 0.6);
   border-radius: 16px;
-  border: 1px solid rgba(147, 51, 234, 0.2);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .light .content {
   background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(147, 51, 234, 0.15);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 .iconWrapper {
@@ -41,15 +41,15 @@
 }
 
 .mainIcon {
-  color: rgba(147, 51, 234, 0.8);
+  color: hsl(var(--color-primary) / 0.8);
 }
 
 .toolIcon {
   position: absolute;
   bottom: -8px;
   right: -12px;
-  color: rgba(255, 107, 0, 0.9);
-  background: rgba(20, 18, 40, 0.9);
+  color: hsl(var(--color-accent) / 0.9);
+  background: hsl(var(--color-background) / 0.9);
   border-radius: 50%;
   padding: 4px;
 }
@@ -62,7 +62,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(90deg, #9333ea, #ff6b00);
+  background: var(--chrome-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -73,17 +73,21 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(255, 107, 0, 0.2));
-  border: 1px solid rgba(147, 51, 234, 0.3);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary) / 0.2),
+    hsl(var(--color-accent) / 0.2)
+  );
+  border: 1px solid hsl(var(--color-primary) / 0.3);
   border-radius: 20px;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #c084fc;
+  color: hsl(var(--color-primary));
   margin-bottom: 1.5rem;
 }
 
 .light .badge {
-  color: #7c3aed;
+  color: hsl(var(--color-primary));
 }
 
 .description {
@@ -94,7 +98,7 @@
 }
 
 .light .description {
-  color: rgba(26, 26, 46, 0.8);
+  color: hsl(var(--color-text) / 0.8);
 }
 
 .features {
@@ -112,7 +116,7 @@
 .featuresTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: rgba(147, 51, 234, 0.9);
+  color: hsl(var(--color-primary) / 0.9);
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -140,18 +144,18 @@
   content: "→";
   position: absolute;
   left: 0;
-  color: rgba(147, 51, 234, 0.6);
+  color: hsl(var(--color-primary) / 0.6);
 }
 
 .backLink {
   display: inline-block;
-  color: rgba(147, 51, 234, 0.9);
+  color: hsl(var(--color-primary) / 0.9);
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .backLink:hover {
-  color: #ff6b00;
+  color: hsl(var(--color-accent));
   transform: translateX(-4px);
 }

@@ -1,0 +1,25 @@
+schema: md-agent/v1
+source: docs/src/main/design/themes/phoenix-acceptance.md
+title: "Phoenix acceptance contract"
+purpose: "Acceptance bar for Phoenix as the third immersive existing-theme proof after Cosmic Frontier and Forest."
+audience:
+  - agent
+  - human
+facts:
+  - "Status is implementation complete."
+  - "The phoenix environment is the full-viewport layer behind website content in light and dark modes."
+  - "Header, sidebar, footer, hero chrome, and logo marks use Phoenix obsidian, vermilion, amber, and solar gold."
+  - "The scene includes ascending embers with luminosity flicker, floating ash flakes, convective pointer vortices, and volcanic caldera ridges."
+  - "Solar Sanctuaries, Sector Altars, and Portfolio Beacons map focus areas and portfolio projects with hover tooltips, HUD zoom, and click-to-focus camera motion."
+  - "Solar auroral plumes, volcanic caldera ridges, and base horizon magma pulse respond to pointer convection and day cycle progression."
+  - "A 60-second deterministic day cycle supplies dawn-spark, zenith-blaze, dusk-ember, and hearth-rebirth."
+  - "Effects stay at edges and depth layers so content remains readable."
+  - "The representative fixture is seed 20260814, time 12000ms, low quality, reduced motion, and paused."
+  - "phoenix is selectable and persistable beside cosmic-frontier and forest."
+  - "The trusted environment registry owns the phoenix-reign renderer. Theme data stays serializable."
+  - "Environment inputs are deterministic seed/time, quality tier, motion policy, visibility pause/resume, resize, pointer input, and unmount dispose."
+  - "Reduced motion and the static fixture draw one representative frame and disable particle travel and pointer parallax."
+  - "Frame budgets are low 0ms after first paint, medium under 6ms, high under 8ms."
+  - "Storybook exposes deterministic and interactive Phoenix fixtures. Browser tests assert ownership, lifecycle, tokens, reduced motion, and Cosmic remaining the default."
+  - "Visual evidence lives at apps/web/e2e/evidence/phoenix-dark-static.png, phoenix-light-static.png, and phoenix-reduced-motion.png."
+last_synced: "2026-08-14"

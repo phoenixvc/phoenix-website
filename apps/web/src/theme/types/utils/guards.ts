@@ -15,6 +15,8 @@ export const isThemeMode = (value: unknown): value is ThemeMode => {
  */
 export const isColorScheme = (value: unknown): value is ThemeName => {
   if (typeof value !== "string") return false;
+  // Must list every ThemeName member. It previously omitted "cosmic-frontier",
+  // which made isThemeConfig reject the shipped default theme.
   return [
     "classic",
     "forest",
@@ -22,6 +24,8 @@ export const isColorScheme = (value: unknown): value is ThemeName => {
     "phoenix",
     "lavender",
     "cloud",
+    "cosmic-frontier",
+    "highveld",
   ].includes(value);
 };
 
