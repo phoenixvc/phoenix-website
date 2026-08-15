@@ -12,9 +12,9 @@ import {
   IThemeCacheService,
 } from "../types";
 import { themeValidationManager } from "../providers";
-import { LogManager } from "../managers/log-manager";
 import { ThemeTransformationManager } from "../managers/theme-transformation-manager";
 import { DEFAULT_MODE } from "../constants/tokens";
+import { logger } from "../../utils/logger";
 
 /**
  * ThemeCacheService handles caching of transformed theme data.
@@ -25,6 +25,7 @@ export class ThemeCacheService implements IThemeCacheService {
   private cache: Map<ThemeName, ThemeCacheEntry>;
   private config: ThemeCacheConfig;
   private readonly SERVICE_NAME = "ThemeCacheService";
+  private readonly log = logger.createChild(this.SERVICE_NAME);
   private themeTransformationManager: ThemeTransformationManager;
 
   /**
@@ -68,67 +69,58 @@ export class ThemeCacheService implements IThemeCacheService {
    */
   updateConfig(config: Partial<ThemeCacheConfig>): void {
     this.config = { ...this.config, ...config };
-    LogManager.log(
-      this.SERVICE_NAME,
-      "Cache configuration updated",
-      this.isLoggingEnabled(),
-    );
+    if (this.isLoggingEnabled()) {
+      this.log.info("Cache configuration updated");
+    }
   }
 
   /**
    * Get a theme from the cache if it exists and is not expired
    */
   get(name: ThemeName): ThemeColors | null {
-    const endLog = LogManager.log(
-      this.SERVICE_NAME,
-      `Getting theme: ${name}`,
-      this.isLoggingEnabled(),
-      { group: true },
-    );
+    const loggingEnabled = this.isLoggingEnabled();
+    if (loggingEnabled) {
+      this.log.group(`Getting theme: ${name}`);
+    }
 
     try {
       const entry = this.cache.get(name);
 
       if (!entry) {
-        LogManager.log(
-          this.SERVICE_NAME,
-          `Theme "${name}" not found in cache`,
-          this.isLoggingEnabled(),
-        );
+        if (this.isLoggingEnabled()) {
+          this.log.info(`Theme "${name}" not found in cache`);
+        }
         return null;
       }
 
       // Check if the entry has expired
       if (Date.now() - entry.timestamp > this.config.cacheDuration) {
-        LogManager.log(
-          this.SERVICE_NAME,
-          `Theme "${name}" has expired`,
-          this.isLoggingEnabled(),
-        );
+        if (this.isLoggingEnabled()) {
+          this.log.info(`Theme "${name}" has expired`);
+        }
         this.cache.delete(name);
         return null;
       }
 
       // Verify the theme is fully transformed
       if (!themeValidationManager.isFullyTransformed(entry.theme)) {
-        LogManager.log(
-          this.SERVICE_NAME,
-          `Theme "${name}" is not fully transformed. Removing from cache.`,
-          this.isLoggingEnabled(),
-          { warn: true },
-        );
+        if (this.isLoggingEnabled()) {
+          this.log.warn(
+            `Theme "${name}" is not fully transformed. Removing from cache.`,
+          );
+        }
         this.cache.delete(name);
         return null;
       }
 
-      LogManager.log(
-        this.SERVICE_NAME,
-        `Returning cached theme for "${name}"`,
-        this.isLoggingEnabled(),
-      );
+      if (this.isLoggingEnabled()) {
+        this.log.info(`Returning cached theme for "${name}"`);
+      }
       return entry.theme;
     } finally {
-      endLog();
+      if (loggingEnabled) {
+        this.log.groupEnd();
+      }
     }
   }
 
@@ -189,12 +181,10 @@ export class ThemeCacheService implements IThemeCacheService {
     semantic?: SemanticColors,
     source: ThemeCacheSource = "registered",
   ): ThemeColors {
-    const endLog = LogManager.log(
-      this.SERVICE_NAME,
-      `Setting theme: ${name}`,
-      this.isLoggingEnabled(),
-      { group: true },
-    );
+    const loggingEnabled = this.isLoggingEnabled();
+    if (loggingEnabled) {
+      this.log.group(`Setting theme: ${name}`);
+    }
 
     try {
       // Transform the theme using our helper method
@@ -202,32 +192,24 @@ export class ThemeCacheService implements IThemeCacheService {
       try {
         transformedTheme = this.transformThemeWithMode(themeData, semantic);
       } catch (error) {
-        LogManager.log(
-          this.SERVICE_NAME,
-          `Theme transformation failed for "${name}":`,
-          this.isLoggingEnabled(),
-          { warn: true },
-        );
-        console.error(error);
+        if (this.isLoggingEnabled()) {
+          this.log.warn(`Theme transformation failed for "${name}":`);
+        }
+        this.log.error(error);
         throw error;
       }
 
       // Validate the transformed theme
       try {
-        LogManager.log(
-          this.SERVICE_NAME,
-          `Validating transformed theme for "${name}"`,
-          this.isLoggingEnabled(),
-        );
+        if (this.isLoggingEnabled()) {
+          this.log.info(`Validating transformed theme for "${name}"`);
+        }
         themeValidationManager.validateProcessedTheme(transformedTheme);
       } catch (error) {
-        LogManager.log(
-          this.SERVICE_NAME,
-          `Theme validation failed for "${name}":`,
-          this.isLoggingEnabled(),
-          { warn: true },
-        );
-        console.error(error);
+        if (this.isLoggingEnabled()) {
+          this.log.warn(`Theme validation failed for "${name}":`);
+        }
+        this.log.error(error);
         throw error;
       }
 
@@ -242,11 +224,9 @@ export class ThemeCacheService implements IThemeCacheService {
         )[0];
 
         if (oldestEntry) {
-          LogManager.log(
-            this.SERVICE_NAME,
-            `Cache full, removing oldest entry: ${oldestEntry[0]}`,
-            this.isLoggingEnabled(),
-          );
+          if (this.isLoggingEnabled()) {
+            this.log.info(`Cache full, removing oldest entry: ${oldestEntry[0]}`);
+          }
           this.cache.delete(oldestEntry[0]);
         }
       }
@@ -258,14 +238,14 @@ export class ThemeCacheService implements IThemeCacheService {
         source,
       });
 
-      LogManager.log(
-        this.SERVICE_NAME,
-        `Theme "${name}" successfully cached`,
-        this.isLoggingEnabled(),
-      );
+      if (this.isLoggingEnabled()) {
+        this.log.info(`Theme "${name}" successfully cached`);
+      }
       return transformedTheme;
     } finally {
-      endLog();
+      if (loggingEnabled) {
+        this.log.groupEnd();
+      }
     }
   }
 
@@ -302,18 +282,14 @@ export class ThemeCacheService implements IThemeCacheService {
   clear(name?: ThemeName): void {
     if (name) {
       this.cache.delete(name);
-      LogManager.log(
-        this.SERVICE_NAME,
-        `Cleared theme "${name}" from cache`,
-        this.isLoggingEnabled(),
-      );
+      if (this.isLoggingEnabled()) {
+        this.log.info(`Cleared theme "${name}" from cache`);
+      }
     } else {
       this.cache.clear();
-      LogManager.log(
-        this.SERVICE_NAME,
-        "Cleared entire theme cache",
-        this.isLoggingEnabled(),
-      );
+      if (this.isLoggingEnabled()) {
+        this.log.info("Cleared entire theme cache");
+      }
     }
   }
 
