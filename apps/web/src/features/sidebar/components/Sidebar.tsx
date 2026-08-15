@@ -1,5 +1,6 @@
 // components/Layout/Sidebar/Sidebar.tsx
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import styles from "../styles/sidebar.module.css";
 import { SidebarProps } from "../types";
@@ -15,36 +16,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCollapse,
   mode: _mode = "dark",
 }): React.ReactElement | null => {
-  const [currentPath, setCurrentPath] = useState("");
-
-  useEffect(() => {
-    const updateCurrentPath = (): void => {
-      const pathname = window.location.pathname;
-      const hash = window.location.hash;
-
-      // For homepage with hash
-      if (pathname === "/" && hash) {
-        setCurrentPath(pathname + hash);
-      }
-      // For homepage without hash
-      else if (pathname === "/" && !hash) {
-        setCurrentPath(pathname);
-      }
-      // For other pages
-      else {
-        setCurrentPath(pathname);
-      }
-    };
-
-    updateCurrentPath();
-    window.addEventListener("popstate", updateCurrentPath);
-    window.addEventListener("hashchange", updateCurrentPath);
-
-    return (): void => {
-      window.removeEventListener("popstate", updateCurrentPath);
-      window.removeEventListener("hashchange", updateCurrentPath);
-    };
-  }, []);
+  const location = useLocation();
+  const currentPath = location.hash
+    ? `${location.pathname}${location.hash}`
+    : location.pathname;
 
   // Don't render if closed on mobile
   if (isMobile && !isOpen) return null;
@@ -110,16 +85,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
             <nav className={styles.sidebarNav}>
               {group.items.map((item) => (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   className={`${styles.sidebarLink} ${
                     isLinkActive(item.href) ? styles.sidebarLinkActive : ""
                   }`}
                 >
                   <span className={styles.sidebarIcon}>{item.icon}</span>
                   <span className={styles.sidebarLabel}>{item.label}</span>
-                </a>
+                </Link>
               ))}
             </nav>
           </div>

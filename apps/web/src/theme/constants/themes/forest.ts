@@ -1,133 +1,90 @@
-import {
-  ComponentVariants,
-  Theme,
-  ThemeBorders,
-  ThemeBreakpoints,
-  ThemeColors,
-  ThemeConfig,
-  ThemeScheme,
-  ThemeShadows,
-  ThemeSpacing,
-  ThemeTransitions,
-  ThemeTypography,
-  ThemeVariables,
-  ThemeZIndex,
-} from "@/theme/types";
+import { Theme, ThemeColors, ThemeScheme } from "@/theme/types";
+import { createTheme } from "@/theme/core/theme";
 import ColorUtils from "@/theme/utils/color-utils";
 import { createColor, grayPalette, greenPalette, redPalette } from "./colors";
-import tealPalette from "./colors/teal";
 import yellowPalette from "./colors/yellow";
-import { defaultTheme } from "./default";
-
-// Type assertion for defaultTheme to make its properties accessible
-const typedDefaultTheme = defaultTheme as Omit<Theme, "colors"> & {
-  typography: ThemeTypography;
-  spacing: ThemeSpacing;
-  borders: ThemeBorders;
-  shadows: ThemeShadows;
-  breakpoints: ThemeBreakpoints;
-  transitions: ThemeTransitions;
-  zIndex: ThemeZIndex;
-  variables: ThemeVariables;
-  components: ComponentVariants;
-  config: ThemeConfig;
-};
 
 /**
- * Forest Theme Color Scheme
- * A natural, earthy color scheme based on green tones
+ * Forest is the second complete environmental theme. Renderer code stays in
+ * the trusted environment registry; this object remains serializable theme
+ * data for the provider, persistence, and designer surfaces.
  */
 export const forestColorScheme: ThemeScheme = {
   base: {
     primary: greenPalette,
-    secondary: tealPalette,
-    accent: ColorUtils.createColorShades("#059669"),
+    secondary: ColorUtils.createColorShades("#8B6B4A"),
+    accent: ColorUtils.createColorShades("#D4A017"),
     neutral: grayPalette,
     gray: grayPalette,
   },
   light: {
-    background: createColor("#FFFFFF"),
+    background: createColor("#F3F7F0"),
     text: {
-      primary: createColor("#1E293B"),
-      secondary: createColor("#64748B"),
+      primary: createColor("#1A2E20"),
+      secondary: createColor("#4A6352"),
     },
-    muted: createColor("#64748B"),
-    border: createColor("#E2E8F0"),
-    surface: createColor("#F8FAFC"),
-    overlay: createColor("rgba(0, 0, 0, 0.5)"),
-    hover: createColor("rgba(20, 83, 45, 0.04)"),
-    active: createColor("rgba(20, 83, 45, 0.08)"),
-    focus: createColor("rgba(5, 150, 105, 0.5)"),
-    disabled: createColor("rgba(0, 0, 0, 0.26)"),
+    muted: createColor("#6B8574"),
+    border: createColor("#D4E0D2"),
+    surface: createColor("#FFFFFF"),
+    overlay: createColor("#1A2E20"),
+    hover: createColor("#E8F2E6"),
+    active: createColor("#D8EBD4"),
+    focus: createColor("#C9A227"),
+    disabled: createColor("#A8B8AC"),
   },
   dark: {
-    background: createColor("#0F172A"),
+    background: createColor("#0A1610"),
     text: {
-      primary: createColor("#F8FAFC"),
-      secondary: createColor("#94A3B8"),
+      primary: createColor("#E8F0E4"),
+      secondary: createColor("#A8BFA8"),
     },
-    muted: createColor("#94A3B8"),
-    border: createColor("#334155"),
-    surface: createColor("#1E293B"),
-    overlay: createColor("rgba(0, 0, 0, 0.7)"),
-    hover: createColor("rgba(255, 255, 255, 0.08)"),
-    active: createColor("rgba(255, 255, 255, 0.16)"),
-    focus: createColor("rgba(5, 150, 105, 0.6)"),
-    disabled: createColor("rgba(255, 255, 255, 0.3)"),
+    muted: createColor("#7F9A84"),
+    border: createColor("#2A4030"),
+    surface: createColor("#14241A"),
+    overlay: createColor("#040A07"),
+    hover: createColor("#1A3324"),
+    active: createColor("#23402C"),
+    focus: createColor("#E8C547"),
+    disabled: createColor("#55685A"),
   },
 };
 
-/**
- * Forest Theme Colors
- */
 export const forestColors: ThemeColors = {
-  schemes: {
-    default: forestColorScheme,
-  },
+  schemes: { forest: forestColorScheme },
   semantic: {
     success: createColor(greenPalette[600].hex),
     warning: createColor(yellowPalette[500].hex),
     error: createColor(redPalette[500].hex),
-    info: createColor(tealPalette[400].hex),
+    info: createColor("#3F8F5A"),
   },
 };
 
-/**
- * Forest Theme
- * A natural, earthy theme with a focus on green tones,
- * creating a calm and organic aesthetic.
- */
-export const forestTheme: Theme = {
-  ...typedDefaultTheme,
-  colors: forestColors,
-  typography: {
-    fontFamily: {
-      base: "\"Noto Sans\", system-ui, sans-serif",
-      heading: "\"Bitter\", serif",
-      monospace: "\"Fira Code\", monospace",
-    },
-    fontSize: typedDefaultTheme.typography.fontSize,
-    fontWeight: typedDefaultTheme.typography.fontWeight,
-    lineHeight: typedDefaultTheme.typography.lineHeight,
-    letterSpacing: typedDefaultTheme.typography.letterSpacing,
+const forestBaseTheme = createTheme(
+  {
+    name: "Forest",
+    themeName: "forest",
+    mode: "dark",
+    useSystem: false,
+    version: "1.0.0",
   },
-  borders: {
-    radius: {
-      none: typedDefaultTheme.borders.radius.none,
-      sm: typedDefaultTheme.borders.radius.sm,
-      md: "0.375rem",
-      lg: typedDefaultTheme.borders.radius.lg,
-      full: typedDefaultTheme.borders.radius.full,
+  forestColors,
+);
+
+export const forestTheme: Theme = {
+  ...forestBaseTheme,
+  typography: {
+    ...forestBaseTheme.typography,
+    fontFamily: {
+      base: "'Noto Sans', system-ui, sans-serif",
+      heading: "'Bitter', serif",
+      monospace: "'Fira Code', monospace",
     },
-    width: typedDefaultTheme.borders.width,
-    style: typedDefaultTheme.borders.style,
   },
   shadows: {
-    none: typedDefaultTheme.shadows.none,
-    sm: typedDefaultTheme.shadows.sm,
-    md: "0 4px 12px rgba(5, 150, 105, 0.15)",
-    lg: "0 10px 25px rgba(5, 150, 105, 0.2)",
-    xl: typedDefaultTheme.shadows.xl,
+    ...forestBaseTheme.shadows,
+    md: "0 8px 24px rgba(15, 36, 24, 0.22)",
+    lg: "0 16px 40px rgba(10, 22, 16, 0.32)",
+    xl: "0 28px 72px rgba(4, 10, 7, 0.48)",
   },
 };
 

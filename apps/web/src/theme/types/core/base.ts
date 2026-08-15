@@ -15,7 +15,8 @@ export type ThemeName =
   | "phoenix"
   | "lavender"
   | "cloud"
-  | "cosmic-frontier";
+  | "cosmic-frontier"
+  | "highveld";
 export type ThemeMode = "light" | "dark";
 
 /**

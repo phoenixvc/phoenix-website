@@ -7,27 +7,24 @@
   z-index: 1000 !important; /* High z-index to ensure it's above the starfield */
   transition: all 0.3s ease;
   height: 70px;
-  background-color: rgba(
-    13,
-    14,
-    30,
-    0.92
+  background-color: hsl(
+    var(--color-background) / 0.92
   ); /* Increased opacity for better text visibility */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(99, 123, 255, 0.15); /* Slightly more visible border */
+  border-bottom: 1px solid hsl(var(--color-primary) / 0.15); /* Slightly more visible border */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Stronger shadow for depth */
   pointer-events: auto !important; /* Ensure it captures mouse events */
 }
 
 /* Transparent header when scrolled */
 .headerScrolled {
-  background-color: rgba(13, 14, 30, 0.75);
+  background-color: hsl(var(--color-background) / 0.75);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.15),
-    0 0 10px rgba(99, 123, 255, 0.05); /* Added subtle blue glow */
+    0 0 10px hsl(var(--color-primary) / 0.05); /* Added subtle blue glow */
 }
 
 .headerContainer {
@@ -50,7 +47,7 @@
 .menuButton {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8); /* Increased visibility */
+  color: hsl(var(--color-text) / 0.85);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 0.25rem;
@@ -62,7 +59,7 @@
 
 .menuButton:hover {
   color: rgba(255, 255, 255, 1);
-  background-color: rgba(147, 51, 234, 0.2); /* Phoenix purple glow on hover */
+  background-color: hsl(var(--color-primary) / 0.2);
 }
 
 .logoContainer {
@@ -82,15 +79,11 @@
 .header .logoText {
   font-size: 1.25rem;
   font-weight: 700;
-  background: linear-gradient(
-    90deg,
-    #9333ea 0%,
-    #ff6b00 100%
-  ); /* Magenta to purple gradient */
+  background: var(--chrome-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  text-shadow: 0 0 10px rgba(147, 51, 234, 0.3); /* Subtle glow effect */
+  text-shadow: 0 0 10px hsl(var(--color-primary) / 0.3); /* Subtle glow effect */
   letter-spacing: 0.5px;
 }
 
@@ -114,7 +107,7 @@
 }
 
 .navLink {
-  color: rgba(255, 255, 255, 0.8); /* Increased visibility */
+  color: hsl(var(--color-text) / 0.85);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -140,9 +133,9 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #9333ea, #ff6b00); /* Phoenix gradient */
+  background: var(--chrome-gradient); /* Phoenix gradient */
   border-radius: 1px;
-  box-shadow: 0 0 8px rgba(147, 51, 234, 0.5); /* Subtle glow */
+  box-shadow: 0 0 8px hsl(var(--color-primary) / 0.5); /* Subtle glow */
 }
 
 .themeToggle {
@@ -153,7 +146,7 @@
 .themeToggleButton {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8); /* Increased visibility */
+  color: hsl(var(--color-text) / 0.85);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 0.25rem;
@@ -165,69 +158,63 @@
 
 .themeToggleButton:hover {
   color: rgba(255, 255, 255, 1);
-  background-color: rgba(147, 51, 234, 0.2); /* Phoenix purple glow on hover */
+  background-color: hsl(var(--color-primary) / 0.2);
 }
 
 /* Light mode header styles - UPDATED FOR BETTER TEXT VISIBILITY */
 .header.lightMode {
-  background-color: rgba(
-    252,
-    253,
-    255,
-    0.95
-  ); /* Higher opacity for better text contrast */
-  border-bottom: 1px solid rgba(99, 123, 255, 0.12);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Slightly stronger shadow */
+  background-color: hsl(var(--color-background) / 0.95);
+  border-bottom: 1px solid hsl(var(--color-primary) / 0.12);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .headerScrolled.lightMode {
-  background-color: rgba(
-    252,
-    253,
-    255,
-    0.7
-  ); /* Even more transparent when scrolled */
+  background-color: hsl(var(--color-background) / 0.7);
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.04),
-    0 0 10px rgba(99, 123, 255, 0.02);
+    0 0 10px hsl(var(--color-primary) / 0.02);
 }
 
 .lightMode .menuButton,
 .lightMode .themeToggleButton {
-  color: rgba(13, 14, 30, 0.7); /* Slightly lighter text */
+  color: hsl(var(--color-text) / 0.7); /* Slightly lighter text */
 }
 
 .lightMode .menuButton:hover,
 .lightMode .themeToggleButton:hover {
-  color: rgba(13, 14, 30, 0.9);
-  background-color: rgba(147, 51, 234, 0.08); /* More subtle hover effect */
+  color: hsl(var(--color-text) / 0.9);
+  background-color: hsl(
+    var(--color-primary) / 0.08
+  ); /* More subtle hover effect */
 }
 
 .lightMode .logoText,
 .header.lightMode .logoText {
-  background: linear-gradient(90deg, #9333ea 0%, #ff6b00 100%);
+  background: var(--chrome-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 8px rgba(147, 51, 234, 0.2); /* Reduced glow for light mode */
+  text-shadow: 0 0 8px hsl(var(--color-primary) / 0.2); /* Reduced glow for light mode */
 }
 
 .lightMode .navLink {
-  color: rgba(13, 14, 30, 0.85); /* Improved contrast for better visibility */
+  color: hsl(
+    var(--color-text) / 0.85
+  ); /* Improved contrast for better visibility */
 }
 
 .lightMode .navLink:hover {
-  color: rgba(13, 14, 30, 1);
+  color: hsl(var(--color-text) / 1);
   text-shadow: none;
 }
 
 .lightMode .activeNavLink {
-  color: #13141f;
+  color: hsl(var(--color-text));
   font-weight: 600;
 }
 
 .lightMode .activeNavLink::after {
-  box-shadow: 0 0 8px rgba(147, 51, 234, 0.3); /* Reduced glow for light mode */
+  box-shadow: 0 0 8px hsl(var(--color-primary) / 0.3); /* Reduced glow for light mode */
 }
 
 @media (max-width: 768px) {
@@ -240,27 +227,24 @@
     z-index: 1000 !important; /* High z-index to ensure it's above the starfield */
     transition: all 0.3s ease;
     height: 70px;
-    background-color: rgba(
-      13,
-      14,
-      30,
-      0.85
+    background-color: hsl(
+      var(--color-background) / 0.85
     ); /* Darker, more saturated with less opacity */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(99, 123, 255, 0.1); /* Subtle blue glow border */
+    border-bottom: 1px solid hsl(var(--color-primary) / 0.1); /* Subtle blue glow border */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
     pointer-events: auto !important; /* Ensure it captures mouse events */
   }
 
   /* Transparent header when scrolled */
   .headerScrolled {
-    background-color: rgba(13, 14, 30, 0.75);
+    background-color: hsl(var(--color-background) / 0.75);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     box-shadow:
       0 4px 20px rgba(0, 0, 0, 0.15),
-      0 0 10px rgba(99, 123, 255, 0.05); /* Added subtle blue glow */
+      0 0 10px hsl(var(--color-primary) / 0.05); /* Added subtle blue glow */
   }
 
   .headerContainer {
@@ -282,7 +266,7 @@
   .menuButton {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.8); /* Increased visibility */
+    color: hsl(var(--color-text) / 0.85);
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 0.25rem;
@@ -294,12 +278,7 @@
 
   .menuButton:hover {
     color: rgba(255, 255, 255, 1);
-    background-color: rgba(
-      147,
-      51,
-      234,
-      0.2
-    ); /* Phoenix purple glow on hover */
+    background-color: hsl(var(--color-primary) / 0.2);
   }
 
   .logoContainer {
@@ -314,12 +293,12 @@
     background: linear-gradient(
       90deg,
       #fff 30%,
-      #ff6b00 100%
+      hsl(var(--color-accent)) 100%
     ); /* Phoenix orange gradient */
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    text-shadow: 0 0 15px rgba(255, 107, 0, 0.3); /* Subtle glow effect */
+    text-shadow: 0 0 15px hsl(var(--color-accent) / 0.3);
   }
 
   .nav {
@@ -340,7 +319,7 @@
   }
 
   .navLink {
-    color: rgba(255, 255, 255, 0.8); /* Increased visibility */
+    color: hsl(var(--color-text) / 0.85);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
@@ -366,9 +345,9 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, #9333ea, #ff6b00); /* Phoenix gradient */
+    background: var(--chrome-gradient); /* Phoenix gradient */
     border-radius: 1px;
-    box-shadow: 0 0 8px rgba(147, 51, 234, 0.5); /* Subtle glow */
+    box-shadow: 0 0 8px hsl(var(--color-primary) / 0.5); /* Subtle glow */
   }
 
   .themeToggle {
@@ -379,7 +358,7 @@
   .themeToggleButton {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.8); /* Increased visibility */
+    color: hsl(var(--color-text) / 0.85);
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 0.25rem;
@@ -391,12 +370,7 @@
 
   .themeToggleButton:hover {
     color: rgba(255, 255, 255, 1);
-    background-color: rgba(
-      147,
-      51,
-      234,
-      0.2
-    ); /* Phoenix purple glow on hover */
+    background-color: hsl(var(--color-primary) / 0.2);
   }
 
   /* Light mode header styles - UPDATED FOR LIGHTER APPEARANCE */
@@ -407,7 +381,7 @@
       255,
       0.8
     ); /* Much lighter, almost white background */
-    border-bottom: 1px solid rgba(99, 123, 255, 0.08);
+    border-bottom: 1px solid hsl(var(--color-primary) / 0.08);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Lighter shadow */
   }
 
@@ -420,43 +394,49 @@
     ); /* Even more transparent when scrolled */
     box-shadow:
       0 4px 20px rgba(0, 0, 0, 0.04),
-      0 0 10px rgba(99, 123, 255, 0.02);
+      0 0 10px hsl(var(--color-primary) / 0.02);
   }
 
   .lightMode .menuButton,
   .lightMode .themeToggleButton {
-    color: rgba(13, 14, 30, 0.7); /* Slightly lighter text */
+    color: hsl(var(--color-text) / 0.7); /* Slightly lighter text */
   }
 
   .lightMode .menuButton:hover,
   .lightMode .themeToggleButton:hover {
-    color: rgba(13, 14, 30, 0.9);
-    background-color: rgba(147, 51, 234, 0.08); /* More subtle hover effect */
+    color: hsl(var(--color-text) / 0.9);
+    background-color: hsl(
+      var(--color-primary) / 0.08
+    ); /* More subtle hover effect */
   }
 
   .lightMode .logoText {
-    background: linear-gradient(90deg, #9333ea 30%, #ff6b00 100%);
+    background: linear-gradient(
+      90deg,
+      hsl(var(--color-primary)) 30%,
+      hsl(var(--color-accent)) 100%
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 0 15px rgba(255, 107, 0, 0.15); /* Reduced glow */
+    text-shadow: 0 0 15px hsl(var(--color-accent) / 0.15);
   }
 
   .lightMode .navLink {
-    color: rgba(13, 14, 30, 0.7); /* Lighter text */
+    color: hsl(var(--color-text) / 0.7); /* Lighter text */
   }
 
   .lightMode .navLink:hover {
-    color: rgba(13, 14, 30, 0.9);
+    color: hsl(var(--color-text) / 0.9);
     text-shadow: none;
   }
 
   .lightMode .activeNavLink {
-    color: #13141f;
+    color: hsl(var(--color-text));
   }
 
   .lightMode .activeNavLink::after {
-    box-shadow: 0 0 8px rgba(147, 51, 234, 0.3); /* Reduced glow for light mode */
+    box-shadow: 0 0 8px hsl(var(--color-primary) / 0.3); /* Reduced glow for light mode */
   }
 
   @media (max-width: 768px) {
@@ -499,8 +479,8 @@
   }
 
   .iconButton.active {
-    color: #8a2be2;
-    background-color: rgba(138, 43, 226, 0.15);
+    color: hsl(var(--color-primary));
+    background-color: hsl(var(--color-primary) / 0.15);
   }
 }
 
@@ -532,7 +512,7 @@
 }
 
 .activeControl {
-  background-color: rgba(138, 43, 226, 0.2);
+  background-color: hsl(var(--color-primary) / 0.2);
   color: var(--primary-color);
 }
 
@@ -592,7 +572,7 @@
 }
 
 .profileButton.active {
-  background-color: rgba(147, 51, 234, 0.2);
+  background-color: hsl(var(--color-primary) / 0.2);
 }
 
 .lightMode .profileButton:hover {
@@ -600,7 +580,7 @@
 }
 
 .lightMode .profileButton.active {
-  background-color: rgba(147, 51, 234, 0.1);
+  background-color: hsl(var(--color-primary) / 0.1);
 }
 
 .profileImageContainer {
@@ -608,8 +588,8 @@
   height: 32px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid rgba(147, 51, 234, 0.6);
-  box-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+  border: 2px solid hsl(var(--color-primary) / 0.6);
+  box-shadow: 0 0 10px hsl(var(--color-primary) / 0.3);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -617,13 +597,17 @@
 }
 
 .profileButton:hover .profileImageContainer {
-  box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
+  box-shadow: 0 0 15px hsl(var(--color-primary) / 0.5);
 }
 
 .profileImage {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #9333ea, #9333ea);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary)),
+    hsl(var(--color-primary))
+  );
   background-size: cover;
   background-position: center;
   display: flex;
@@ -637,7 +621,7 @@
 }
 
 .lightMode .dropdownIcon {
-  color: rgba(13, 14, 30, 0.7);
+  color: hsl(var(--color-text) / 0.7);
 }
 
 .dropdownIcon.open {
@@ -650,12 +634,12 @@
   top: calc(100% + 8px);
   right: 0;
   min-width: 260px;
-  background-color: rgba(20, 18, 40, 0.95);
+  background-color: hsl(var(--color-background) / 0.95);
   border-radius: 8px;
   box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.3),
-    0 0 15px rgba(147, 51, 234, 0.15);
-  border: 1px solid rgba(147, 51, 234, 0.2);
+    0 0 15px hsl(var(--color-primary) / 0.15);
+  border: 1px solid hsl(var(--color-primary) / 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
@@ -667,8 +651,8 @@
   background-color: rgba(252, 253, 255, 0.95);
   box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 0 15px rgba(147, 51, 234, 0.1);
-  border: 1px solid rgba(147, 51, 234, 0.15);
+    0 0 15px hsl(var(--color-primary) / 0.1);
+  border: 1px solid hsl(var(--color-primary) / 0.15);
 }
 
 @keyframes fadeIn {
@@ -693,9 +677,13 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #9333ea, #9333ea);
-  border: 2px solid rgba(147, 51, 234, 0.6);
-  box-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-primary)),
+    hsl(var(--color-primary))
+  );
+  border: 2px solid hsl(var(--color-primary) / 0.6);
+  box-shadow: 0 0 10px hsl(var(--color-primary) / 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -722,7 +710,7 @@
 }
 
 .lightMode .profileName {
-  color: rgba(13, 14, 30, 0.9);
+  color: hsl(var(--color-text) / 0.9);
 }
 
 .profileEmail {
@@ -731,16 +719,16 @@
 }
 
 .lightMode .profileEmail {
-  color: rgba(13, 14, 30, 0.6);
+  color: hsl(var(--color-text) / 0.6);
 }
 
 .dropdownDivider {
   height: 1px;
   background: linear-gradient(
     90deg,
-    rgba(147, 51, 234, 0.1),
-    rgba(147, 51, 234, 0.3) 50%,
-    rgba(147, 51, 234, 0.1)
+    hsl(var(--color-primary) / 0.1),
+    hsl(var(--color-primary) / 0.3) 50%,
+    hsl(var(--color-primary) / 0.1)
   );
   margin: 0;
 }
@@ -762,21 +750,21 @@
 }
 
 .lightMode .dropdownItem {
-  color: rgba(13, 14, 30, 0.8);
+  color: hsl(var(--color-text) / 0.8);
 }
 
 .dropdownItem:hover {
-  background-color: rgba(147, 51, 234, 0.1);
+  background-color: hsl(var(--color-primary) / 0.1);
   color: rgba(255, 255, 255, 1);
 }
 
 .lightMode .dropdownItem:hover {
-  background-color: rgba(147, 51, 234, 0.05);
-  color: rgba(13, 14, 30, 1);
+  background-color: hsl(var(--color-primary) / 0.05);
+  color: hsl(var(--color-text) / 1);
 }
 
 .dropdownItemIcon {
-  color: rgba(147, 51, 234, 0.8);
+  color: hsl(var(--color-primary) / 0.8);
 }
 
 .dropdownItemChevron {
@@ -791,8 +779,8 @@
 /* Theme Submenu */
 .themeSubmenu {
   padding: 8px;
-  background-color: rgba(13, 14, 30, 0.5);
-  border-top: 1px solid rgba(147, 51, 234, 0.1);
+  background-color: hsl(var(--color-background) / 0.5);
+  border-top: 1px solid hsl(var(--color-primary) / 0.1);
   animation: fadeIn 0.2s ease;
 }
 
@@ -818,17 +806,17 @@
 }
 
 .lightMode .themeOption {
-  color: rgba(13, 14, 30, 0.8);
+  color: hsl(var(--color-text) / 0.8);
 }
 
 .themeOption:not(:disabled):hover {
-  background-color: rgba(147, 51, 234, 0.1);
+  background-color: hsl(var(--color-primary) / 0.1);
   color: rgba(255, 255, 255, 1);
 }
 
 .lightMode .themeOption:not(:disabled):hover {
-  background-color: rgba(147, 51, 234, 0.05);
-  color: rgba(13, 14, 30, 1);
+  background-color: hsl(var(--color-primary) / 0.05);
+  color: hsl(var(--color-text) / 1);
 }
 
 .themeOption:disabled {
@@ -836,13 +824,13 @@
 }
 
 .activeTheme {
-  background-color: rgba(147, 51, 234, 0.15);
+  background-color: hsl(var(--color-primary) / 0.15);
   color: rgba(255, 255, 255, 1);
 }
 
 .lightMode .activeTheme {
-  background-color: rgba(147, 51, 234, 0.08);
-  color: rgba(13, 14, 30, 1);
+  background-color: hsl(var(--color-primary) / 0.08);
+  color: hsl(var(--color-text) / 1);
 }
 
 .themeColorIndicator {
@@ -858,7 +846,7 @@
 
 /* Theme color indicators */
 .themeColorIndicator[data-theme="classic"] {
-  background: linear-gradient(135deg, #3b3663, #1e1a42);
+  background: linear-gradient(135deg, #6c757d, #212529);
 }
 
 .themeColorIndicator[data-theme="cosmic-frontier"] {
@@ -869,8 +857,9 @@
   background: linear-gradient(135deg, #00ffcc, #0077ff);
 }
 
-.themeColorIndicator[data-theme="forest-calm"] {
-  background: linear-gradient(135deg, #4caf50, #1b5e20);
+.themeColorIndicator[data-theme="forest-calm"],
+.themeColorIndicator[data-theme="forest"] {
+  background: linear-gradient(135deg, #3f8f5a, #0a1610);
 }
 
 .themeColorIndicator[data-theme="ocean-depths"] {
@@ -880,15 +869,15 @@
 .comingSoonBadge {
   font-size: 0.7rem;
   padding: 2px 6px;
-  background-color: rgba(147, 51, 234, 0.2);
+  background-color: hsl(var(--color-primary) / 0.2);
   border-radius: 10px;
   margin-left: auto;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .lightMode .comingSoonBadge {
-  background-color: rgba(147, 51, 234, 0.1);
-  color: rgba(13, 14, 30, 0.7);
+  background-color: hsl(var(--color-primary) / 0.1);
+  color: hsl(var(--color-text) / 0.7);
 }
 
 /* Responsive adjustments */

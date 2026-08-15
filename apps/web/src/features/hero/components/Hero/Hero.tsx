@@ -38,7 +38,7 @@ const Hero: FC<ExtendedHeroProps> = memo(
     enableMouseTracking = false,
     sidebarWidth = 0,
   }): React.ReactElement => {
-    const { themeMode } = useTheme();
+    const { themeMode, themeName } = useTheme();
     const isDarkMode = themeMode === "dark";
     const sectionRef = useSectionObserver("home", (id) => {
       logger.debug(`[Home] Section "${id}" is now visible`);
@@ -127,11 +127,13 @@ const Hero: FC<ExtendedHeroProps> = memo(
       const textColor = isDarkMode ? "text-white" : "text-gray-900";
       const gradientColors = accentColor
         ? `from-${accentColor} to-${accentColor}`
-        : colorScheme === "purple"
-          ? "from-purple-500 to-indigo-600"
-          : colorScheme === "blue"
-            ? "from-blue-500 to-cyan-600"
-            : "from-purple-500 to-indigo-600";
+        : themeName === "forest"
+          ? "from-emerald-600 to-amber-500"
+          : colorScheme === "purple"
+            ? "from-purple-500 to-indigo-600"
+            : colorScheme === "blue"
+              ? "from-blue-500 to-cyan-600"
+              : "from-purple-500 to-indigo-600";
       return { textColor, gradientColors };
     };
 
@@ -374,7 +376,7 @@ const Hero: FC<ExtendedHeroProps> = memo(
                 y: { repeat: Infinity, duration: 1.5 },
               }}
               style={{
-                left: `calc(50% + ${sidebarWidth / 2}px)`
+                left: `calc(50% + ${sidebarWidth / 2}px)`,
               }}
               onClick={() => scrollTo("focus-areas")}
               aria-label="Scroll to explore content"

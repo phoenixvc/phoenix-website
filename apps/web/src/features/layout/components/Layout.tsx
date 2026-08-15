@@ -1,15 +1,21 @@
 // components/Layout/Layout.tsx
 import { Sidebar } from "@/features/sidebar/components/Sidebar";
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Footer } from "./Footer/Footer";
 import Header from "./Header/Header";
 import styles from "./layout.module.css";
 import { type StarfieldRef } from "./Starfield/Starfield";
-import { ThemeEnvironment, type EnvironmentFixture } from "./ThemeEnvironment";
+import {
+  ThemeEnvironment,
+  resolveEnvironmentFixture,
+  type EnvironmentFixture,
+} from "./ThemeEnvironment";
 import { CosmicNavigationState, Star } from "./Starfield/types";
 import { logger } from "@/utils/logger";
 import Disclaimer from "@/components/ui/Disclaimer";
 import { useTheme } from "@/theme";
+import { isAvailableThemeName } from "@/theme/constants/themes/catalog";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -31,8 +37,9 @@ const loadDebugModeFromStorage = (): boolean => {
 
 const Layout = ({ children }: LayoutProps): React.ReactElement => {
   // Use theme context for dark mode - defaults to dark, only light if user explicitly chose it
-  const { themeName, themeMode, toggleMode } = useTheme();
+  const { themeName, themeMode, toggleMode, setThemeName } = useTheme();
   const isDarkMode = themeMode === "dark";
+  const location = useLocation();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -55,18 +62,17 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
 
   // Create a ref to the starfield component
   const starfieldRef = useRef<StarfieldRef>(null);
-  const environmentFixture: EnvironmentFixture | undefined =
-    import.meta.env.DEV &&
-    new URLSearchParams(window.location.search).get("cosmic-fixture") ===
-      "static"
-      ? {
-          seed: 20260809,
-          timeMs: 12000,
-          qualityTier: "low",
-          motionMode: "reduced",
-          paused: true,
-        }
-      : undefined;
+  const environmentFixture: EnvironmentFixture | undefined = import.meta.env
+    .DEV
+    ? resolveEnvironmentFixture(location.search, themeName)
+    : undefined;
+
+  useEffect(() => {
+    const requested = new URLSearchParams(location.search).get("theme");
+    if (requested && isAvailableThemeName(requested)) {
+      setThemeName(requested);
+    }
+  }, [location.search, setThemeName]);
 
   // Check if we're on mobile on mount and when window resizes
   useEffect(() => {
@@ -227,7 +233,7 @@ const Layout = ({ children }: LayoutProps): React.ReactElement => {
       </a>
 
       <ThemeEnvironment
-        key={`environment-${themeName}-${isDarkMode}-${sidebarWidth}-${gameMode}`}
+        key={`environment-${themeName}-${isDarkMode}`}
         ref={starfieldRef}
         themeName={themeName}
         sidebarWidth={sidebarWidth}

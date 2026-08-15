@@ -1,0 +1,200 @@
+.wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.canopy {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.nearBranch {
+  fill: var(--forest-canopy, #0f2418);
+  opacity: 0.72;
+}
+
+.fern {
+  fill: #245536;
+  opacity: 0.45;
+}
+
+.vine {
+  fill: none;
+  stroke: var(--forest-vine, #245536);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 0;
+}
+
+.moss {
+  fill: var(--forest-moss, #3f8f5a);
+  opacity: 0.35;
+}
+
+.spark {
+  fill: #e8c547;
+  opacity: 0.7;
+}
+
+.wrapper[data-mode="light"] .nearBranch {
+  fill: #2f5a38;
+}
+
+.wrapper[data-mode="light"] .vine,
+.wrapper[data-mode="light"] .fern {
+  stroke: #4c7a4a;
+  fill: #4c7a4a;
+}
+
+.sway {
+  transform-origin: 1200px 0;
+  animation: canopy-sway 9s ease-in-out infinite;
+}
+
+.swaySlow {
+  transform-origin: 200px 0;
+  animation: canopy-sway 13s ease-in-out infinite reverse;
+}
+
+.grow {
+  animation: vine-grow 8s ease-out both;
+}
+
+.growDelayed {
+  animation: vine-grow 11s ease-out both;
+}
+
+.pulse {
+  animation: moss-pulse 3.4s ease-in-out infinite;
+}
+
+.drift {
+  animation: spark-drift 7s ease-in-out infinite;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 4;
+  max-width: 240px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.7rem;
+  background: rgba(10, 22, 16, 0.88);
+  color: #e8f0e4;
+  border: 1px solid rgba(232, 197, 71, 0.28);
+  box-shadow: 0 10px 28px rgba(4, 10, 7, 0.28);
+  pointer-events: none;
+}
+
+.tooltip strong,
+.tooltip span {
+  display: block;
+}
+
+.tooltip strong {
+  font-family: Bitter, "Segoe UI", serif;
+  margin-bottom: 0.2rem;
+}
+
+.tooltip span {
+  font-size: 0.8rem;
+  opacity: 0.82;
+}
+
+.hud {
+  position: fixed;
+  left: 50%;
+  bottom: 3.4rem;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.hudButton {
+  border: 1px solid rgba(232, 197, 71, 0.28);
+  border-radius: 999px;
+  background: rgba(10, 22, 16, 0.78);
+  color: #e8f0e4;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.hudButton[aria-pressed="true"],
+.hudButton:hover,
+.hudButton:focus-visible {
+  background: rgba(63, 143, 90, 0.28);
+  border-color: rgba(63, 143, 90, 0.7);
+}
+
+@keyframes canopy-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(1.4deg);
+  }
+}
+
+@keyframes vine-grow {
+  from {
+    stroke-dashoffset: 1400;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes moss-pulse {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes spark-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(12px, -18px);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canopy,
+  .sway,
+  .swaySlow,
+  .grow,
+  .growDelayed,
+  .pulse,
+  .drift {
+    animation: none !important;
+    transform: none !important;
+  }
+}

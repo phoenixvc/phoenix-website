@@ -3,28 +3,46 @@
 /* Define dark & light mode variables */
 :root {
   /* Dark mode defaults */
-  --tooltip-bg-dark: linear-gradient(135deg, rgba(25, 20, 40, 0.95) 0%, rgba(35, 25, 55, 0.95) 100%);
-  --tooltip-border-dark: rgba(157, 78, 221, 0.3);
-  --tooltip-border-left-dark: rgba(157, 78, 221, 0.8);
-  --tooltip-shadow-dark: 0 8px 32px rgba(157, 78, 221, 0.3);
-  --tooltip-text-dark: rgba(255, 255, 255, 0.9);
-  --tooltip-subtext-dark: rgba(255, 255, 255, 0.7);
-  --tooltip-header-bg-dark: rgba(157, 78, 221, 0.15);
-  --tooltip-divider-dark: rgba(255, 255, 255, 0.1);
-  --tooltip-glow-dark: rgba(157, 78, 221, 0.12);
-  --tooltip-close-bg-dark: rgba(255, 255, 255, 0.2);
+  --tooltip-bg-dark:
+    linear-gradient(
+      135deg,
+      hsl(var(--color-primary) / 0.1) 0%,
+      hsl(var(--color-primary) / 0.24) 100%
+    ),
+    linear-gradient(
+      hsl(var(--color-background) / 0.95),
+      hsl(var(--color-background) / 0.95)
+    );
+  --tooltip-border-dark: hsl(var(--color-primary) / 0.3);
+  --tooltip-border-left-dark: hsl(var(--color-primary) / 0.8);
+  --tooltip-shadow-dark: 0 8px 32px hsl(var(--color-primary) / 0.3);
+  --tooltip-text-dark: hsl(var(--color-text) / 0.9);
+  --tooltip-subtext-dark: hsl(var(--color-text) / 0.7);
+  --tooltip-header-bg-dark: hsl(var(--color-primary) / 0.15);
+  --tooltip-divider-dark: hsl(var(--color-text) / 0.1);
+  --tooltip-glow-dark: hsl(var(--color-primary) / 0.12);
+  --tooltip-close-bg-dark: hsl(var(--color-text) / 0.2);
 
   /* Light mode settings */
-  --tooltip-bg-light: linear-gradient(135deg, rgba(250, 248, 255, 0.95) 0%, rgba(240, 235, 255, 0.95) 100%);
-  --tooltip-border-light: rgba(123, 44, 191, 0.2);
-  --tooltip-border-left-light: rgba(123, 44, 191, 0.6);
-  --tooltip-shadow-light: 0 8px 32px rgba(123, 44, 191, 0.2);
-  --tooltip-text-light: rgba(30, 30, 50, 0.9);
-  --tooltip-subtext-light: rgba(30, 30, 50, 0.7);
-  --tooltip-header-bg-light: rgba(123, 44, 191, 0.08);
-  --tooltip-divider-light: rgba(123, 44, 191, 0.1);
-  --tooltip-glow-light: rgba(123, 44, 191, 0.08);
-  --tooltip-close-bg-light: rgba(123, 44, 191, 0.15);
+  --tooltip-bg-light:
+    linear-gradient(
+      135deg,
+      hsl(var(--color-primary) / 0.04) 0%,
+      hsl(var(--color-primary) / 0.1) 100%
+    ),
+    linear-gradient(
+      hsl(var(--color-background) / 0.95),
+      hsl(var(--color-background) / 0.95)
+    );
+  --tooltip-border-light: hsl(var(--color-primary) / 0.2);
+  --tooltip-border-left-light: hsl(var(--color-primary) / 0.6);
+  --tooltip-shadow-light: 0 8px 32px hsl(var(--color-primary) / 0.2);
+  --tooltip-text-light: hsl(var(--color-text) / 0.9);
+  --tooltip-subtext-light: hsl(var(--color-text) / 0.7);
+  --tooltip-header-bg-light: hsl(var(--color-primary) / 0.08);
+  --tooltip-divider-light: hsl(var(--color-primary) / 0.1);
+  --tooltip-glow-light: hsl(var(--color-primary) / 0.08);
+  --tooltip-close-bg-light: hsl(var(--color-primary) / 0.15);
 }
 
 /* Base tooltip styling */
@@ -61,11 +79,11 @@
 
 .tooltip.pinned:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 45px rgba(157, 78, 221, 0.3);
+  box-shadow: 0 12px 45px hsl(var(--color-primary) / 0.3);
 }
 
 .tooltip.lightMode.pinned:hover {
-  box-shadow: 0 10px 40px rgba(123, 44, 191, 0.25);
+  box-shadow: 0 10px 40px hsl(var(--color-primary) / 0.25);
 }
 
 .tooltip:not(.pinned):hover {
@@ -243,12 +261,12 @@
 }
 
 .tooltipCloseButton:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: hsl(var(--color-text) / 0.3);
   transform: scale(1.1);
 }
 
 .tooltip.lightMode .tooltipCloseButton:hover {
-  background: rgba(123, 44, 191, 0.25);
+  background: hsl(var(--color-primary) / 0.25);
 }
 
 .tooltipPinnedIndicator {

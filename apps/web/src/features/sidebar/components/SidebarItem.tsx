@@ -1,5 +1,6 @@
 // features/sidebar/components/SidebarItem.tsx
 import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTheme } from "@/theme";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,8 @@ const itemVariants = {
   },
 };
 
+const MotionLink = motion(Link);
+
 const SidebarItem: React.FC<SidebarItemProps> = ({
   label,
   onClick,
@@ -30,19 +33,18 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   collapsed: _collapsed = false,
   type: _type = "link",
 }): React.ReactElement => {
+  const location = useLocation();
   const themeContext = useTheme() || {
     themeName: "default",
     getComponentStyle: (): Record<string, unknown> => ({}),
   };
 
-  // Function to determine if the item is active based on current URL
   const isActive = React.useMemo((): boolean => {
     if (active) return true;
+    if (!href) return false;
 
-    if (!href || typeof window === "undefined") return false;
-
-    const pathname = window.location.pathname;
-    const hash = window.location.hash;
+    const pathname = location.pathname;
+    const hash = location.hash;
 
     if (href === "/") {
       return pathname === "/" && !hash;
@@ -52,8 +54,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       return pathname === "/" && hash === href.substring(1);
     }
 
-    return pathname.startsWith(href) && !pathname.includes("#");
-  }, [active, href]);
+    return pathname.startsWith(href) && !hash;
+  }, [active, href, location.hash, location.pathname]);
 
   // Get component style from theme
   const itemStyle =
@@ -98,8 +100,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     );
   } else {
     return (
-      <motion.a
-        href={href}
+      <MotionLink
+        to={href}
         className={itemClasses}
         style={combinedStyle}
         variants={itemVariants}
@@ -108,7 +110,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         whileTap={{ scale: 0.98 }}
       >
         {content}
-      </motion.a>
+      </MotionLink>
     );
   }
 };

@@ -1,0 +1,36 @@
+[data-theme="phoenix"] button,
+[data-theme="phoenix"] a,
+[data-theme="phoenix"] .card,
+[data-theme="phoenix"] [role="button"] {
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+[data-theme="phoenix"] button:hover,
+[data-theme="phoenix"] a:hover,
+[data-theme="phoenix"] [role="button"]:hover {
+  box-shadow: 0 8px 22px rgba(249, 115, 22, 0.22);
+}
+
+[data-theme="phoenix"][data-mode="dark"] button:hover,
+[data-theme="phoenix"][data-mode="dark"] a:hover,
+[data-theme="phoenix"][data-mode="dark"] [role="button"]:hover {
+  box-shadow: 0 8px 26px rgba(251, 146, 60, 0.28);
+}
+
+[data-theme="phoenix"] .mainContent,
+[data-theme="phoenix"] main {
+  text-shadow: 0 1px 14px rgba(7, 4, 6, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="phoenix"] button,
+  [data-theme="phoenix"] a,
+  [data-theme="phoenix"] .card,
+  [data-theme="phoenix"] [role="button"] {
+    transition: none;
+  }
+}

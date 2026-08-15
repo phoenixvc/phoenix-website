@@ -168,7 +168,7 @@ export const ProjectDetail = (): React.ReactElement => {
                   style={{
                     backgroundColor: project.image
                       ? "transparent"
-                      : project.color || "#9333ea",
+                      : project.color || "hsl(var(--color-primary))",
                   }}
                 >
                   {project.image ? (
@@ -365,7 +365,7 @@ export const ProjectDetail = (): React.ReactElement => {
                           style={{
                             backgroundColor: related.image
                               ? "transparent"
-                              : related.color || "#9333ea",
+                              : related.color || "hsl(var(--color-primary))",
                           }}
                         >
                           {related.image ? (

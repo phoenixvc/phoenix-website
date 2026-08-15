@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SOCIAL_LINKS } from "../../constants";
 import { containerVariants, itemVariants } from "../../animations";
@@ -59,9 +60,9 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode = true }) => {
               {NAVIGATION_ITEMS.filter((item) => item.type !== "section").map(
                 (item) => (
                   <motion.li key={item.path} variants={itemVariants}>
-                    <a href={item.path} className={styles.link}>
+                    <Link to={item.path} className={styles.link}>
                       {item.label}
-                    </a>
+                    </Link>
                   </motion.li>
                 ),
               )}
@@ -73,14 +74,14 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode = true }) => {
             <h4 className={styles.sectionTitle}>Resources</h4>
             <ul className={styles.linkList}>
               <motion.li variants={itemVariants}>
-                <a href="/blog" className={styles.link}>
+                <Link to="/blog" className={styles.link}>
                   Blog
-                </a>
+                </Link>
               </motion.li>
               <motion.li variants={itemVariants}>
-                <a href="/about" className={styles.link}>
+                <Link to="/about" className={styles.link}>
                   About Us
-                </a>
+                </Link>
               </motion.li>
               <motion.li variants={itemVariants}>
                 <a

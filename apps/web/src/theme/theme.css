@@ -418,6 +418,30 @@
     --color-hover: var(--theme-cosmic-dark-hover);
     --color-active: var(--theme-cosmic-dark-active);
   }
+
+  /* Highveld Theme */
+  .theme-highveld-light {
+    --color-primary: var(--theme-highveld-light-primary);
+    --color-secondary: var(--theme-highveld-light-secondary);
+    --color-accent: var(--theme-highveld-light-accent);
+    --color-background: var(--theme-highveld-light-background);
+    --color-text: var(--theme-highveld-light-text);
+    --color-muted: var(--theme-highveld-light-muted);
+    --color-border: var(--theme-highveld-light-border);
+    --color-hover: var(--theme-highveld-light-hover);
+    --color-active: var(--theme-highveld-light-active);
+  }
+  .theme-highveld-dark {
+    --color-primary: var(--theme-highveld-dark-primary);
+    --color-secondary: var(--theme-highveld-dark-secondary);
+    --color-accent: var(--theme-highveld-dark-accent);
+    --color-background: var(--theme-highveld-dark-background);
+    --color-text: var(--theme-highveld-dark-text);
+    --color-muted: var(--theme-highveld-dark-muted);
+    --color-border: var(--theme-highveld-dark-border);
+    --color-hover: var(--theme-highveld-dark-hover);
+    --color-active: var(--theme-highveld-dark-active);
+  }
 }
 
 /* 5. Base styles (to ensure Tailwind and custom styles play nicely) */

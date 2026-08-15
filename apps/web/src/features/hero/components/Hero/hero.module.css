@@ -79,13 +79,13 @@
 }
 
 .darkInner {
-  background-color: rgba(15, 15, 25, 0.8);
+  background-color: hsl(var(--color-background) / 0.8);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .lightInner {
-  background-color: rgba(245, 245, 245, 0.8);
+  background-color: hsl(var(--color-background) / 0.8);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
@@ -126,7 +126,7 @@
   font-weight: 600;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+  box-shadow: 0 0 15px hsl(var(--color-primary) / 0.3);
   cursor: pointer;
 }
 
@@ -234,19 +234,19 @@
   gap: 0.35rem;
   cursor: pointer; /* Ensure cursor shows it's clickable */
   transition: all 0.3s ease;
-  background-color: rgba(147, 51, 234, 0.6); /* Purple color to match the theme */
+  background-color: hsl(var(--color-primary) / 0.6);
   padding: 0.25rem 0.7rem;
   border-radius: 1rem;
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 10px rgba(147, 51, 234, 0.3); /* Purple shadow for better visibility */
+  box-shadow: 0 0 10px hsl(var(--color-primary) / 0.3);
 }
 
 .scrollIndicator:hover {
   /* Note: transform is controlled by framer-motion for proper centering with sidebar offset */
-  background-color: rgba(147, 51, 234, 0.8); /* Darker purple on hover */
+  background-color: hsl(var(--color-primary) / 0.8);
   border: 1px solid rgba(255, 255, 255, 0.3); /* Brighter border on hover */
-  box-shadow: 0 5px 15px rgba(147, 51, 234, 0.4); /* Purple shadow on hover */
+  box-shadow: 0 5px 15px hsl(var(--color-primary) / 0.4); /* Purple shadow on hover */
 }
 
 .scrollText {
@@ -296,7 +296,7 @@
   height: 200px; /* Reduced from 300px */
   background: radial-gradient(
     circle,
-    rgba(138, 43, 226, 0.08) 0%,
+    hsl(var(--color-primary) / 0.08) 0%,
     rgba(0, 0, 0, 0) 70%
   ); /* Reduced opacity from 0.15 to 0.08 */
   border-radius: 50%;

@@ -1,0 +1,37 @@
+schema: md-agent/v1
+source: docs/src/main/design/themes/highveld-acceptance.md
+title: "Highveld acceptance contract"
+purpose: "Acceptance bar for Highveld, the first theme designed after the environment contract existed rather than retrofitted onto it. Highveld is the test of whether a new theme can be added by filling the contract in, and it carries the contract generalisations the theme package extraction will build on."
+audience:
+  - agent
+  - human
+facts:
+  - "Status is an implementation slice. Highveld was built in parallel with Forest and Phoenix, not after them."
+  - "The plateau is the full-viewport layer behind website content in light and dark modes, with sky occupying roughly the upper two-thirds."
+  - "The horizon is a projected world coordinate, so it rises and falls as the camera moves. Cosmic has no horizon and Forest has no distance; Highveld's identity is depth to the horizon."
+  - "Chrome overrides are scoped to :global(html[data-theme=\"highveld\"]) so they out-specify both the .lightMode compounds and the @media(max-width:768px) block that re-declares most of header.module.css."
+  - "A 60-second deterministic day cycle interpolates four sky anchors: night, dawn, day, dusk. Dark mode opens at dusk, light mode at midday."
+  - "Seeded lightning is the signature feature. Bolt timing is a pure function of (seed, timeMs), each bolt is recursively branched with a hot core, halo, and three-flicker decay envelope."
+  - "Depth layers are an anvil-topped storm cell, virga that fades before reaching the ground, a distant escarpment ridgeline, a low sun or moon, stars weighted to the upper sky, drifting dust, and birds."
+  - "Koppies, thorn trees, and seasonal pans map focus areas and portfolio projects, and support hover, HUD zoom, click-to-focus, and wheel zoom. Node rings are squashed onto a receding ground plane and scale with depth."
+  - "A windpomp turns with the wind. Near-field grass tufts and cosmos flowers sit in front of everything as a non-scaling SVG layer."
+  - "Grass carries a travelling wind wave and lays over away from the cursor when motion is full."
+  - "highveld is selectable and persistable beside the cosmic-frontier default. Reserved identities stay coming-soon."
+  - "The trusted environment registry owns the highveld-plateau renderer. Theme data stays serializable and must not import renderers."
+  - "Environment inputs are deterministic seed/time, quality tier, motion policy, visibility pause/resume, resize, pointer input, and unmount dispose."
+  - "Reduced motion and the static fixture draw one representative frame and disable wind, bolt animation, drift, and pointer-driven parallax."
+  - "Frame budgets are low 0ms after first paint, medium under 6ms throttled to 30fps, high under 8ms. Caps are 700/1100/1900 grass blades, 70/110/170 ground tussocks, 14/40/80 dust motes, 0/5/9 birds, 0/60/120 virga streaks, and 60/150/260 stars."
+  - "Grass and tussock counts stay high even on low because low paints a single frame and then stops, so the cost is one-off rather than per-frame. Low is also the tier the evidence screenshots capture."
+  - "Storm state (weather, storm position, bolt schedule, ridgeline, windpomp position) is drawn from a separate seeded stream and is identical across quality tiers. Only particle counts vary."
+  - "The representative fixture is seed 20260814, time 9170ms, low quality, reduced motion, and paused. That seed resolves to stormfront weather and 9170ms falls inside the third seeded strike near its first flicker peak, so the static frame carries a live bolt."
+  - "ThemeEnvironmentDefinition carries fixtureParam and staticFixture, so each environment declares its own deterministic frame instead of Layout hardcoding one theme's seed and query parameter."
+  - "environmentQuery.ts provides themeNameFromQuery and resolveEnvironmentFixture, shared by every environmental theme."
+  - "?theme=<name> selects any available theme and is resolved before the first render."
+  - "createBuiltInThemeRegistry(defaultThemeName) takes the startup theme. This is the only effective override point, because ThemeCore.initializeRegistries applies the registry default over both stored state and the provider config."
+  - "Fixed: isColorScheme in theme/types/utils/guards.ts omitted cosmic-frontier, so isThemeConfig rejected the shipped default theme."
+  - "Fixed for Highveld only: index.html fetched only Outfit. Cosmic declares Space Grotesk and Forest declares Bitter and Noto Sans, neither of which is loaded, so both silently fall back."
+  - "Known unfixed: .theme-wrapper renders class=\"theme-wrapper undefined undefined\", so the .theme-<name>-<mode> fallback classes in theme.css are never applied by any theme. Runtime colours still work because useCssVariables writes the same custom properties inline on documentElement."
+  - "Known unfixed: src/theme/index.css imports ./themes/*.css, a directory that does not exist. The real files under src/theme/styles/themes/ are all zero-byte except ocean.css, and nothing imports any of them."
+  - "Visual evidence lives at apps/web/e2e/evidence/highveld-dark-static.png, highveld-light-static.png, and highveld-reduced-motion.png."
+  - "Theme Designer workflows and reusable package extraction are the next step. The contract generalisations above should be the starting point for that extraction rather than treated as Highveld-specific work."
+last_synced: "2026-08-14"

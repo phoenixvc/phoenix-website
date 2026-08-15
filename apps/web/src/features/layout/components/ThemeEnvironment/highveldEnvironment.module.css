@@ -1,0 +1,150 @@
+.wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/*
+ * Near-field silhouette. The canvas paints everything from the horizon back;
+ * this layer is the grass you would be standing in, so it never scales with
+ * the camera and always reads as the closest thing on screen.
+ */
+.foreground {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/*
+ * Near-field silhouette reads as grass, not as a hole punched in the frame,
+ * so it stays a warm dark brown at partial opacity rather than near-black.
+ */
+.tuft {
+  fill: var(--highveld-tuft, #241a0f);
+  opacity: 0.55;
+}
+
+.stalk {
+  fill: none;
+  stroke: var(--highveld-tuft, #241a0f);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+
+/* Cosmos flowers line Highveld roads in autumn. */
+.cosmos {
+  fill: #e8709a;
+  opacity: 0.75;
+}
+
+.cosmosPale {
+  fill: #f4dce6;
+  opacity: 0.7;
+}
+
+.wrapper[data-mode="light"] .tuft,
+.wrapper[data-mode="light"] .stalk {
+  fill: #3c3018;
+  stroke: #3c3018;
+  opacity: 0.6;
+}
+
+.swayNear {
+  transform-origin: 240px 900px;
+  animation: veldSway 7s ease-in-out infinite;
+}
+
+.swayFar {
+  transform-origin: 1200px 900px;
+  animation: veldSway 11s ease-in-out infinite reverse;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 4;
+  max-width: 240px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.7rem;
+  background: rgba(15, 18, 22, 0.9);
+  color: #f2ede3;
+  border: 1px solid rgba(232, 181, 74, 0.32);
+  box-shadow: 0 10px 28px rgba(5, 7, 10, 0.34);
+  pointer-events: none;
+}
+
+.tooltip strong,
+.tooltip span {
+  display: block;
+}
+
+.tooltip strong {
+  font-family: "Zilla Slab", Georgia, serif;
+  margin-bottom: 0.2rem;
+}
+
+.tooltip span {
+  font-size: 0.8rem;
+  opacity: 0.82;
+}
+
+.hud {
+  position: fixed;
+  left: 50%;
+  bottom: 3.4rem;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.hudButton {
+  border: 1px solid rgba(232, 181, 74, 0.32);
+  border-radius: 999px;
+  background: rgba(15, 18, 22, 0.88);
+  color: #f2ede3;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.hudButton[aria-pressed="true"],
+.hudButton:hover,
+.hudButton:focus-visible {
+  background: rgba(200, 145, 47, 0.32);
+  border-color: rgba(232, 181, 74, 0.75);
+}
+
+@keyframes veldSway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(0.9deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foreground,
+  .swayNear,
+  .swayFar {
+    animation: none !important;
+    transform: none !important;
+  }
+}

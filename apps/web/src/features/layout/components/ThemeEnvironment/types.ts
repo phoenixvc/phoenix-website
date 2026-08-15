@@ -15,7 +15,13 @@ export interface EnvironmentFixture {
 export interface ThemeEnvironmentDefinition {
   themeName: ThemeName;
   displayName: string;
-  rendererId: "cosmic-starfield";
+  rendererId:
+    | "cosmic-starfield"
+    | "forest-canopy"
+    | "highveld-plateau"
+    | "phoenix-reign";
+  fixtureParam: string;
+  staticFixture: EnvironmentFixture;
   capabilities: {
     deterministic: {
       seed: boolean;

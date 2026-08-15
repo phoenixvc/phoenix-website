@@ -1,5 +1,6 @@
 // components/Layout/MobileMenu/MobileMenu.tsx
 import React, { FC, memo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import styles from "./MobileMenu.module.css";
@@ -27,32 +28,25 @@ const MobileMenu: FC<MobileMenuProps> = memo(
     className,
     isDarkMode,
   }): React.ReactElement => {
-    // Track which item is being clicked for visual feedback
+    const navigate = useNavigate();
     const [activeItem, setActiveItem] = useState<string | null>(null);
 
-    // Handle navigation and menu closing
     const handleNavigation = (path: string, label: string): void => {
-      // Set active state for visual feedback
       setActiveItem(label);
 
-      // Close the menu first
       setTimeout(() => {
         onClose();
 
-        // Handle navigation after a small delay to allow menu closing animation
         setTimeout(() => {
-          // Check if it"s an anchor link (starts with #)
           if (path.startsWith("#")) {
             const element = document.querySelector(path);
             if (element) {
               element.scrollIntoView({ behavior: "smooth" });
             }
           } else {
-            // External link or different page
-            window.location.href = path;
+            void navigate(path);
           }
 
-          // Reset active state
           setActiveItem(null);
         }, 100);
       }, 150);

@@ -10,24 +10,24 @@
 .dark {
   background: linear-gradient(
     to bottom,
-    rgba(13, 14, 30, 0.4),
-    rgba(13, 14, 30, 0.8)
+    hsl(var(--color-background) / 0.4),
+    hsl(var(--color-background) / 0.8)
   );
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-top: 1px solid rgba(99, 123, 255, 0.1);
+  border-top: 1px solid hsl(var(--color-primary) / 0.1);
 }
 
 /* Light mode */
 .light {
   background: linear-gradient(
     to bottom,
-    rgba(245, 247, 250, 0.6),
-    rgba(245, 247, 250, 0.9)
+    hsl(var(--color-background) / 0.6),
+    hsl(var(--color-background) / 0.9)
   );
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-top: 1px solid rgba(99, 123, 255, 0.08);
+  border-top: 1px solid hsl(var(--color-primary) / 0.08);
 }
 
 /* Cosmic glow effect at the top edge */
@@ -37,8 +37,13 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.5), transparent);
-  box-shadow: 0 0 15px 2px rgba(138, 43, 226, 0.3);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--color-primary) / 0.5),
+    transparent
+  );
+  box-shadow: 0 0 15px 2px hsl(var(--color-primary) / 0.3);
   z-index: 1;
 }
 
@@ -60,21 +65,21 @@
 .footer .logoText {
   font-size: 1.25rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #9333ea 0%, #ff6b00 100%); /* Magenta to purple gradient */
+  background: var(--chrome-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  text-shadow: 0 0 10px rgba(147, 51, 234, 0.3); /* Subtle glow effect */
+  text-shadow: 0 0 10px hsl(var(--color-primary) / 0.3); /* Subtle glow effect */
   letter-spacing: 0.5px;
 }
 
 /* Light mode version - still using the same brand colors */
 .light .logoText {
-  background: linear-gradient(90deg, #9333ea 0%, #ff6b00 100%);
+  background: var(--chrome-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 8px rgba(147, 51, 234, 0.2); /* Reduced glow for light mode */
+  text-shadow: 0 0 8px hsl(var(--color-primary) / 0.2); /* Reduced glow for light mode */
 }
 
 @media (min-width: 768px) {
@@ -97,13 +102,13 @@
 
 /* Updated gradient to match the Phoenix VC brand colors */
 .logoWrapper::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -8px;
   left: 0;
   width: 40px;
   height: 2px;
-  background: linear-gradient(90deg, #9333ea, #ff6b00);
+  background: var(--chrome-gradient);
   border-radius: 1px;
 }
 
@@ -116,7 +121,7 @@
 }
 
 .light .description {
-  color: rgba(13, 14, 30, 0.7);
+  color: hsl(var(--color-text) / 0.7);
 }
 
 .socialLinks {
@@ -133,26 +138,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-primary) / 0.15);
   color: rgba(255, 255, 255, 0.9);
   transition: all 0.3s ease;
   text-decoration: none;
 }
 
 .light .socialIcon {
-  background: rgba(147, 51, 234, 0.1);
-  color: rgba(13, 14, 30, 0.8);
+  background: hsl(var(--color-primary) / 0.1);
+  color: hsl(var(--color-text) / 0.8);
 }
 
 .socialIcon:hover {
-  background: rgba(147, 51, 234, 0.3);
+  background: hsl(var(--color-primary) / 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.25);
+  box-shadow: 0 4px 12px hsl(var(--color-primary) / 0.25);
 }
 
 .light .socialIcon:hover {
-  background: rgba(147, 51, 234, 0.2);
-  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15);
+  background: hsl(var(--color-primary) / 0.2);
+  box-shadow: 0 4px 12px hsl(var(--color-primary) / 0.15);
 }
 
 .iconWrapper {
@@ -178,18 +183,18 @@
 }
 
 .light .sectionTitle {
-  color: rgba(13, 14, 30, 0.9);
+  color: hsl(var(--color-text) / 0.9);
 }
 
 /* Updated section title underline to match brand colors */
 .sectionTitle::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -4px;
   left: 0;
   width: 24px;
   height: 2px;
-  background: linear-gradient(90deg, #9333ea, #ff6b00);
+  background: var(--chrome-gradient);
   border-radius: 1px;
 }
 
@@ -213,7 +218,7 @@
 }
 
 .light .link {
-  color: rgba(13, 14, 30, 0.7);
+  color: hsl(var(--color-text) / 0.7);
 }
 
 .link:hover {
@@ -222,18 +227,18 @@
 }
 
 .light .link:hover {
-  color: rgba(13, 14, 30, 0.95);
+  color: hsl(var(--color-text) / 0.95);
 }
 
 /* Updated link hover effect to match brand colors */
 .link::before {
-  content: '';
+  content: "";
   position: absolute;
   left: -12px;
   top: 50%;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, #9333ea, #ff6b00);
+  background: var(--chrome-gradient);
   transition: all 0.2s ease;
   opacity: 0;
   transform: translateY(-50%);
@@ -252,7 +257,7 @@
 }
 
 .light .address {
-  color: rgba(13, 14, 30, 0.7);
+  color: hsl(var(--color-text) / 0.7);
 }
 
 .footerBottom {
@@ -265,7 +270,7 @@
 }
 
 .light .footerBottom {
-  border-top: 1px solid rgba(13, 14, 30, 0.1);
+  border-top: 1px solid hsl(var(--color-background) / 0.1);
 }
 
 .particles {
@@ -275,19 +280,32 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.15) 1px,
+    transparent 1px
+  );
   background-size: 15px 15px;
   opacity: 0.1;
   animation: twinkle 8s infinite alternate;
 }
 
 .light .particles {
-  background-image: radial-gradient(circle, rgba(13, 14, 30, 0.15) 1px, transparent 1px);
+  background-image: radial-gradient(
+    circle,
+    hsl(var(--color-background) / 0.15) 1px,
+    transparent 1px
+  );
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.05; }
-  50% { opacity: 0.15; }
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.15;
+  }
 }
 
 .copyright {
@@ -298,7 +316,7 @@
 }
 
 .light .copyright {
-  color: rgba(13, 14, 30, 0.6);
+  color: hsl(var(--color-text) / 0.6);
 }
 
 /* Responsive adjustments */
