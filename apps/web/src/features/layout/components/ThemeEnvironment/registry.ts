@@ -186,6 +186,37 @@ export const CLOUD_ENVIRONMENT: ThemeEnvironmentDefinition = {
   },
 };
 
+export const LAVENDER_ENVIRONMENT: ThemeEnvironmentDefinition = {
+  themeName: "lavender",
+  displayName: "Lavender",
+  rendererId: "lavender-meadow",
+  fixtureParam: "lavender-fixture",
+  staticFixture: {
+    seed: 20260817,
+    timeMs: 12000,
+    qualityTier: "low",
+    motionMode: "reduced",
+    paused: true,
+  },
+  capabilities: {
+    deterministic: {
+      seed: true,
+      time: true,
+    },
+    lifecycle: {
+      pause: true,
+      resume: true,
+      dispose: true,
+    },
+    viewport: {
+      resize: true,
+      pointerInput: true,
+    },
+    reducedMotion: true,
+    adaptiveQuality: true,
+  },
+};
+
 export const THEME_ENVIRONMENTS = {
   "cosmic-frontier": COSMIC_FRONTIER_ENVIRONMENT,
   forest: FOREST_ENVIRONMENT,
@@ -193,4 +224,5 @@ export const THEME_ENVIRONMENTS = {
   phoenix: PHOENIX_ENVIRONMENT,
   ocean: OCEAN_ENVIRONMENT,
   cloud: CLOUD_ENVIRONMENT,
+  lavender: LAVENDER_ENVIRONMENT,
 } as const;

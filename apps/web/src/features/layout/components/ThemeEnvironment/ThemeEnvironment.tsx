@@ -7,6 +7,7 @@ import HighveldEnvironment from "./HighveldEnvironment";
 import { PhoenixEnvironment } from "./PhoenixEnvironment";
 import { OceanEnvironment } from "./OceanEnvironment";
 import { CloudEnvironment } from "./CloudEnvironment";
+import { LavenderEnvironment } from "./LavenderEnvironment";
 import { COSMIC_FRONTIER_ENVIRONMENT, THEME_ENVIRONMENTS } from "./registry";
 import type { ThemeEnvironmentProps } from "./types";
 
@@ -88,6 +89,16 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
         )}
         {definition.rendererId === "cloud-strato" && (
           <CloudEnvironment
+            isDarkMode={isDarkMode}
+            motionMode={motionMode}
+            qualityTier={fixture?.qualityTier}
+            paused={paused}
+            randomSeed={fixture?.seed}
+            fixedTimestamp={fixture?.timeMs}
+          />
+        )}
+        {definition.rendererId === "lavender-meadow" && (
+          <LavenderEnvironment
             isDarkMode={isDarkMode}
             motionMode={motionMode}
             qualityTier={fixture?.qualityTier}

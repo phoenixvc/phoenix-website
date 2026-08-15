@@ -1,0 +1,33 @@
+schema_version: "md-agent/v1"
+theme_id: "lavender"
+display_name: "Lavender"
+renderer_id: "lavender-meadow"
+availability: "available"
+status: "implementation-slice"
+
+deterministic_fixture:
+  seed: 20260817
+  time_ms: 12000
+  quality_tier: "low"
+  motion_mode: "reduced"
+  paused: true
+
+palette:
+  dark:
+    background: "#120d1c"
+    surface: "#1f172e"
+    primary: "#c084fc"
+    secondary: "#a855f7"
+    accent: "#e879f9"
+  light:
+    background: "#faf5ff"
+    surface: "#ffffff"
+    primary: "#9333ea"
+    secondary: "#a855f7"
+    accent: "#d946ef"
+
+budgets:
+  frame_ms:
+    low: 0
+    medium: 6
+    high: 8

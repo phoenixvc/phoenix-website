@@ -1,138 +1,90 @@
-import {
-  ComponentVariants,
-  Theme,
-  ThemeBorders,
-  ThemeBreakpoints,
-  ThemeColors,
-  ThemeConfig,
-  ThemeScheme,
-  ThemeShadows,
-  ThemeSpacing,
-  ThemeTransitions,
-  ThemeTypography,
-  ThemeVariables,
-  ThemeZIndex,
-} from "@/theme/types";
+import { Theme, ThemeColors, ThemeScheme } from "@/theme/types";
+import { createTheme } from "@/theme/core/theme";
 import ColorUtils from "@/theme/utils/color-utils";
-import {
-  createColor,
-  grayPalette,
-  greenPalette,
-  purplePalette,
-  redPalette,
-} from "./colors";
-import indigoPalette from "./colors/indigo";
-import { defaultTheme } from "./default";
-
-// Type assertion for defaultTheme to make its properties accessible
-const typedDefaultTheme = defaultTheme as Omit<Theme, "colors"> & {
-  typography: ThemeTypography;
-  spacing: ThemeSpacing;
-  borders: ThemeBorders;
-  shadows: ThemeShadows;
-  breakpoints: ThemeBreakpoints;
-  transitions: ThemeTransitions;
-  zIndex: ThemeZIndex;
-  variables: ThemeVariables;
-  components: ComponentVariants;
-  config: ThemeConfig;
-};
+import { createColor, grayPalette, greenPalette, redPalette } from "./colors";
+import yellowPalette from "./colors/yellow";
 
 /**
- * Lavender Theme Color Scheme
- * A soothing, elegant color scheme based on purple tones
+ * Lavender is the seventh complete environmental theme. Renderer code stays in
+ * the trusted environment registry; this object remains serializable theme
+ * data for the provider, persistence, and designer surfaces.
  */
 export const lavenderColorScheme: ThemeScheme = {
   base: {
-    primary: purplePalette,
-    secondary: indigoPalette,
-    accent: ColorUtils.createColorShades("#8B5CF6"),
+    primary: ColorUtils.createColorShades("#C084FC"),
+    secondary: ColorUtils.createColorShades("#A855F7"),
+    accent: ColorUtils.createColorShades("#E879F9"),
     neutral: grayPalette,
     gray: grayPalette,
   },
   light: {
-    background: createColor("#FFFFFF"),
+    background: createColor("#FAF5FF"),
     text: {
       primary: createColor("#1E1B4B"),
-      secondary: createColor("#6D6A94"),
+      secondary: createColor("#581C87"),
     },
-    muted: createColor("#6D6A94"),
-    border: createColor("#E2E8F0"),
-    surface: createColor("#F8FAFC"),
-    overlay: createColor("rgba(0, 0, 0, 0.5)"),
-    hover: createColor("rgba(139, 92, 246, 0.04)"),
-    active: createColor("rgba(139, 92, 246, 0.08)"),
-    focus: createColor("rgba(139, 92, 246, 0.5)"),
-    disabled: createColor("rgba(0, 0, 0, 0.26)"),
+    muted: createColor("#7E22CE"),
+    border: createColor("#F3E8FF"),
+    surface: createColor("#FFFFFF"),
+    overlay: createColor("#1E1B4B"),
+    hover: createColor("#F3E8FF"),
+    active: createColor("#E9D5FF"),
+    focus: createColor("#9333EA"),
+    disabled: createColor("#C084FC"),
   },
   dark: {
-    background: createColor("#0F172A"),
+    background: createColor("#120D1C"),
     text: {
-      primary: createColor("#F8FAFC"),
-      secondary: createColor("#94A3B8"),
+      primary: createColor("#FAF5FF"),
+      secondary: createColor("#D8B4FE"),
     },
-    muted: createColor("#94A3B8"),
-    border: createColor("#334155"),
-    surface: createColor("#1E293B"),
-    overlay: createColor("rgba(0, 0, 0, 0.7)"),
-    hover: createColor("rgba(255, 255, 255, 0.08)"),
-    active: createColor("rgba(255, 255, 255, 0.16)"),
-    focus: createColor("rgba(139, 92, 246, 0.6)"),
-    disabled: createColor("rgba(255, 255, 255, 0.3)"),
+    muted: createColor("#9333EA"),
+    border: createColor("#3B0764"),
+    surface: createColor("#1F172E"),
+    overlay: createColor("#0A0612"),
+    hover: createColor("#2E1065"),
+    active: createColor("#3B0764"),
+    focus: createColor("#C084FC"),
+    disabled: createColor("#581C87"),
   },
 };
 
-/**
- * Lavender Theme Colors
- */
 export const lavenderColors: ThemeColors = {
-  schemes: {
-    default: lavenderColorScheme,
-  },
+  schemes: { lavender: lavenderColorScheme, default: lavenderColorScheme },
   semantic: {
-    success: createColor(greenPalette[500].hex),
-    warning: createColor("#F59E0B"),
+    success: createColor(greenPalette[600].hex),
+    warning: createColor(yellowPalette[500].hex),
     error: createColor(redPalette[500].hex),
-    info: createColor(indigoPalette[400].hex),
+    info: createColor("#C084FC"),
   },
 };
 
-/**
- * Lavender Theme
- * A soothing, elegant theme with a focus on purple tones,
- * creating a calm and sophisticated aesthetic.
- */
-export const lavenderTheme: Theme = {
-  ...typedDefaultTheme,
-  colors: lavenderColors,
-  typography: {
-    fontFamily: {
-      base: "\"Quicksand\", system-ui, sans-serif",
-      heading: "\"Playfair Display\", serif",
-      monospace: "\"Fira Code\", monospace",
-    },
-    fontSize: typedDefaultTheme.typography.fontSize,
-    fontWeight: typedDefaultTheme.typography.fontWeight,
-    lineHeight: typedDefaultTheme.typography.lineHeight,
-    letterSpacing: typedDefaultTheme.typography.letterSpacing,
+const lavenderBaseTheme = createTheme(
+  {
+    name: "Lavender",
+    themeName: "lavender",
+    mode: "dark",
+    useSystem: false,
+    version: "1.0.0",
   },
-  borders: {
-    radius: {
-      none: typedDefaultTheme.borders.radius.none,
-      sm: typedDefaultTheme.borders.radius.sm,
-      md: "0.5rem",
-      lg: "0.75rem",
-      full: typedDefaultTheme.borders.radius.full,
+  lavenderColors,
+);
+
+export const lavenderTheme: Theme = {
+  ...lavenderBaseTheme,
+  typography: {
+    ...lavenderBaseTheme.typography,
+    fontFamily: {
+      base: "'Outfit', system-ui, sans-serif",
+      heading: "'Plus Jakarta Sans', system-ui, sans-serif",
+      monospace: "'Fira Code', monospace",
     },
-    width: typedDefaultTheme.borders.width,
-    style: typedDefaultTheme.borders.style,
   },
   shadows: {
-    none: typedDefaultTheme.shadows.none,
-    sm: typedDefaultTheme.shadows.sm,
-    md: "0 4px 12px rgba(139, 92, 246, 0.15)",
-    lg: "0 10px 25px rgba(139, 92, 246, 0.2)",
-    xl: typedDefaultTheme.shadows.xl,
+    ...lavenderBaseTheme.shadows,
+    md: "0 8px 24px rgba(192, 132, 252, 0.18)",
+    lg: "0 16px 40px rgba(168, 85, 247, 0.25)",
+    xl: "0 28px 72px rgba(18, 13, 28, 0.5)",
   },
 };
 
