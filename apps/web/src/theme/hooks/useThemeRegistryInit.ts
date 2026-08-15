@@ -50,10 +50,10 @@ export interface UseThemeRegistryInitResult {
 }
 
 /**
- * Bootstraps the theme registries and connects the ThemeCore/ThemeStateManager
- * singletons. Previously this initialization was split across ThemeProvider's
- * own mount effect and ThemeProviderInner's effects, which raced each other
- * and both attempted to connect the same singletons.
+ * The single bootstrap path for the theme registries and the
+ * ThemeCore/ThemeStateManager singletons — keep all registry/state-manager
+ * connection logic here rather than splitting it across another effect, or
+ * multiple ThemeProvider instances will race to connect the same singletons.
  */
 export function useThemeRegistryInit(
   themeRegistry: Partial<ThemeRegistry> = {},
