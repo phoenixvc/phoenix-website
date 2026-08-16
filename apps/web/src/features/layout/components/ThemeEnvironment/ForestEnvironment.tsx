@@ -7,7 +7,6 @@ import {
   type ReactElement,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import type { EnvironmentMotionMode, EnvironmentQualityTier } from "./types";
 import {
   FOREST_DEFAULT_SEED,
@@ -48,10 +47,6 @@ const ForestEnvironment = ({
   const pointerRef = useRef<ForestPointer | null>(null);
   const cameraRef = useRef<ForestCamera>(FOREST_OVERVIEW_CAMERA);
   const nodes = useMemo(() => createForestNodes(), []);
-  const groves = useMemo(
-    () => nodes.filter((node) => node.kind === "grove"),
-    [nodes],
-  );
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? FOREST_DEFAULT_SEED;
   const resolvedQuality = useMemo(
@@ -118,14 +113,14 @@ const ForestEnvironment = ({
     [reducedMotion],
   );
 
-  const resetView = (): void => {
+  const resetView = useCallback((): void => {
     cameraRef.current = reducedMotion
       ? { ...FOREST_OVERVIEW_CAMERA }
       : { ...cameraRef.current, target: { ...FOREST_OVERVIEW_CAMERA } };
     setFocusedId(null);
     setHovered(null);
     setZoomLabel(FOREST_OVERVIEW_CAMERA.zoom);
-  };
+  }, [reducedMotion]);
 
   useEffect(() => {
     const blockingSelector =
@@ -181,6 +176,12 @@ const ForestEnvironment = ({
         canvas.clientHeight,
       );
       if (!node) {
+        // No dedicated "whole forest" button anymore — clicking empty
+        // canopy is how you return to the overview.
+        if (focusedIdRef.current !== null) {
+          event.preventDefault();
+          resetView();
+        }
         return;
       }
       event.preventDefault();
@@ -223,7 +224,7 @@ const ForestEnvironment = ({
       window.removeEventListener("wheel", onWheel, true);
       document.body.style.cursor = "";
     };
-  }, [canvasRef, focusNode, navigate, nodes, paused, reducedMotion]);
+  }, [canvasRef, focusNode, navigate, nodes, paused, reducedMotion, resetView]);
 
   return (
     <>
@@ -363,37 +364,6 @@ const ForestEnvironment = ({
           <span>{hovered.description}</span>
         </div>
       ) : null}
-
-      <div className={styles.hud} role="toolbar" aria-label="Forest navigation">
-        {groves.map((grove) => (
-          <Button
-            key={grove.id}
-            type="button"
-            variant="ghost"
-            className={styles.hudButton}
-            data-forest-zoom-target={grove.id}
-            aria-pressed={focusedId === grove.id}
-            onClick={(event) => {
-              event.stopPropagation();
-              focusNode(grove);
-            }}
-          >
-            {grove.name}
-          </Button>
-        ))}
-        <Button
-          type="button"
-          variant="ghost"
-          className={styles.hudButton}
-          data-forest-zoom-target="overview"
-          onClick={(event) => {
-            event.stopPropagation();
-            resetView();
-          }}
-        >
-          Whole forest
-        </Button>
-      </div>
     </>
   );
 };

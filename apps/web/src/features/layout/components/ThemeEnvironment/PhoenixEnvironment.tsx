@@ -321,7 +321,15 @@ export const PhoenixEnvironment = ({
           canvasEl.clientHeight,
         );
         hoveredNodeRef.current = picked;
-        if (picked) {
+        // Pinned nodes already have their full detail showing in the dock
+        // — re-showing the hover tooltip on top of it duplicates the
+        // content and, for nodes near the dock's fixed top-right position,
+        // visually collides with it. The canvas glyph itself already marks
+        // pinned nodes (via pinnedNodeIds passed into drawPhoenixScene).
+        const isPinned = pinnedNodesRef.current.some(
+          (p) => p.id === picked?.id,
+        );
+        if (picked && !isPinned) {
           const screen = worldToScreen(
             picked.x,
             picked.y,

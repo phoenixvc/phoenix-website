@@ -115,36 +115,6 @@
   opacity: 0.82;
 }
 
-.hud {
-  position: fixed;
-  left: 50%;
-  bottom: 3.4rem;
-  z-index: 20;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  transform: translateX(-50%);
-  pointer-events: auto;
-}
-
-.hudButton {
-  border: 1px solid rgba(232, 197, 71, 0.28);
-  border-radius: 999px;
-  background: rgba(10, 22, 16, 0.78);
-  color: #e8f0e4;
-  padding: 0.45rem 0.85rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.hudButton[aria-pressed="true"],
-.hudButton:hover,
-.hudButton:focus-visible {
-  background: rgba(63, 143, 90, 0.28);
-  border-color: rgba(63, 143, 90, 0.7);
-}
-
 @keyframes canopy-sway {
   0%,
   100% {
