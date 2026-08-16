@@ -1,14 +1,5 @@
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactElement,
-} from "react";
-import type {
-  EnvironmentMotionMode,
-  EnvironmentQualityTier,
-} from "./types";
+import { useEffect, useMemo, useRef, type ReactElement } from "react";
+import type { EnvironmentMotionMode, EnvironmentQualityTier } from "./types";
 import {
   CLOUD_DEFAULT_SEED,
   CLOUD_FRAME_BUDGET_MS,
@@ -25,6 +16,12 @@ import {
   type CloudCamera,
   type CloudNode,
 } from "./cloudWorld";
+import {
+  useEnvironmentCanvas,
+  useNodeDock,
+  EnvironmentTooltipDock,
+  resolveEnvironmentQualityTier,
+} from "./shared";
 import styles from "./cloudEnvironment.module.css";
 
 export interface CloudEnvironmentProps {
@@ -35,32 +32,6 @@ export interface CloudEnvironmentProps {
   randomSeed?: number;
   fixedTimestamp?: number;
 }
-
-interface TooltipState {
-  node: CloudNode;
-  x: number;
-  y: number;
-}
-
-const resolveQualityTier = (
-  requested: EnvironmentQualityTier | undefined,
-): EnvironmentQualityTier => {
-  if (requested) {
-    return requested;
-  }
-  if (typeof window === "undefined") {
-    return "medium";
-  }
-  const cores = navigator.hardwareConcurrency ?? 4;
-  const width = window.innerWidth;
-  if (width < 768 || cores <= 4) {
-    return "low";
-  }
-  if (cores >= 8 && width >= 1280) {
-    return "high";
-  }
-  return "medium";
-};
 
 let cachedCloudAudioCtx: AudioContext | null = null;
 const getCloudAudioContext = (): AudioContext | null => {
@@ -121,19 +92,16 @@ export const CloudEnvironment = ({
   randomSeed,
   fixedTimestamp,
 }: CloudEnvironmentProps): ReactElement => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<CloudPointer | null>(null);
   const hoveredNodeRef = useRef<CloudNode | null>(null);
   const cameraRef = useRef<CloudCamera>({ ...CLOUD_OVERVIEW_CAMERA });
   const scrollYRef = useRef<number>(0);
   const modeProgressRef = useRef<number>(isDarkMode ? 1.0 : 0.0);
-  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
-  const [pinnedNodes, setPinnedNodes] = useState<CloudNode[]>([]);
 
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? CLOUD_DEFAULT_SEED;
   const resolvedQuality = useMemo(
-    () => resolveQualityTier(qualityTier),
+    () => resolveEnvironmentQualityTier(qualityTier),
     [qualityTier],
   );
   const scene = useMemo(
@@ -142,75 +110,31 @@ export const CloudEnvironment = ({
   );
   const nodes = useMemo(() => createCloudNodes(), []);
 
-  const handleTogglePin = (node: CloudNode): void => {
-    playWindHarmonic("pin");
-    setPinnedNodes((prev) => {
-      const exists = prev.some((p) => p.id === node.id);
-      if (exists) {
-        return prev.filter((p) => p.id !== node.id);
-      }
-      return [...prev, node];
-    });
-  };
+  const {
+    tooltip,
+    setTooltip,
+    pinnedNodes,
+    handleTogglePin,
+    handleUnpin,
+    handleCloseAllPinned,
+    handleFocusNode,
+    handleResetCamera,
+  } = useNodeDock<CloudNode>({
+    cameraRef,
+    onPin: () => playWindHarmonic("pin"),
+    onFocus: () => playWindHarmonic("focus"),
+  });
 
-  const handleUnpin = (nodeId: string): void => {
-    setPinnedNodes((prev) => prev.filter((p) => p.id !== nodeId));
-  };
+  const isRunning =
+    !reducedMotion &&
+    !paused &&
+    fixedTimestamp === undefined &&
+    CLOUD_FRAME_BUDGET_MS[resolvedQuality] > 0;
 
-  const handleCloseAllPinned = (): void => {
-    setPinnedNodes([]);
-    cameraRef.current = {
-      ...cameraRef.current,
-      target: { cx: 0.5, cy: 0.5, zoom: 1 },
-    };
-  };
-
-  const handleFocusNode = (node: CloudNode): void => {
-    playWindHarmonic("focus");
-    cameraRef.current = {
-      ...cameraRef.current,
-      target: { cx: node.x, cy: node.y, zoom: 1.45 },
-    };
-  };
-
-  const handleResetCamera = (): void => {
-    cameraRef.current = {
-      ...cameraRef.current,
-      target: { cx: 0.5, cy: 0.5, zoom: 1 },
-    };
-  };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return undefined;
-    }
-
-    const context = canvas.getContext("2d", { alpha: false });
-    if (!context) {
-      return undefined;
-    }
-
-    let frameId = 0;
-    let lastTimestamp = performance.now();
-    const start = performance.now();
-
-    const resize = (): void => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      canvas.width = Math.floor(width * ratio);
-      canvas.height = Math.floor(height * ratio);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    };
-
-    const paint = (timestamp: number): void => {
-      const deltaSeconds = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
-      lastTimestamp = timestamp;
-      const timeMs = fixedTimestamp ?? timestamp - start;
-
+  const { canvasRef } = useEnvironmentCanvas({
+    isRunning,
+    fixedTimestamp,
+    draw: (context, { width, height, timeMs, deltaSeconds }) => {
       const targetMode = isDarkMode ? 1.0 : 0.0;
       if (reducedMotion || fixedTimestamp !== undefined) {
         modeProgressRef.current = targetMode;
@@ -226,8 +150,8 @@ export const CloudEnvironment = ({
 
       drawCloudScene({
         ctx: context,
-        width: canvas.clientWidth,
-        height: canvas.clientHeight,
+        width,
+        height,
         scene,
         nodes,
         camera: cameraRef.current,
@@ -242,44 +166,29 @@ export const CloudEnvironment = ({
         scrollY: scrollYRef.current,
         modeProgress: modeProgressRef.current,
       });
+    },
+    deps: [
+      isDarkMode,
+      reducedMotion,
+      paused,
+      resolvedQuality,
+      scene,
+      nodes,
+      pinnedNodes,
+    ],
+  });
 
-      if (
-        !reducedMotion &&
-        !paused &&
-        fixedTimestamp === undefined &&
-        CLOUD_FRAME_BUDGET_MS[resolvedQuality] > 0
-      ) {
-        frameId = window.requestAnimationFrame(paint);
-      }
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-
+  useEffect(() => {
     const onScroll = (): void => {
       scrollYRef.current = window.scrollY || window.pageYOffset || 0;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    return (): void => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    paint(performance.now());
-
-    return (): void => {
-      window.cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [
-    isDarkMode,
-    reducedMotion,
-    paused,
-    fixedTimestamp,
-    resolvedQuality,
-    scene,
-    nodes,
-    pinnedNodes,
-  ]);
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>): void => {
+  const handlePointerMove = (
+    e: React.PointerEvent<HTMLCanvasElement>,
+  ): void => {
     if (reducedMotion) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -361,87 +270,17 @@ export const CloudEnvironment = ({
         onClick={handleClick}
       />
 
-      {tooltip && (
-        <div
-          className={styles.tooltip}
-          style={{ left: `${tooltip.x}px`, top: `${tooltip.y}px` }}
-        >
-          <div className={styles.tooltipTitle}>
-            <span>{tooltip.node.name}</span>
-            <button
-              className={styles.tooltipPinButton}
-              onClick={() => handleTogglePin(tooltip.node)}
-            >
-              {pinnedNodes.some((p) => p.id === tooltip.node.id)
-                ? "Unpin"
-                : "Pin Node"}
-            </button>
-          </div>
-          <div className={styles.tooltipSubtitle}>
-            {tooltip.node.subtitle}
-          </div>
-          <div className={styles.tooltipDescription}>
-            {tooltip.node.description}
-          </div>
-          <div className={styles.tooltipFooter}>
-            <span className={styles.tooltipMetric}>
-              {tooltip.node.metric}
-            </span>
-            <button
-              className={styles.tooltipPinButton}
-              onClick={() => handleFocusNode(tooltip.node)}
-            >
-              Focus View
-            </button>
-          </div>
-        </div>
-      )}
-
-      {pinnedNodes.length > 0 && (
-        <div className={styles.dock}>
-          <div className={styles.dockHeader}>
-            <span className={styles.dockTitle}>
-              Skywatch ({pinnedNodes.length})
-            </span>
-            <button
-              className={styles.dockCloseAll}
-              onClick={handleCloseAllPinned}
-            >
-              Close All
-            </button>
-          </div>
-          {pinnedNodes.map((pNode) => (
-            <div key={pNode.id} className={styles.dockCard}>
-              <div className={styles.dockCardHeader}>
-                <span className={styles.dockCardName}>{pNode.name}</span>
-                <button
-                  className={styles.dockCardRemove}
-                  onClick={() => handleUnpin(pNode.id)}
-                >
-                  ×
-                </button>
-              </div>
-              <p className={styles.dockCardDescription}>
-                {pNode.description}
-              </p>
-              <div className={styles.dockCardActions}>
-                <button
-                  className={styles.dockFocusBtn}
-                  onClick={() => handleFocusNode(pNode)}
-                >
-                  Center
-                </button>
-                <button
-                  className={styles.dockFocusBtn}
-                  onClick={handleResetCamera}
-                >
-                  Reset
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <EnvironmentTooltipDock
+        styles={styles}
+        tooltip={tooltip}
+        pinnedNodes={pinnedNodes}
+        dockLabel="Skywatch"
+        onTogglePin={handleTogglePin}
+        onUnpin={handleUnpin}
+        onCloseAllPinned={handleCloseAllPinned}
+        onFocusNode={handleFocusNode}
+        onResetCamera={handleResetCamera}
+      />
     </div>
   );
 };

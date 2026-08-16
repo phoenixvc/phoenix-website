@@ -7,6 +7,7 @@ import {
   type ReactElement,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import type { EnvironmentMotionMode, EnvironmentQualityTier } from "./types";
 import {
   FOREST_DEFAULT_SEED,
@@ -24,6 +25,7 @@ import {
   type ForestCamera,
   type ForestNode,
 } from "./forestWorld";
+import { useEnvironmentCanvas, resolveEnvironmentQualityTier } from "./shared";
 import styles from "./forestEnvironment.module.css";
 
 interface ForestEnvironmentProps {
@@ -35,26 +37,6 @@ interface ForestEnvironmentProps {
   fixedTimestamp?: number;
 }
 
-const resolveQualityTier = (
-  requested: EnvironmentQualityTier | undefined,
-): EnvironmentQualityTier => {
-  if (requested) {
-    return requested;
-  }
-  if (typeof window === "undefined") {
-    return "medium";
-  }
-  const cores = navigator.hardwareConcurrency ?? 4;
-  const width = window.innerWidth;
-  if (width < 768 || cores <= 4) {
-    return "low";
-  }
-  if (cores >= 8 && width >= 1280) {
-    return "high";
-  }
-  return "medium";
-};
-
 const ForestEnvironment = ({
   isDarkMode,
   motionMode,
@@ -63,7 +45,6 @@ const ForestEnvironment = ({
   randomSeed,
   fixedTimestamp,
 }: ForestEnvironmentProps): ReactElement => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<ForestPointer | null>(null);
   const cameraRef = useRef<ForestCamera>(FOREST_OVERVIEW_CAMERA);
   const nodes = useMemo(() => createForestNodes(), []);
@@ -74,7 +55,7 @@ const ForestEnvironment = ({
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? FOREST_DEFAULT_SEED;
   const resolvedQuality = useMemo(
-    () => resolveQualityTier(qualityTier),
+    () => resolveEnvironmentQualityTier(qualityTier),
     [qualityTier],
   );
   const scene = useMemo(
@@ -90,34 +71,15 @@ const ForestEnvironment = ({
   const focusedIdRef = useRef<string | null>(null);
   focusedIdRef.current = focusedId;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return undefined;
-    }
+  const isRunning = !paused && !reducedMotion && fixedTimestamp === undefined;
+  const frameThrottleMs =
+    FOREST_FRAME_BUDGET_MS[resolvedQuality] === 0 ? 0 : 1000 / 30;
 
-    const context = canvas.getContext("2d", { alpha: false });
-    if (!context) {
-      return undefined;
-    }
-
-    let frameId = 0;
-    let lastMark = 0;
-    const start = performance.now();
-
-    const resize = (): void => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      canvas.width = Math.floor(width * ratio);
-      canvas.height = Math.floor(height * ratio);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    };
-
-    const paint = (timestamp: number): void => {
-      const timeMs = fixedTimestamp ?? timestamp - start;
+  const { canvasRef } = useEnvironmentCanvas({
+    isRunning,
+    frameThrottleMs,
+    fixedTimestamp,
+    draw: (context, { width, height, timeMs }) => {
       if (!reducedMotion && !paused) {
         cameraRef.current = lerpForestCamera(cameraRef.current);
       } else if (cameraRef.current.target) {
@@ -127,8 +89,8 @@ const ForestEnvironment = ({
       }
       drawForestScene({
         ctx: context,
-        width: canvas.clientWidth,
-        height: canvas.clientHeight,
+        width,
+        height,
         scene,
         nodes,
         camera: cameraRef.current,
@@ -140,39 +102,9 @@ const ForestEnvironment = ({
         pointer: pointerRef.current,
         reducedMotion,
       });
-    };
-
-    const tick = (timestamp: number): void => {
-      const budget = FOREST_FRAME_BUDGET_MS[resolvedQuality];
-      if (budget === 0 || timestamp - lastMark >= 1000 / 30) {
-        paint(timestamp);
-        lastMark = timestamp;
-      }
-      if (!paused && !reducedMotion && fixedTimestamp === undefined) {
-        frameId = window.requestAnimationFrame(tick);
-      }
-    };
-
-    resize();
-    paint(fixedTimestamp ?? 0);
-    if (!paused && !reducedMotion && fixedTimestamp === undefined) {
-      frameId = window.requestAnimationFrame(tick);
-    }
-
-    window.addEventListener("resize", resize);
-    return (): void => {
-      window.cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", resize);
-    };
-  }, [
-    fixedTimestamp,
-    isDarkMode,
-    nodes,
-    paused,
-    reducedMotion,
-    resolvedQuality,
-    scene,
-  ]);
+    },
+    deps: [isDarkMode, nodes, paused, reducedMotion, resolvedQuality, scene],
+  });
 
   const focusNode = useCallback(
     (node: ForestNode): void => {
@@ -291,7 +223,7 @@ const ForestEnvironment = ({
       window.removeEventListener("wheel", onWheel, true);
       document.body.style.cursor = "";
     };
-  }, [focusNode, navigate, nodes, paused, reducedMotion]);
+  }, [canvasRef, focusNode, navigate, nodes, paused, reducedMotion]);
 
   return (
     <>
@@ -434,9 +366,10 @@ const ForestEnvironment = ({
 
       <div className={styles.hud} role="toolbar" aria-label="Forest navigation">
         {groves.map((grove) => (
-          <button
+          <Button
             key={grove.id}
             type="button"
+            variant="ghost"
             className={styles.hudButton}
             data-forest-zoom-target={grove.id}
             aria-pressed={focusedId === grove.id}
@@ -446,10 +379,11 @@ const ForestEnvironment = ({
             }}
           >
             {grove.name}
-          </button>
+          </Button>
         ))}
-        <button
+        <Button
           type="button"
+          variant="ghost"
           className={styles.hudButton}
           data-forest-zoom-target="overview"
           onClick={(event) => {
@@ -458,7 +392,7 @@ const ForestEnvironment = ({
           }}
         >
           Whole forest
-        </button>
+        </Button>
       </div>
     </>
   );

@@ -5,6 +5,7 @@ import {
   useState,
   type ReactElement,
 } from "react";
+import { Button } from "@/components/ui/button";
 import type {
   EnvironmentMotionMode,
   EnvironmentQualityTier,
@@ -26,6 +27,7 @@ import {
   type PhoenixCamera,
   type PhoenixNode,
 } from "./phoenixWorld";
+import { useEnvironmentCanvas, resolveEnvironmentQualityTier } from "./shared";
 import styles from "./phoenixEnvironment.module.css";
 
 export interface PhoenixEnvironmentProps {
@@ -42,26 +44,6 @@ interface TooltipState {
   x: number;
   y: number;
 }
-
-const resolveQualityTier = (
-  requested: EnvironmentQualityTier | undefined,
-): EnvironmentQualityTier => {
-  if (requested) {
-    return requested;
-  }
-  if (typeof window === "undefined") {
-    return "medium";
-  }
-  const cores = navigator.hardwareConcurrency ?? 4;
-  const width = window.innerWidth;
-  if (width < 768 || cores <= 4) {
-    return "low";
-  }
-  if (cores >= 8 && width >= 1280) {
-    return "high";
-  }
-  return "medium";
-};
 
 const SPARK_COLORS = ["#fffbeb", "#fbbf24", "#f97316", "#ef4444", "#fed7aa"];
 
@@ -124,7 +106,6 @@ export const PhoenixEnvironment = ({
   randomSeed,
   fixedTimestamp,
 }: PhoenixEnvironmentProps): ReactElement => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<PhoenixPointer | null>(null);
   const isDraggingRef = useRef(false);
   const dragSparksRef = useRef<PhoenixDragSpark[]>([]);
@@ -140,7 +121,7 @@ export const PhoenixEnvironment = ({
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? PHOENIX_DEFAULT_SEED;
   const resolvedQuality = useMemo(
-    () => resolveQualityTier(qualityTier),
+    () => resolveEnvironmentQualityTier(qualityTier),
     [qualityTier],
   );
   const scene = useMemo(
@@ -189,55 +170,31 @@ export const PhoenixEnvironment = ({
     };
   };
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return undefined;
-    }
+  const isRunning = !paused && !reducedMotion && fixedTimestamp === undefined;
+  const frameThrottleMs =
+    PHOENIX_FRAME_BUDGET_MS[resolvedQuality] === 0 ? 0 : 1000 / 30;
 
-    const context = canvas.getContext("2d", { alpha: false });
-    if (!context) {
-      return undefined;
-    }
-
-    let frameId = 0;
-    let lastMark = 0;
-    let lastTimestamp = performance.now();
-    const start = performance.now();
-
-    const resize = (): void => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      canvas.width = Math.floor(width * ratio);
-      canvas.height = Math.floor(height * ratio);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    };
-
-    const updateSparks = (deltaSeconds: number): void => {
-      const sparks = dragSparksRef.current;
-      for (let i = sparks.length - 1; i >= 0; i--) {
-        const s = sparks[i];
-        s.life -= deltaSeconds;
-        if (s.life <= 0) {
-          sparks.splice(i, 1);
-          continue;
-        }
-        s.x += s.vx;
-        s.y += s.vy;
-        s.vy -= 0.12 * deltaSeconds * 60; // Thermal rise
-        s.rotation += s.spin;
+  const updateSparks = (deltaSeconds: number): void => {
+    const sparks = dragSparksRef.current;
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.life -= deltaSeconds;
+      if (s.life <= 0) {
+        sparks.splice(i, 1);
+        continue;
       }
-    };
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vy -= 0.12 * deltaSeconds * 60; // Thermal rise
+      s.rotation += s.spin;
+    }
+  };
 
-    const paint = (timestamp: number): void => {
-      const deltaSeconds = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
-      lastTimestamp = timestamp;
-      const timeMs = fixedTimestamp ?? timestamp - start;
-
-      // Smooth continuous mode transition (lerp towards target mode)
+  const { canvasRef } = useEnvironmentCanvas({
+    isRunning,
+    frameThrottleMs,
+    fixedTimestamp,
+    draw: (context, { width, height, timeMs, deltaSeconds }) => {
       const targetMode = isDarkMode ? 1.0 : 0.0;
       if (reducedMotion || fixedTimestamp !== undefined) {
         modeProgressRef.current = targetMode;
@@ -247,15 +204,15 @@ export const PhoenixEnvironment = ({
           Math.min(deltaSeconds * 4.5, 1.0);
       }
 
-      if (!reducedMotion && !paused && fixedTimestamp === undefined) {
+      if (isRunning) {
         cameraRef.current = lerpPhoenixCamera(cameraRef.current);
         updateSparks(deltaSeconds);
       }
 
       drawPhoenixScene({
         ctx: context,
-        width: canvas.clientWidth,
-        height: canvas.clientHeight,
+        width,
+        height,
         scene,
         timeMs,
         isDarkMode,
@@ -270,19 +227,11 @@ export const PhoenixEnvironment = ({
         modeProgress: modeProgressRef.current,
         pinnedNodeIds: pinnedNodesRef.current.map((n) => n.id),
       });
-    };
+    },
+    deps: [isDarkMode, nodes, paused, reducedMotion, resolvedQuality, scene],
+  });
 
-    const tick = (timestamp: number): void => {
-      const budget = PHOENIX_FRAME_BUDGET_MS[resolvedQuality];
-      if (budget === 0 || timestamp - lastMark >= 1000 / 30) {
-        paint(timestamp);
-        lastMark = timestamp;
-      }
-      if (!paused && !reducedMotion && fixedTimestamp === undefined) {
-        frameId = window.requestAnimationFrame(tick);
-      }
-    };
-
+  useEffect(() => {
     const spawnDragSpark = (
       x: number,
       y: number,
@@ -311,7 +260,10 @@ export const PhoenixEnvironment = ({
     const handleGlobalPointerDown = (event: PointerEvent): void => {
       // Don't drag if clicking an interactive element
       const target = event.target as HTMLElement | null;
-      if (target?.closest(`.${styles.nodeTooltip}`) || target?.closest(`.${styles.pinnedDock}`)) {
+      if (
+        target?.closest(`.${styles.nodeTooltip}`) ||
+        target?.closest(`.${styles.pinnedDock}`)
+      ) {
         return;
       }
 
@@ -396,14 +348,7 @@ export const PhoenixEnvironment = ({
       setTooltip(null);
     };
 
-    resize();
     handleScroll();
-    paint(fixedTimestamp ?? 0);
-    if (!paused && !reducedMotion && fixedTimestamp === undefined) {
-      frameId = window.requestAnimationFrame(tick);
-    }
-
-    window.addEventListener("resize", resize);
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("pointerdown", handleGlobalPointerDown, {
       passive: true,
@@ -419,23 +364,13 @@ export const PhoenixEnvironment = ({
     });
 
     return (): void => {
-      window.cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("pointerdown", handleGlobalPointerDown);
       window.removeEventListener("pointerup", handleGlobalPointerUp);
       window.removeEventListener("pointermove", handleGlobalPointerMove);
       window.removeEventListener("pointerleave", handleGlobalPointerLeave);
     };
-  }, [
-    fixedTimestamp,
-    isDarkMode,
-    nodes,
-    paused,
-    reducedMotion,
-    resolvedQuality,
-    scene,
-  ]);
+  }, [canvasRef, nodes, paused, reducedMotion]);
 
   return (
     <>
@@ -457,39 +392,47 @@ export const PhoenixEnvironment = ({
         {/* Pinned Projects Dock */}
         {pinnedNodes.length > 0 &&
           (isDockCollapsed ? (
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               className={styles.collapseTogglePill}
               onClick={() => setIsDockCollapsed(false)}
               title="Expand pinned sectors"
             >
               &#x1f4cc; {pinnedNodes.length} Pinned Sectors &#x25be;
-            </button>
+            </Button>
           ) : (
             <div className={styles.pinnedDock}>
               <div className={styles.dockControlsHeader}>
                 <div style={{ display: "flex", gap: "6px" }}>
-                  <button
+                  <Button
+                    type="button"
+                    variant="ghost"
                     className={styles.actionIconBtn}
                     onClick={handleResetCamera}
                     title="Reset starfield camera to overview"
                   >
                     Overview &#x29bf;
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
                     className={styles.actionIconBtn}
                     onClick={() => setIsDockCollapsed(true)}
                     title="Minimize dock"
                   >
                     Minimize &mdash;
-                  </button>
+                  </Button>
                 </div>
                 {pinnedNodes.length > 1 && (
-                  <button
+                  <Button
+                    type="button"
+                    variant="ghost"
                     className={styles.closeAllButton}
                     onClick={handleCloseAllPinned}
                   >
                     Close All ({pinnedNodes.length})
-                  </button>
+                  </Button>
                 )}
               </div>
               {pinnedNodes.map((node) => (
@@ -502,22 +445,26 @@ export const PhoenixEnvironment = ({
                           ? "Focus Altar"
                           : "Portfolio Beacon"}
                     </span>
-                    <button
+                    <Button
+                      type="button"
+                      variant="ghost"
                       className={styles.unpinButton}
                       onClick={() => handleUnpin(node.id)}
                       aria-label={`Unpin ${node.name}`}
                       title="Unpin project"
                     >
                       &times;
-                    </button>
+                    </Button>
                   </div>
-                  <button
+                  <Button
+                    type="button"
+                    variant="ghost"
                     className={styles.cardFocusBtn}
                     onClick={() => handleFocusNode(node)}
                     title="Center celestial starfield on this beacon"
                   >
                     <h4 className={styles.tooltipTitle}>{node.name}</h4>
-                  </button>
+                  </Button>
                   <p className={styles.tooltipDesc}>{node.description}</p>
                   {node.href && (
                     <a href={node.href} className={styles.tooltipLink}>
@@ -546,7 +493,9 @@ export const PhoenixEnvironment = ({
                     ? "Focus Altar"
                     : "Portfolio Beacon"}
               </span>
-              <button
+              <Button
+                type="button"
+                variant="ghost"
                 className={styles.pinButton}
                 onClick={() => handleTogglePin(tooltip.node)}
                 title={
@@ -556,9 +505,9 @@ export const PhoenixEnvironment = ({
                 }
               >
                 {pinnedNodes.some((p) => p.id === tooltip.node.id)
-                  ? "Pinned \u2713"
-                  : "Pin \u25c6"}
-              </button>
+                  ? "Pinned ✓"
+                  : "Pin ◆"}
+              </Button>
             </div>
             <h4 className={styles.tooltipTitle}>{tooltip.node.name}</h4>
             <p className={styles.tooltipDesc}>{tooltip.node.description}</p>
