@@ -666,13 +666,28 @@ export const ColorUtils = {
   },
 
   /**
-   * Classify a color as "dark" (needs light contrast text) via simple relative
-   * luminance compared against a threshold (0-1, default 0.5).
+   * Classify a color as "dark" (needs light contrast text) by linearizing RGB
+   * channels, calculating relative luminance, and choosing the text color with
+   * better contrast ratio.
    */
-  isColorDark(color: string, threshold: number = 0.5): boolean {
+  isColorDark(color: string, _threshold?: number): boolean {
     const { r, g, b } = ColorUtils.getRgbComponents(color);
-    const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-    return luminance < threshold;
+
+    // Linearize the RGB channels
+    const srgb = [r, g, b].map((val): number => val / 255);
+    const linear = srgb.map((ch): number =>
+      ch <= 0.03928 ? ch / 12.92 : Math.pow((ch + 0.055) / 1.055, 2.4),
+    );
+
+    // Calculate relative luminance
+    const luminance = 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+
+    // Calculate contrast ratios with white and black
+    const contrastWithWhite = (1.05) / (luminance + 0.05);
+    const contrastWithBlack = (luminance + 0.05) / (0.05);
+
+    // Choose white text if it has better contrast (meaning the color is dark)
+    return contrastWithWhite > contrastWithBlack;
   },
 
   /**

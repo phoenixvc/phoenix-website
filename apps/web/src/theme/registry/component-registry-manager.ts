@@ -369,7 +369,7 @@ export class ComponentRegistryManager {
     const componentState = this.extractBaseState(parentVariant);
     if (!componentState) return {};
 
-    const prefix = `--theme-${component}-${variant}`;
+    const prefix = `theme-${component}-${variant}`;
     const variables: Record<string, string> = {};
 
     if (componentState.background?.hex) {
@@ -393,11 +393,37 @@ export class ComponentRegistryManager {
       if (hover?.foreground?.hex) {
         variables[`${prefix}-hover-fg`] = hover.foreground.hex;
       }
+      if (hover?.border?.hex) {
+        variables[`${prefix}-hover-border`] = hover.border.hex;
+      }
       if (active?.background?.hex) {
         variables[`${prefix}-active-bg`] = active.background.hex;
       }
       if (active?.foreground?.hex) {
         variables[`${prefix}-active-fg`] = active.foreground.hex;
+      }
+      if (active?.border?.hex) {
+        variables[`${prefix}-active-border`] = active.border.hex;
+      }
+    }
+
+    if ("header" in parentVariant && parentVariant.header) {
+      const header = parentVariant.header as ComponentState;
+      if (header.background?.hex) {
+        variables[`${prefix}-header-bg`] = header.background.hex;
+      }
+      if (header.foreground?.hex) {
+        variables[`${prefix}-header-fg`] = header.foreground.hex;
+      }
+    }
+
+    if ("footer" in parentVariant && parentVariant.footer) {
+      const footer = parentVariant.footer as ComponentState;
+      if (footer.background?.hex) {
+        variables[`${prefix}-footer-bg`] = footer.background.hex;
+      }
+      if (footer.foreground?.hex) {
+        variables[`${prefix}-footer-fg`] = footer.foreground.hex;
       }
     }
 
@@ -564,10 +590,16 @@ export class ComponentRegistryManager {
         ? this.ensureObject(cardVariant.default)
         : {};
 
+      // Merge CardVariant.style with the selected component state
+      const variantStyles = cardVariant.style
+        ? this.ensureObject(cardVariant.style)
+        : {};
+
       if (cardVariant.interactive) {
         if (state === "hover" && cardVariant.interactive.hover) {
           return {
             ...baseStyles,
+            ...variantStyles,
             ...this.ensureObject(cardVariant.interactive.hover),
           };
         }
@@ -575,20 +607,29 @@ export class ComponentRegistryManager {
         if (state === "active" && cardVariant.interactive.active) {
           return {
             ...baseStyles,
+            ...variantStyles,
             ...this.ensureObject(cardVariant.interactive.active),
           };
         }
       }
 
       if (state === "header" && cardVariant.header) {
-        return { ...baseStyles, ...this.ensureObject(cardVariant.header) };
+        return {
+          ...baseStyles,
+          ...variantStyles,
+          ...this.ensureObject(cardVariant.header),
+        };
       }
 
       if (state === "footer" && cardVariant.footer) {
-        return { ...baseStyles, ...this.ensureObject(cardVariant.footer) };
+        return {
+          ...baseStyles,
+          ...variantStyles,
+          ...this.ensureObject(cardVariant.footer),
+        };
       }
 
-      return baseStyles;
+      return { ...baseStyles, ...variantStyles };
     }
 
     return {};
@@ -610,12 +651,7 @@ export class ComponentRegistryManager {
 
     const potentialCardVariant = variant as Partial<CardVariant>;
 
-    return (
-      "default" in potentialCardVariant &&
-      ("interactive" in potentialCardVariant ||
-        "header" in potentialCardVariant ||
-        "footer" in potentialCardVariant)
-    );
+    return "default" in potentialCardVariant;
   }
 
   // Convert theme properties to CSS properties
@@ -643,6 +679,28 @@ export class ComponentRegistryManager {
 
       if (themeProps.opacity?.value !== undefined) {
         cssProps.opacity = themeProps.opacity.value.toString();
+      }
+
+      // Copy registered style properties from the merged styles
+      const styleEntries = Object.entries(styles);
+      for (const [key, value] of styleEntries) {
+        // Skip known theme property keys that are already handled
+        if (
+          key !== "background" &&
+          key !== "foreground" &&
+          key !== "border" &&
+          key !== "shadow" &&
+          key !== "opacity"
+        ) {
+          // Validate and copy style properties
+          if (
+            typeof value === "string" ||
+            typeof value === "number" ||
+            typeof value === "undefined"
+          ) {
+            (cssProps as Record<string, unknown>)[key] = value;
+          }
+        }
       }
     }
 

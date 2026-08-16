@@ -276,9 +276,7 @@ export function useThemeSync({
           );
         })
         .finally(() => {
-          if (!isThemeCached(themeName)) {
-            setLoadingTheme(false);
-          }
+          setLoadingTheme(false);
         });
     },
     [
@@ -384,9 +382,16 @@ export function useThemeSync({
   // Validate provider configuration
   useEffect(() => {
     const validationResult = ThemeConfigValidation.validateThemeConfig(config);
-    if (!validationResult.isValid) {
-      const firstError = validationResult.errors?.[0];
-      setError(new Error(`${firstError.code}: ${firstError.message}`));
+    if (!validationResult.isValid && validationResult.errors?.[0]) {
+      const firstError = validationResult.errors[0];
+      const errorMessage = `${firstError.code}: ${firstError.message}`;
+      setError((prevError) => {
+        // Retain the existing Error instance if the message is unchanged
+        if (prevError?.message === errorMessage) {
+          return prevError;
+        }
+        return new Error(errorMessage);
+      });
     }
   }, [config]);
 

@@ -31,6 +31,7 @@ export function useThemeDomEffect(
         root.classList.remove("light", "dark");
         root.classList.add(mode);
         root.setAttribute("data-theme", themeName);
+        root.setAttribute("data-mode", mode);
       }
     } catch (err) {
       logger.error(

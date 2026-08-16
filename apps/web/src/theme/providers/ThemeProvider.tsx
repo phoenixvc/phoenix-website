@@ -1,5 +1,5 @@
 // theme/providers/ThemeProvider.tsx
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   CssVariableConfig,
   ThemeAcquisitionConfig,
@@ -32,22 +32,33 @@ const ThemeProviderCore: React.FC<ThemeProviderProps> = ({
   config = {},
   className,
   onThemeChange,
+  onError,
   componentRegistry = {},
   themeRegistry = {},
 }) => {
   const { systemMode } = useSystemModeContext();
   const { getCssVariable } = useCssVariables();
 
+  // Retain the initial registry in a stable ref
+  const initialThemeRegistryRef = useRef(themeRegistry);
+
   const { themeCore, themes, setThemes, components, themeManagerReady } =
     useThemeRegistryInit(
       themeRegistry,
       componentRegistry,
       config,
-      (error) => logger.error("[ThemeProvider] Registry init error:", error),
+      (error) => {
+        logger.error("[ThemeProvider] Registry init error:", error);
+        if (onError) {
+          onError(error instanceof Error ? error : new Error(String(error)));
+        }
+      },
     );
 
   const {
     state,
+    error,
+    setError,
     loadingTheme,
     isThemeCached,
     setMode,
@@ -57,6 +68,13 @@ const ThemeProviderCore: React.FC<ThemeProviderProps> = ({
   } = useThemeSync({ themeCore, themes, themeManagerReady, config, onThemeChange });
 
   useThemeDomEffect(state.themeName, state.mode, themes);
+
+  // Report newly surfaced errors through props.onError
+  useEffect(() => {
+    if (error && onError) {
+      onError(error);
+    }
+  }, [error, onError]);
 
   const toggleMode = useCallback((): void => {
     setMode(state.mode === "light" ? "dark" : "light");
@@ -76,10 +94,9 @@ const ThemeProviderCore: React.FC<ThemeProviderProps> = ({
         return true;
       }
 
-      const registry = themeCore.getComponentRegistry();
-      return Object.keys(registry).includes(themeName);
+      return isThemeCached(themeName);
     },
-    [themes, themeCore],
+    [themes, isThemeCached],
   );
 
   const isThemeLoading = useCallback((): boolean => {
@@ -114,8 +131,8 @@ const ThemeProviderCore: React.FC<ThemeProviderProps> = ({
 
   const clearThemeCache = useCallback((): void => {
     themeCore.clearThemeCache();
-    setThemes(createThemeRegistry(themeRegistry));
-  }, [themeRegistry, themeCore, setThemes]);
+    setThemes(createThemeRegistry(initialThemeRegistryRef.current));
+  }, [themeCore, setThemes]);
 
   const getCacheStatus = useCallback((): {
     size: number;
@@ -262,6 +279,7 @@ const ThemeProviderCore: React.FC<ThemeProviderProps> = ({
         data-mode={state.mode}
         data-loading={loadingTheme || !themeManagerReady ? "true" : "false"}
         data-manager-ready={themeManagerReady ? "true" : "false"}
+        data-error={error ? "true" : "false"}
       >
         {(loadingTheme || !themeManagerReady) && (
           <div
@@ -277,6 +295,25 @@ const ThemeProviderCore: React.FC<ThemeProviderProps> = ({
               zIndex: 9999,
             }}
           />
+        )}
+        {error && (
+          <div
+            className="theme-error-indicator"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              padding: "0.5rem 1rem",
+              background: "var(--color-error-500, #ef4444)",
+              color: "white",
+              fontSize: "0.875rem",
+              zIndex: 9999,
+              textAlign: "center",
+            }}
+          >
+            Theme Error: {error.message}
+          </div>
         )}
         {children}
       </div>
