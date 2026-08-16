@@ -591,106 +591,7 @@ export class ThemeTransformationManager {
    * Determine if a color is dark (needs white text) or light (needs black text)
    */
   private isColorDark(hexColor: string): boolean {
-    // Simple implementation based on relative luminance
-    // Extract RGB components
-    const r = parseInt(hexColor.slice(1, 3), 16) / 255;
-    const g = parseInt(hexColor.slice(3, 5), 16) / 255;
-    const b = parseInt(hexColor.slice(5, 7), 16) / 255;
-
-    // Calculate relative luminance
-    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-
-    // Return true if the color is dark (luminance below threshold)
-    return luminance < this.config.contrastThreshold;
-  }
-
-  /**
-   * Process base colors from definitions to shades
-   *
-   * @param baseColors The initial base colors
-   * @returns Processed base colors with shades
-   */
-  private processBaseColors(
-    baseColors: InitialBaseColors,
-  ): Record<string, ColorShades> {
-    const processed: Record<string, ColorShades> = {};
-
-    // Process each color in the base colors
-    Object.keys(baseColors).forEach((key) => {
-      const definition = baseColors[key as keyof InitialBaseColors];
-      if (definition) {
-        processed[key] = this.generateShades(definition);
-      }
-    });
-
-    return processed;
-  }
-
-  /**
-   * Generate color shades from a color definition
-   *
-   * @param definition The color definition
-   * @returns Color shades generated from the definition
-   */
-  private generateShades(definition: string | ColorDefinition): ColorShades {
-    // Type guard for ColorShades-like object
-    if (
-      typeof definition !== "string" &&
-      "50" in definition &&
-      "100" in definition &&
-      "200" in definition &&
-      "300" in definition &&
-      "400" in definition &&
-      "500" in definition &&
-      "600" in definition &&
-      "700" in definition &&
-      "800" in definition &&
-      "900" in definition
-    ) {
-      // If it has all required properties, cast it to ColorShades
-      return definition as unknown as ColorShades;
-    }
-
-    // Get the base color hex value
-    const baseHex =
-      typeof definition === "string"
-        ? definition
-        : "hex" in definition
-          ? definition.hex
-          : "";
-
-    if (!baseHex) {
-      throw new Error("Invalid color definition: No hex value found");
-    }
-
-    // Use ColorUtils.createPalette to generate the color shades
-    const palette = ColorUtils.createPalette(baseHex, 10); // 10 shades from 50 to 900
-
-    // Create an intermediate object with the correct shade structure
-    const shades: Record<ShadeLevel, ColorDefinition> = {
-      50: palette[0],
-      100: palette[1],
-      200: palette[2],
-      300: palette[3],
-      400: palette[4],
-      500: palette[5],
-      600: palette[6],
-      700: palette[7],
-      800: palette[8],
-      900: palette[9],
-    };
-
-    // Create the ColorShades object with the correct types
-    const result: ColorShades = {
-      ...shades,
-      base: baseHex,
-      contrast: [], // Initialize contrast as an empty array
-    };
-
-    // Generate contrast colors
-    result.contrast = this.generateContrastColors(result);
-
-    return result;
+    return ColorUtils.isColorDark(hexColor, this.config.contrastThreshold);
   }
 
   /**
@@ -718,7 +619,7 @@ export class ThemeTransformationManager {
   /**
    * Type guard to check if input is a ThemeSchemeInitial
    */
-  private isThemeSchemeInitial(input: unknown): input is ThemeSchemeInitial {
+  isThemeSchemeInitial(input: unknown): input is ThemeSchemeInitial {
     return (
       input !== null &&
       typeof input === "object" &&

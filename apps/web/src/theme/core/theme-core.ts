@@ -12,7 +12,6 @@ import {
 } from "../types";
 import { ComponentRegistryManager } from "../registry/component-registry-manager";
 import { DEFAULT_THEME_NAME } from "../constants/themes/catalog";
-import { ComponentManager } from "../managers/component-manager";
 import type { ThemeStateManager } from "../managers/theme-state-manager";
 import { ThemeStyleManager } from "../managers/theme-style-manager";
 import { TypographyManager } from "../managers/typography-manager";
@@ -30,7 +29,6 @@ export class ThemeCore {
   private stateManager: ThemeStateManager | null = null;
   private styleManager: ThemeStyleManager;
   private typographyManager: TypographyManager;
-  private componentManager: ComponentManager;
   private componentRegistryManager: ComponentRegistryManager;
   private transformationManager: ThemeTransformationManager;
   private initialized: boolean = false;
@@ -48,7 +46,6 @@ export class ThemeCore {
     // Initialize everything except stateManager
     this.componentRegistryManager = new ComponentRegistryManager();
     this.componentRegistry = this.componentRegistryManager.getRegistry();
-    this.componentManager = new ComponentManager(this.componentRegistry);
 
     // Initialize styling services
     const colorMapping = new ColorMapping();
@@ -57,7 +54,6 @@ export class ThemeCore {
 
     // Create style manager with dependencies
     this.styleManager = new ThemeStyleManager(
-      this.componentManager,
       this.componentRegistryManager,
       colorMapping,
       this.typographyManager,
@@ -115,6 +111,21 @@ export class ThemeCore {
   }): void {
     this.themeRegistry = themeRegistry;
     this.componentRegistry = componentRegistry;
+
+    // Load the supplied registry into ComponentRegistryManager
+    if (componentRegistry) {
+      Object.entries(componentRegistry).forEach(([componentName, variants]) => {
+        if (variants) {
+          Object.entries(variants).forEach(([variantName, variantConfig]) => {
+            this.componentRegistryManager.setVariant(
+              componentName,
+              variantName,
+              variantConfig,
+            );
+          });
+        }
+      });
+    }
 
     // Register themes from the registry with the component registry manager
     if (themeRegistry && themeRegistry.themes) {
@@ -311,10 +322,8 @@ export class ThemeCore {
 
   // ComponentRegistryManager methods
   getComponentRegistry(): ComponentThemeRegistry {
-    // Return the new componentRegistry if available, otherwise fall back to the old one
-    return (
-      this.componentRegistry || this.componentRegistryManager.getRegistry()
-    );
+    // Return the manager's live registry rather than preferring the componentRegistry snapshot
+    return this.componentRegistryManager.getRegistry();
   }
 
   // ComponentRegistryManager methods
@@ -436,10 +445,8 @@ export class ThemeCore {
   }
 
   getAllComponentVariants(): ComponentThemeRegistry {
-    // Return the new registry if available, otherwise fall back to the old one
-    return (
-      this.componentRegistry || this.componentManager.getAllComponentVariants()
-    );
+    // Return the manager's live registry
+    return this.componentRegistryManager.getRegistry();
   }
 
   // TypographyManager methods

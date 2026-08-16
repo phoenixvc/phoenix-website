@@ -26,7 +26,6 @@ import {
   RequiredSemanticColorKeys,
   REQUIRED_MODE_COLORS,
 } from "../types";
-import { ComponentManager } from "./component-manager";
 import { ComponentRegistryManager } from "../registry/component-registry-manager";
 import { TypographyManager } from "./typography-manager";
 import { ComponentVariantType } from "../types/mappings/component-variants";
@@ -59,7 +58,6 @@ interface ComponentStyle {
 type ComponentStructure = Record<string, unknown>;
 
 export class ThemeStyleManager {
-  private componentManager: ComponentManager;
   private componentRegistry: ComponentRegistryManager;
   private colorMapping: ColorMapping;
   private typographyManager: TypographyManager;
@@ -209,19 +207,16 @@ export class ThemeStyleManager {
   };
 
   constructor(
-    componentManager: ComponentManager,
     componentRegistry: ComponentRegistryManager,
     colorMapping: ColorMapping,
     typographyManager: TypographyManager,
     private cssVariableManager: CssVariableManager,
   ) {
-    this.componentManager = componentManager;
     this.componentRegistry = componentRegistry;
     this.colorMapping = colorMapping;
     this.typographyManager = typographyManager;
 
     this.log("ThemeStyleManager initialized", {
-      componentManager,
       componentRegistry,
       colorMapping,
       typographyManager,
@@ -1410,15 +1405,7 @@ export class ThemeStyleManager {
     this.log(`Generating theme variables for mode=${mode}, theme=${themeName}`);
 
     try {
-      const registry = this.componentRegistry.getRegistry();
-
-      if (!registry) {
-        this.log("Component registry is undefined", undefined, true);
-        return {};
-      }
-
-      const componentVars =
-        this.componentManager.generateAllVariables(registry);
+      const componentVars = this.componentRegistry.generateAllVariables();
       const colorVars = this.colorMapping.toCSS();
       const typographyVars =
         this.typographyManager.generateTypographyVariables(mode);
@@ -1450,17 +1437,8 @@ export class ThemeStyleManager {
     this.log(`Generating theme classes for mode=${mode}, scheme=${scheme}`);
 
     try {
-      const registry = this.componentRegistry.getRegistry();
-
-      if (!registry) {
-        this.log("Component registry is undefined", undefined, true);
-        return {};
-      }
-
-      const componentClasses = this.componentManager.generateAllClasses(
-        scheme,
-        registry,
-      );
+      const componentClasses =
+        this.componentRegistry.generateAllClasses(scheme);
       const typographyClasses =
         this.typographyManager.generateTypographyClasses(mode);
 
@@ -1525,7 +1503,7 @@ export class ThemeStyleManager {
       }
 
       // Get component colors
-      const colorStyle = this.componentManager.getComponentStyleFromVariant(
+      const colorStyle = this.componentRegistry.getComponentStyleFromVariant(
         componentVariant,
         state,
       );
