@@ -120,6 +120,18 @@ const createRng = (seed: number): (() => number) => {
   };
 };
 
+// Stable per-node seed so each tree's canopy variation is deterministic
+// across frames (same node id -> same cluster layout every draw) without
+// storing extra state on ForestNode or precomputing a lookup table.
+const hashForestNodeSeed = (id: string): number => {
+  let hash = 2166136261;
+  for (let i = 0; i < id.length; i += 1) {
+    hash ^= id.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+};
+
 export const resolveForestDayPhase = (timeMs: number): ForestDayPhase => {
   const cycle =
     ((timeMs % FOREST_DAY_CYCLE_MS) + FOREST_DAY_CYCLE_MS) %
@@ -371,60 +383,70 @@ const drawTree = (
     ctx.stroke();
   }
 
-  const canopy = node.kind === "grove" ? node.color : palette.canopyHighlight;
+  const canopyRng = createRng(hashForestNodeSeed(node.id));
+  const baseColor =
+    node.kind === "grove" ? node.color : palette.canopyHighlight;
+  const baseAlpha = node.kind === "grove" ? 0.5 : 0.92;
+  // Jitter the silhouette itself (not just the texture on top of it) so
+  // trees sharing the same node.radius don't all read as one stamp.
+  const silhouetteRotation = (canopyRng() - 0.5) * 0.16;
+  const silhouetteRx = radius * (0.88 + canopyRng() * 0.16);
+  const silhouetteRy = radius * (0.64 + canopyRng() * 0.14);
+
   if (hovered || focused) {
     ctx.shadowColor = palette.firefly;
     ctx.shadowBlur = radius * 0.9;
   }
-  ctx.globalAlpha = node.kind === "grove" ? 0.5 : 0.92;
-  ctx.fillStyle = canopy;
+  ctx.globalAlpha = baseAlpha;
+  ctx.fillStyle = baseColor;
   ctx.beginPath();
   ctx.ellipse(
     0,
     -radius * 0.22,
-    radius * 0.95,
-    radius * 0.7,
-    0,
+    silhouetteRx,
+    silhouetteRy,
+    silhouetteRotation,
     0,
     Math.PI * 2,
   );
   ctx.fill();
   ctx.shadowBlur = 0;
-  ctx.globalAlpha = 0.72;
-  ctx.fillStyle = palette.leafA;
-  ctx.beginPath();
-  ctx.ellipse(
-    -radius * 0.38,
-    -radius * 0.08,
-    radius * 0.52,
-    radius * 0.4,
-    -0.45,
-    0,
-    Math.PI * 2,
-  );
-  ctx.ellipse(
-    radius * 0.36,
-    -radius * 0.1,
-    radius * 0.48,
-    radius * 0.36,
-    0.4,
-    0,
-    Math.PI * 2,
-  );
-  ctx.fill();
-  ctx.globalAlpha = 0.5;
-  ctx.fillStyle = palette.leafC;
-  ctx.beginPath();
-  ctx.ellipse(
-    0,
-    -radius * 0.48,
-    radius * 0.42,
-    radius * 0.3,
-    0,
-    0,
-    Math.PI * 2,
-  );
-  ctx.fill();
+
+  // Per-tree cluster texture: a deterministic-but-varied handful of soft
+  // radial-gradient blobs (3-5, jittered position/size/color) instead of
+  // the same two hard-edged side-lobes plus one full-size gold cap that
+  // every tree in the grove previously shared.
+  const clusterCount = 3 + Math.floor(canopyRng() * 3);
+  for (let i = 0; i < clusterCount; i += 1) {
+    const angle = (i / clusterCount) * Math.PI * 2 + (canopyRng() - 0.5) * 0.7;
+    const distance = radius * (0.12 + canopyRng() * 0.3);
+    const cx = Math.cos(angle) * distance;
+    const cy = -radius * 0.22 + Math.sin(angle) * distance * 0.72;
+    const size = radius * (0.32 + canopyRng() * 0.26);
+    const roll = canopyRng();
+    const clusterColor: keyof Pick<
+      ForestPalette,
+      "leafA" | "leafB" | "leafC"
+    > = roll < 0.55 ? "leafA" : roll < 0.85 ? "leafB" : "leafC";
+    // Gold (leafC) now reads as an occasional light-catching accent
+    // rather than a same-size, same-position ellipse on every tree.
+    const isAccent = clusterColor === "leafC";
+    const gradient = ctx.createRadialGradient(
+      cx - size * 0.3,
+      cy - size * 0.35,
+      size * 0.05,
+      cx,
+      cy,
+      size,
+    );
+    gradient.addColorStop(0, palette[clusterColor]);
+    gradient.addColorStop(1, `${palette[clusterColor]}00`);
+    ctx.globalAlpha = isAccent ? 0.4 : 0.62;
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, size, size * 0.78, angle, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
   if (hovered || focused || zoom > 2) {
     ctx.globalAlpha = 1;
