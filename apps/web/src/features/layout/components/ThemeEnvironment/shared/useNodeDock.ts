@@ -1,4 +1,5 @@
-import { useState, type MutableRefObject } from "react";
+import { useState, type RefObject } from "react";
+import { ENVIRONMENT_OVERVIEW_CAMERA } from "./environmentWorldMath";
 
 export interface DockCameraTarget {
   cx: number;
@@ -27,7 +28,7 @@ export interface TooltipState<TNode> {
 
 export interface UseNodeDockOptions<TNode extends DockableNode> {
   /** The theme's own camera ref — mutated directly, exactly as each theme already does. */
-  cameraRef: MutableRefObject<DockCameraState>;
+  cameraRef: RefObject<DockCameraState>;
   /** Zoom level applied when focusing a node. Every current quartet theme uses 1.45. */
   focusZoom?: number;
   /** Target used by "reset"/"close all". Every current quartet theme hardcodes {0.5, 0.5, 1}. */
@@ -59,7 +60,7 @@ export interface UseNodeDockResult<TNode> {
 export function useNodeDock<TNode extends DockableNode>({
   cameraRef,
   focusZoom = 1.45,
-  overviewCamera = { cx: 0.5, cy: 0.5, zoom: 1 },
+  overviewCamera = ENVIRONMENT_OVERVIEW_CAMERA,
   onPin,
   onFocus,
 }: UseNodeDockOptions<TNode>): UseNodeDockResult<TNode> {

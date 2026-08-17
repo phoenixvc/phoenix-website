@@ -163,8 +163,15 @@ export function useThemeEnvironmentController<
     handleResetCamera,
   } = useNodeDock<TNode>({
     cameraRef,
-    onPin: () => adapter.playTone("pin"),
-    onFocus: () => adapter.playTone("focus"),
+    overviewCamera: adapter.overviewCamera,
+    // Skip the chime/haptic when the user asked for reduced motion — it's
+    // paired with the camera-lerp animation this same preference disables.
+    onPin: () => {
+      if (!reducedMotion) adapter.playTone("pin");
+    },
+    onFocus: () => {
+      if (!reducedMotion) adapter.playTone("focus");
+    },
   });
 
   const isRunning =

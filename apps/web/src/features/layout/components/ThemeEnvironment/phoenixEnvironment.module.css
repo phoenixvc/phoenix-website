@@ -253,6 +253,7 @@
 }
 
 .tooltipTitle {
+  display: block;
   font-size: 0.95rem;
   font-weight: 700;
   color: #fffbeb;

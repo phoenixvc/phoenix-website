@@ -75,6 +75,13 @@ export function useEnvironmentCanvas({
 }: UseEnvironmentCanvasOptions): UseEnvironmentCanvasResult {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const repaintRef = useRef<() => void>(() => {});
+  // Read through a ref inside the effect below rather than closing over
+  // `draw` directly: `draw` is intentionally excluded from the effect's own
+  // deps (callers already re-run it via `deps`), so a stale closure would
+  // silently paint with last-setup's `draw` for one frame after `draw`
+  // itself changes but nothing else in `deps` did.
+  const drawRef = useRef(draw);
+  drawRef.current = draw;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -107,7 +114,7 @@ export function useEnvironmentCanvas({
       const deltaSeconds = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
       lastTimestamp = timestamp;
       const timeMs = fixedTimestamp ?? timestamp - start;
-      draw(context, {
+      drawRef.current(context, {
         width: canvas.clientWidth,
         height: canvas.clientHeight,
         timeMs,

@@ -50,6 +50,7 @@ export interface ForestPalette {
   pineLight: string;
   birchTrunk: string;
   birchMark: string;
+  birchLeaf: string;
 }
 
 export type ForestTreeSpecies = "oak" | "pine" | "willow" | "birch";
@@ -181,6 +182,7 @@ export const createForestPalette = (
       pineLight: "#588860",
       birchTrunk: "#e2ddc9",
       birchMark: "#3a2f22",
+      birchLeaf: "#8fd19e",
     };
   }
 
@@ -208,6 +210,10 @@ export const createForestPalette = (
     pineLight: "#2c5c3a",
     birchTrunk: "#b9b29c",
     birchMark: "#241d15",
+    // Darkened from the light-mode #8fd19e, same treatment as pineLight/
+    // canopyHighlight above, so birch canopies don't stay lit against an
+    // otherwise-darkened night palette.
+    birchLeaf: "#3f7a50",
   };
 };
 
@@ -664,7 +670,7 @@ const drawForestBirch = (
       Math.cos(angle) * dist,
       -radius * 0.62 + Math.sin(angle) * dist * 0.6,
       radius * 0.3,
-      "#8fd19e",
+      palette.birchLeaf,
       palette.leafA,
       palette.canopyHighlight,
     );

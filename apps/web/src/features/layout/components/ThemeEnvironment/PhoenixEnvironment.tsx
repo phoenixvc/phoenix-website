@@ -477,7 +477,11 @@ export const PhoenixEnvironment = ({
                     onClick={() => handleFocusNode(node)}
                     title="Center celestial starfield on this beacon"
                   >
-                    <h4 className={styles.tooltipTitle}>{node.name}</h4>
+                    {/* span, not h4: this title lives inside a <button>,
+                    which only permits phrasing content. .tooltipTitle sets
+                    display:block below so the layout stays identical to the
+                    heading it replaces. */}
+                    <span className={styles.tooltipTitle}>{node.name}</span>
                   </Button>
                   <p className={styles.tooltipDesc}>{node.description}</p>
                   {node.href && (

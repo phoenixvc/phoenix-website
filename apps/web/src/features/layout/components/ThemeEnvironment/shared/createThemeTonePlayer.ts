@@ -1,3 +1,9 @@
+/**
+ * All five fields feed `exponentialRampToValueAtTime`, which throws for a
+ * value <= 0 — keep every stage's frequencies and gain strictly positive
+ * (the fixed 0.0001 gain floor in the player below is the ramp's target,
+ * not one of these fields, precisely to respect that constraint).
+ */
 export interface ThemeToneStage {
   startFreq: number;
   endFreq: number;
