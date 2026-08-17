@@ -71,6 +71,7 @@ export function EnvironmentTooltipDock<TNode extends DockableTooltipNode>({
             <Button
               type="button"
               variant="ghost"
+              size="unstyled"
               className={styles.tooltipPinButton}
               onClick={() => onTogglePin(tooltip.node)}
             >
@@ -88,6 +89,7 @@ export function EnvironmentTooltipDock<TNode extends DockableTooltipNode>({
             <Button
               type="button"
               variant="ghost"
+              size="unstyled"
               className={styles.tooltipPinButton}
               onClick={() => onFocusNode(tooltip.node)}
             >
@@ -106,6 +108,7 @@ export function EnvironmentTooltipDock<TNode extends DockableTooltipNode>({
             <Button
               type="button"
               variant="ghost"
+              size="unstyled"
               className={styles.dockCloseAll}
               onClick={onCloseAllPinned}
             >
@@ -119,6 +122,7 @@ export function EnvironmentTooltipDock<TNode extends DockableTooltipNode>({
                 <Button
                   type="button"
                   variant="ghost"
+                  size="unstyled"
                   className={styles.dockCardRemove}
                   onClick={() => onUnpin(pNode.id)}
                 >
@@ -130,6 +134,7 @@ export function EnvironmentTooltipDock<TNode extends DockableTooltipNode>({
                 <Button
                   type="button"
                   variant="ghost"
+                  size="unstyled"
                   className={styles.dockFocusBtn}
                   onClick={() => onFocusNode(pNode)}
                 >
@@ -138,6 +143,7 @@ export function EnvironmentTooltipDock<TNode extends DockableTooltipNode>({
                 <Button
                   type="button"
                   variant="ghost"
+                  size="unstyled"
                   className={styles.dockFocusBtn}
                   onClick={onResetCamera}
                 >

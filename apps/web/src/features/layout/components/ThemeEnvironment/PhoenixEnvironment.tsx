@@ -403,6 +403,7 @@ export const PhoenixEnvironment = ({
             <Button
               type="button"
               variant="ghost"
+              size="unstyled"
               className={styles.collapseTogglePill}
               onClick={() => setIsDockCollapsed(false)}
               title="Expand pinned sectors"
@@ -416,6 +417,7 @@ export const PhoenixEnvironment = ({
                   <Button
                     type="button"
                     variant="ghost"
+                    size="unstyled"
                     className={styles.actionIconBtn}
                     onClick={handleResetCamera}
                     title="Reset starfield camera to overview"
@@ -425,6 +427,7 @@ export const PhoenixEnvironment = ({
                   <Button
                     type="button"
                     variant="ghost"
+                    size="unstyled"
                     className={styles.actionIconBtn}
                     onClick={() => setIsDockCollapsed(true)}
                     title="Minimize dock"
@@ -436,6 +439,7 @@ export const PhoenixEnvironment = ({
                   <Button
                     type="button"
                     variant="ghost"
+                    size="unstyled"
                     className={styles.closeAllButton}
                     onClick={handleCloseAllPinned}
                   >
@@ -456,6 +460,7 @@ export const PhoenixEnvironment = ({
                     <Button
                       type="button"
                       variant="ghost"
+                      size="unstyled"
                       className={styles.unpinButton}
                       onClick={() => handleUnpin(node.id)}
                       aria-label={`Unpin ${node.name}`}
@@ -467,7 +472,8 @@ export const PhoenixEnvironment = ({
                   <Button
                     type="button"
                     variant="ghost"
-                    className={styles.cardFocusBtn}
+                    size="unstyled"
+                    className={`${styles.cardFocusBtn} justify-start`}
                     onClick={() => handleFocusNode(node)}
                     title="Center celestial starfield on this beacon"
                   >
@@ -504,6 +510,7 @@ export const PhoenixEnvironment = ({
               <Button
                 type="button"
                 variant="ghost"
+                size="unstyled"
                 className={styles.pinButton}
                 onClick={() => handleTogglePin(tooltip.node)}
                 title={

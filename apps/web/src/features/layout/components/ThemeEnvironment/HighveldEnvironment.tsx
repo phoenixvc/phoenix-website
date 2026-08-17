@@ -333,6 +333,7 @@ const HighveldEnvironment = ({
             key={koppie.id}
             type="button"
             variant="ghost"
+            size="unstyled"
             className={styles.hudButton}
             data-highveld-zoom-target={koppie.id}
             aria-pressed={focusedId === koppie.id}
@@ -347,6 +348,7 @@ const HighveldEnvironment = ({
         <Button
           type="button"
           variant="ghost"
+          size="unstyled"
           className={styles.hudButton}
           data-highveld-zoom-target="overview"
           onClick={(event) => {
