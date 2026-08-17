@@ -56,9 +56,6 @@ test.describe("Forest theme contract", () => {
       .toBeGreaterThan(10);
     await expect(canopy.locator("canvas")).toBeVisible();
     await expect(canopy.locator("svg")).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Portfolio Glade" }),
-    ).toBeVisible();
 
     const headerBackground = await page
       .locator("header")
@@ -183,16 +180,25 @@ test.describe("Forest theme contract", () => {
     });
   });
 
-  test("zooms into a grove from the forest navigation", async ({ page }) => {
+  test("zooms into a grove from a canvas click and resets on empty canopy", async ({
+    page,
+  }) => {
+    // Phase 1 replaced the standing grove-nav toolbar with click-to-focus
+    // directly on canvas, matching the Ocean/Cloud/Lavender/Classic
+    // quartet's interaction pattern. Coordinates are for the deterministic
+    // static fixture (seed 20260809) at the default 1280x720 test
+    // viewport: (880, 190) lands on the "Portfolio Glade" grove,
+    // (1250, 650) is empty canopy (clear of both the header and any node).
     await page.goto(forestFixtureUrl, { waitUntil: "domcontentloaded" });
     const canopy = page.locator("[data-forest-canopy]");
-    await page.getByRole("button", { name: "Portfolio Glade" }).click();
+    await expect(canopy.locator("canvas")).toBeVisible();
+    await page.mouse.click(880, 190);
     await expect(canopy).toHaveAttribute(
       "data-forest-focus",
       "portfolio-grove",
     );
     await expect(canopy).toHaveAttribute("data-forest-zoom", "2.35");
-    await page.getByRole("button", { name: "Whole forest" }).click();
+    await page.mouse.click(1250, 650);
     await expect(canopy).toHaveAttribute("data-forest-focus", "overview");
     await expect(canopy).toHaveAttribute("data-forest-zoom", "1");
   });

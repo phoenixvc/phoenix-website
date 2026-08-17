@@ -2,61 +2,31 @@ import {
   FOCUS_AREA_CONFIG,
   PORTFOLIO_PROJECTS,
 } from "@/constants/portfolioData";
+import {
+  ENVIRONMENT_OVERVIEW_CAMERA,
+  ringPoint,
+  worldToScreen,
+  pickEnvironmentNode,
+  lerpEnvironmentCamera,
+  type EnvironmentCamera,
+  type EnvironmentNodeBase,
+} from "./shared";
 
 export type OceanNodeKind = "spire" | "vent" | "reef";
 
-export interface OceanNode {
-  id: string;
+export interface OceanNode extends EnvironmentNodeBase {
   kind: OceanNodeKind;
-  name: string;
-  subtitle: string;
-  description: string;
-  x: number;
-  y: number;
   depth: number;
-  radius: number;
-  accent: string;
-  glow: string;
-  href: string;
-  metric?: string;
-  parentId?: string;
-  initials?: string;
 }
 
-export interface OceanCamera {
-  cx: number;
-  cy: number;
-  zoom: number;
-  target?: {
-    cx: number;
-    cy: number;
-    zoom: number;
-  };
-}
+export type OceanCamera = EnvironmentCamera;
 
 export const OCEAN_OVERVIEW_CAMERA: OceanCamera = {
-  cx: 0.5,
-  cy: 0.5,
-  zoom: 1,
+  ...ENVIRONMENT_OVERVIEW_CAMERA,
 };
 
 export const OCEAN_SPIRE_ZOOM = 2.4;
 export const OCEAN_DETAIL_ZOOM = 3.8;
-
-const ringPoint = (
-  cx: number,
-  cy: number,
-  radius: number,
-  index: number,
-  total: number,
-  offset = -Math.PI / 2,
-): { x: number; y: number } => {
-  const angle = offset + (index / Math.max(total, 1)) * Math.PI * 2;
-  return {
-    x: cx + Math.cos(angle) * radius,
-    y: cy + Math.sin(angle) * radius,
-  };
-};
 
 export const createOceanNodes = (): OceanNode[] => {
   const nodes: OceanNode[] = [];
@@ -114,18 +84,7 @@ export const createOceanNodes = (): OceanNode[] => {
   return nodes;
 };
 
-export const worldToScreen = (
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  camera: OceanCamera,
-): { x: number; y: number; scale: number } => {
-  const scale = camera.zoom;
-  const screenX = width * 0.5 + (x - camera.cx) * width * scale;
-  const screenY = height * 0.5 + (y - camera.cy) * height * scale;
-  return { x: screenX, y: screenY, scale };
-};
+export { worldToScreen };
 
 export const pickOceanNode = (
   screenX: number,
@@ -134,36 +93,10 @@ export const pickOceanNode = (
   height: number,
   camera: OceanCamera,
   nodes: OceanNode[],
-): OceanNode | null => {
-  for (let i = nodes.length - 1; i >= 0; i--) {
-    const node = nodes[i];
-    const pos = worldToScreen(node.x, node.y, width, height, camera);
-    const hitRadius = (node.radius + 14) * pos.scale;
-    const dx = screenX - pos.x;
-    const dy = screenY - pos.y;
-    if (dx * dx + dy * dy <= hitRadius * hitRadius) {
-      return node;
-    }
-  }
-  return null;
-};
+): OceanNode | null =>
+  pickEnvironmentNode(screenX, screenY, width, height, camera, nodes);
 
 export const lerpOceanCamera = (
   camera: OceanCamera,
   speed = 0.08,
-): OceanCamera => {
-  const target = camera.target ?? {
-    cx: camera.cx,
-    cy: camera.cy,
-    zoom: camera.zoom,
-  };
-  const cx = camera.cx + (target.cx - camera.cx) * speed;
-  const cy = camera.cy + (target.cy - camera.cy) * speed;
-  const zoom = camera.zoom + (target.zoom - camera.zoom) * speed;
-  return {
-    cx,
-    cy,
-    zoom,
-    target: camera.target,
-  };
-};
+): OceanCamera => lerpEnvironmentCamera(camera, speed);

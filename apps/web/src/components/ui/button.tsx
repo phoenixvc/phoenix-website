@@ -25,6 +25,14 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
+        /**
+         * No height/padding classes at all — for callers (e.g. themed
+         * canvas-overlay buttons) whose own CSS module already declares
+         * padding/height and needs full control of the box model. The
+         * base classes (flex/gap/rounded/text/transition/focus/disabled)
+         * still apply; only the size-driven box model is left unset.
+         */
+        unstyled: "",
       },
     },
     defaultVariants: {

@@ -45,7 +45,15 @@ export interface ForestPalette {
   vignette: string;
   firefly: string;
   pollen: string;
+  pineDark: string;
+  pineMid: string;
+  pineLight: string;
+  birchTrunk: string;
+  birchMark: string;
+  birchLeaf: string;
 }
+
+export type ForestTreeSpecies = "oak" | "pine" | "willow" | "birch";
 
 interface Leaf {
   x: number;
@@ -94,6 +102,83 @@ export interface ForestScene {
   hills: Array<{ y: number; height: number; depth: number }>;
 }
 
+// Gradient cache: keyed by palette identity (dark/light mode), rounded
+// radius, gradient type, and color palette. Reused across frames for
+// unchanged nodes, avoiding per-frame createRadialGradient/
+// createLinearGradient calls.
+const gradientCache = new Map<string, CanvasGradient>();
+
+const getCachedClumpGradient = (
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  light: string,
+  mid: string,
+  dark: string,
+): CanvasGradient => {
+  const roundedR = Math.round(r * 10) / 10;
+  const key = `clump:${roundedR}:${light}:${mid}:${dark}`;
+  let gradient = gradientCache.get(key);
+  if (!gradient) {
+    gradient = ctx.createRadialGradient(
+      cx - r * 0.35,
+      cy - r * 0.4,
+      r * 0.05,
+      cx,
+      cy,
+      r * 1.05,
+    );
+    gradient.addColorStop(0, light);
+    gradient.addColorStop(0.6, mid);
+    gradient.addColorStop(1, dark);
+    gradientCache.set(key, gradient);
+  }
+  return gradient;
+};
+
+const getCachedAccentGradient = (
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  size: number,
+  color: string,
+): CanvasGradient => {
+  const roundedSize = Math.round(size * 10) / 10;
+  const key = `accent:${roundedSize}:${color}`;
+  let gradient = gradientCache.get(key);
+  if (!gradient) {
+    gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, size);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, `${color}00`);
+    gradientCache.set(key, gradient);
+  }
+  return gradient;
+};
+
+const getCachedPineGradient = (
+  ctx: CanvasRenderingContext2D,
+  tierW: number,
+  tierY: number,
+  tierH: number,
+  light: string,
+  mid: string,
+  dark: string,
+): CanvasGradient => {
+  const roundedW = Math.round(tierW * 10) / 10;
+  const roundedH = Math.round(tierH * 10) / 10;
+  const key = `pine:${roundedW}:${roundedH}:${light}:${mid}:${dark}`;
+  let gradient = gradientCache.get(key);
+  if (!gradient) {
+    gradient = ctx.createLinearGradient(-tierW, tierY, tierW, tierY + tierH);
+    gradient.addColorStop(0, light);
+    gradient.addColorStop(0.55, mid);
+    gradient.addColorStop(1, dark);
+    gradientCache.set(key, gradient);
+  }
+  return gradient;
+};
+
 export interface DrawForestSceneOptions {
   ctx: CanvasRenderingContext2D;
   width: number;
@@ -118,6 +203,18 @@ const createRng = (seed: number): (() => number) => {
     t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+};
+
+// Stable per-node seed so each tree's canopy variation is deterministic
+// across frames (same node id -> same cluster layout every draw) without
+// storing extra state on ForestNode or precomputing a lookup table.
+const hashForestNodeSeed = (id: string): number => {
+  let hash = 2166136261;
+  for (let i = 0; i < id.length; i += 1) {
+    hash ^= id.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
 };
 
 export const resolveForestDayPhase = (timeMs: number): ForestDayPhase => {
@@ -157,6 +254,12 @@ export const createForestPalette = (
       vignette: "rgba(26, 46, 32, 0.18)",
       firefly: "#d4a017",
       pollen: "rgba(212, 160, 23, 0.45)",
+      pineDark: "#274a30",
+      pineMid: "#3c6b46",
+      pineLight: "#588860",
+      birchTrunk: "#e2ddc9",
+      birchMark: "#3a2f22",
+      birchLeaf: "#8fd19e",
     };
   }
 
@@ -179,6 +282,15 @@ export const createForestPalette = (
     vignette: "rgba(4, 10, 7, 0.42)",
     firefly: "#e8c547",
     pollen: "rgba(232, 240, 228, 0.35)",
+    pineDark: "#0c2116",
+    pineMid: "#173d26",
+    pineLight: "#2c5c3a",
+    birchTrunk: "#b9b29c",
+    birchMark: "#241d15",
+    // Darkened from the light-mode #8fd19e, same treatment as pineLight/
+    // canopyHighlight above, so birch canopies don't stay lit against an
+    // otherwise-darkened night palette.
+    birchLeaf: "#3f7a50",
   };
 };
 
@@ -320,6 +432,316 @@ const drawInsect = (
   ctx.restore();
 };
 
+// Deterministic species assignment, decoupled from the shape-jitter RNG
+// stream (separate hash suffix) so picking a species doesn't consume a
+// draw from the sequence the shape itself relies on.
+const pickForestSpecies = (id: string): ForestTreeSpecies => {
+  const roll = createRng(hashForestNodeSeed(`${id}-species`))();
+  if (roll < 0.45) return "oak";
+  if (roll < 0.72) return "pine";
+  if (roll < 0.88) return "birch";
+  return "willow";
+};
+
+// Filled + lightly-stroked circle. Drawing several of these back-to-front
+// (each painting over the previous one's fill AND stroke where they
+// overlap) leaves only the un-covered edges outlined, which is what
+// produces a scalloped, leafy-looking silhouette instead of one smoothed
+// blob — the overlap does the shaping work, not the stroke itself.
+const fillForestClump = (
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  light: string,
+  mid: string,
+  dark: string,
+): void => {
+  const gradient = getCachedClumpGradient(ctx, cx, cy, r, light, mid, dark);
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(4, 10, 7, 0.18)";
+  ctx.lineWidth = Math.max(1, r * 0.012);
+  ctx.stroke();
+};
+
+const drawForestClumpAccents = (
+  ctx: CanvasRenderingContext2D,
+  rng: () => number,
+  radius: number,
+  palette: ForestPalette,
+  centerY: number,
+): void => {
+  const accentCount = 2 + Math.floor(rng() * 2);
+  for (let i = 0; i < accentCount; i += 1) {
+    const angle = rng() * Math.PI * 2;
+    const dist = radius * rng() * 0.4;
+    const cx = Math.cos(angle) * dist;
+    const cy = centerY + Math.sin(angle) * dist * 0.7;
+    const size = radius * (0.13 + rng() * 0.13);
+    const color = rng() < 0.7 ? palette.leafB : palette.leafC;
+    // Dappled light: a soft radial fade to transparent, not a flat dot,
+    // so it reads as a highlight rather than a pasted-on sticker.
+    const gradient = getCachedAccentGradient(ctx, cx, cy, size, color);
+    ctx.globalAlpha = color === palette.leafC ? 0.5 : 0.4;
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+};
+
+// Oak: the default broadleaf silhouette. A handful of tightly-overlapping
+// clumps (not the same 7 loosely-spaced ones from the first pass — fewer,
+// bigger, more overlap reads as one rounded mass rather than bubble wrap)
+// plus dappled-light accents. `groveColor`, when set, tints the clumps
+// with the grove marker's own signature color instead of the species'
+// natural tones, so grove markers keep their distinct color-coded
+// identity while still getting the improved shape.
+const drawForestOak = (
+  ctx: CanvasRenderingContext2D,
+  rng: () => number,
+  radius: number,
+  palette: ForestPalette,
+  trunkColor: string,
+  groveColor?: string,
+): void => {
+  ctx.fillStyle = trunkColor;
+  ctx.beginPath();
+  ctx.moveTo(-radius * 0.1, radius * 0.86);
+  ctx.lineTo(-radius * 0.045, -radius * 0.02);
+  ctx.lineTo(radius * 0.045, -radius * 0.02);
+  ctx.lineTo(radius * 0.13, radius * 0.86);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.translate(0, -radius * 0.3);
+  const light = groveColor ?? palette.leafA;
+  const mid = groveColor ?? palette.canopyHighlight;
+  const clumpCount = 4 + Math.floor(rng() * 2);
+  const clumps: Array<{ x: number; y: number; r: number; depth: number }> =
+    [];
+  for (let i = 0; i < clumpCount; i += 1) {
+    const angle = (i / clumpCount) * Math.PI * 2 + (rng() - 0.5) * 0.6;
+    const dist = radius * (0.12 + rng() * 0.22);
+    clumps.push({
+      x: Math.cos(angle) * dist,
+      y: Math.sin(angle) * dist * 0.7 - radius * 0.08,
+      r: radius * (0.5 + rng() * 0.22),
+      depth: rng(),
+    });
+  }
+  clumps.push({ x: 0, y: -radius * 0.12, r: radius * 0.68, depth: 0.5 });
+  clumps.sort((a, b) => a.depth - b.depth);
+  clumps.forEach((clump) =>
+    fillForestClump(ctx, clump.x, clump.y, clump.r, light, mid, "#12291b"),
+  );
+  drawForestClumpAccents(ctx, rng, radius, palette, -radius * 0.12);
+};
+
+// Pine: tiered tapering triangles with a serrated (in/out jittered) edge
+// instead of a smooth curve, plus a short trunk stub peeking below the
+// lowest tier — the tiers cover most of it, matching how a real conifer's
+// trunk is mostly hidden by its own branches.
+const drawForestPine = (
+  ctx: CanvasRenderingContext2D,
+  rng: () => number,
+  radius: number,
+  palette: ForestPalette,
+  trunkColor: string,
+): void => {
+  ctx.fillStyle = trunkColor;
+  ctx.beginPath();
+  ctx.moveTo(-radius * 0.07, radius * 0.86);
+  ctx.lineTo(-radius * 0.05, radius * 0.38);
+  ctx.lineTo(radius * 0.05, radius * 0.38);
+  ctx.lineTo(radius * 0.07, radius * 0.86);
+  ctx.closePath();
+  ctx.fill();
+
+  const tiers = 3;
+  const notchScale = radius * 0.07;
+  const serratedSide = (
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    outward: number,
+  ): void => {
+    const notches = 4;
+    for (let n = 1; n <= notches; n += 1) {
+      const t = n / notches;
+      const px = fromX + (toX - fromX) * t;
+      const py = fromY + (toY - fromY) * t;
+      const jitter = (0.5 + rng() * 0.5) * notchScale;
+      const notchOut = n % 2 === 1;
+      const offset = (notchOut ? 1 : -0.35) * jitter * outward;
+      ctx.lineTo(px + offset, py);
+    }
+  };
+
+  for (let t = 0; t < tiers; t += 1) {
+    const tierY = -radius * 0.15 - t * radius * 0.42;
+    const tierW = radius * (1.05 - t * 0.22) * (0.9 + rng() * 0.12);
+    const tierH = radius * 0.58;
+    const apexX = 0;
+    const apexY = tierY - tierH * 0.65;
+    const rightX = tierW;
+    const rightY = tierY + tierH;
+    const leftX = -tierW;
+    const light = t === tiers - 1 ? palette.pineLight : palette.pineMid;
+    const gradient = getCachedPineGradient(
+      ctx,
+      tierW,
+      tierY,
+      tierH,
+      light,
+      palette.pineMid,
+      palette.pineDark,
+    );
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.moveTo(apexX, apexY);
+    serratedSide(apexX, apexY, rightX, rightY, 1);
+    ctx.lineTo(leftX, rightY);
+    serratedSide(leftX, rightY, apexX, apexY, -1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "rgba(4, 10, 7, 0.22)";
+    ctx.lineWidth = Math.max(1, radius * 0.012);
+    ctx.stroke();
+  }
+};
+
+// Willow: a small rounded crown plus long drooping curved strands, each
+// carrying a couple of small leaf dots so it reads as trailing foliage
+// rather than bare wire.
+const drawForestWillow = (
+  ctx: CanvasRenderingContext2D,
+  rng: () => number,
+  radius: number,
+  palette: ForestPalette,
+  trunkColor: string,
+): void => {
+  ctx.fillStyle = trunkColor;
+  ctx.beginPath();
+  ctx.moveTo(-radius * 0.1, radius * 0.86);
+  ctx.lineTo(-radius * 0.045, -radius * 0.02);
+  ctx.lineTo(radius * 0.045, -radius * 0.02);
+  ctx.lineTo(radius * 0.13, radius * 0.86);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.translate(0, -radius * 0.05);
+  const crownClumps = 3;
+  for (let i = 0; i < crownClumps; i += 1) {
+    const angle = (i / crownClumps) * Math.PI * 2;
+    const dist = radius * 0.2;
+    fillForestClump(
+      ctx,
+      Math.cos(angle) * dist,
+      -radius * 0.5 + Math.sin(angle) * dist * 0.6,
+      radius * 0.44,
+      palette.leafA,
+      palette.canopyHighlight,
+      "#12291b",
+    );
+  }
+
+  const strandCount = 8 + Math.floor(rng() * 4);
+  const strandColors = [palette.leafA, palette.canopyHighlight];
+  for (let i = 0; i < strandCount; i += 1) {
+    const startX =
+      Math.cos(Math.PI * (i / strandCount)) *
+      radius *
+      0.75 *
+      (i % 2 === 0 ? 1 : 0.6);
+    const startY = -radius * 0.55 + rng() * radius * 0.15;
+    const sway = (rng() - 0.5) * radius * 0.3;
+    const length = radius * (0.75 + rng() * 0.55);
+    const midX = startX + sway;
+    const midY = startY + length * 0.6;
+    const endX = startX + sway * 0.5;
+    const endY = startY + length;
+    ctx.strokeStyle = strandColors[i % strandColors.length];
+    ctx.globalAlpha = 0.75;
+    ctx.lineWidth = Math.max(1, radius * 0.02);
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.quadraticCurveTo(midX, midY, endX, endY);
+    ctx.stroke();
+
+    const dotCount = 2 + Math.floor(rng() * 2);
+    ctx.fillStyle = strandColors[(i + 1) % strandColors.length];
+    for (let d = 1; d <= dotCount; d += 1) {
+      const t = d / (dotCount + 1);
+      const dx =
+        startX +
+        (midX - startX) * t * 0.6 +
+        (endX - midX) * Math.max(0, t - 0.6);
+      const dy = startY + (endY - startY) * t;
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      ctx.arc(dx, dy, radius * 0.035, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+};
+
+// Birch: a slender pale trunk with randomized dark bark marks, topped
+// with a small sparse canopy — deliberately the outlier silhouette among
+// the four so a grove doesn't read as one species repeated.
+const drawForestBirch = (
+  ctx: CanvasRenderingContext2D,
+  rng: () => number,
+  radius: number,
+  palette: ForestPalette,
+): void => {
+  ctx.fillStyle = palette.birchTrunk;
+  ctx.beginPath();
+  ctx.moveTo(-radius * 0.06, radius * 0.86);
+  ctx.lineTo(-radius * 0.03, -radius * 0.55);
+  ctx.lineTo(radius * 0.03, -radius * 0.55);
+  ctx.lineTo(radius * 0.07, radius * 0.86);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = palette.birchMark;
+  let markY = radius * 0.72;
+  while (markY > -radius * 0.45) {
+    const width = radius * (0.06 + rng() * 0.06);
+    const alignRight = rng() > 0.5;
+    ctx.globalAlpha = 0.75 + rng() * 0.25;
+    ctx.fillRect(
+      alignRight ? radius * 0.005 : -width - radius * 0.005,
+      markY,
+      width,
+      radius * (0.02 + rng() * 0.015),
+    );
+    markY -= radius * (0.22 + rng() * 0.16);
+  }
+  ctx.globalAlpha = 1;
+
+  const clumpCount = 3;
+  for (let i = 0; i < clumpCount; i += 1) {
+    const angle = (i / clumpCount) * Math.PI * 2 + rng();
+    const dist = radius * 0.14;
+    fillForestClump(
+      ctx,
+      Math.cos(angle) * dist,
+      -radius * 0.62 + Math.sin(angle) * dist * 0.6,
+      radius * 0.3,
+      palette.birchLeaf,
+      palette.leafA,
+      palette.canopyHighlight,
+    );
+  }
+};
+
 const drawTree = (
   ctx: CanvasRenderingContext2D,
   node: ForestNode,
@@ -353,16 +775,43 @@ const drawTree = (
   );
   ctx.fill();
 
-  ctx.fillStyle = focused || hovered ? palette.leafC : palette.trunk;
-  ctx.beginPath();
-  ctx.moveTo(-radius * 0.1, radius * 0.86);
-  ctx.lineTo(-radius * 0.045, -radius * 0.02);
-  ctx.lineTo(radius * 0.045, -radius * 0.02);
-  ctx.lineTo(radius * 0.13, radius * 0.86);
-  ctx.closePath();
-  ctx.fill();
+  // Grove markers stay a single recognizable "big glowing area marker"
+  // shape (oak, tinted with the grove's own signature color) rather than
+  // getting species variety, which is for the individual tree/clearing
+  // nodes that actually stand in for real content.
+  const species: ForestTreeSpecies =
+    node.kind === "grove" ? "oak" : pickForestSpecies(node.id);
+  const canopyRng = createRng(hashForestNodeSeed(node.id));
+  const trunkColor = focused || hovered ? palette.leafC : palette.trunk;
 
-  if (zoom > 1.8) {
+  if (hovered || focused) {
+    ctx.shadowColor = palette.firefly;
+    ctx.shadowBlur = radius * 0.9;
+  }
+  ctx.save();
+  if (node.kind === "grove") {
+    ctx.globalAlpha = 0.6;
+  }
+  if (species === "pine") {
+    drawForestPine(ctx, canopyRng, radius, palette, trunkColor);
+  } else if (species === "willow") {
+    drawForestWillow(ctx, canopyRng, radius, palette, trunkColor);
+  } else if (species === "birch") {
+    drawForestBirch(ctx, canopyRng, radius, palette);
+  } else {
+    drawForestOak(
+      ctx,
+      canopyRng,
+      radius,
+      palette,
+      trunkColor,
+      node.kind === "grove" ? node.color : undefined,
+    );
+  }
+  ctx.restore();
+  ctx.shadowBlur = 0;
+
+  if (zoom > 1.8 && (species === "oak" || species === "willow")) {
     ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
     ctx.lineWidth = Math.max(1, radius * 0.03);
     ctx.beginPath();
@@ -370,61 +819,6 @@ const drawTree = (
     ctx.quadraticCurveTo(radius * 0.02, radius * 0.4, 0, radius * 0.72);
     ctx.stroke();
   }
-
-  const canopy = node.kind === "grove" ? node.color : palette.canopyHighlight;
-  if (hovered || focused) {
-    ctx.shadowColor = palette.firefly;
-    ctx.shadowBlur = radius * 0.9;
-  }
-  ctx.globalAlpha = node.kind === "grove" ? 0.5 : 0.92;
-  ctx.fillStyle = canopy;
-  ctx.beginPath();
-  ctx.ellipse(
-    0,
-    -radius * 0.22,
-    radius * 0.95,
-    radius * 0.7,
-    0,
-    0,
-    Math.PI * 2,
-  );
-  ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.globalAlpha = 0.72;
-  ctx.fillStyle = palette.leafA;
-  ctx.beginPath();
-  ctx.ellipse(
-    -radius * 0.38,
-    -radius * 0.08,
-    radius * 0.52,
-    radius * 0.4,
-    -0.45,
-    0,
-    Math.PI * 2,
-  );
-  ctx.ellipse(
-    radius * 0.36,
-    -radius * 0.1,
-    radius * 0.48,
-    radius * 0.36,
-    0.4,
-    0,
-    Math.PI * 2,
-  );
-  ctx.fill();
-  ctx.globalAlpha = 0.5;
-  ctx.fillStyle = palette.leafC;
-  ctx.beginPath();
-  ctx.ellipse(
-    0,
-    -radius * 0.48,
-    radius * 0.42,
-    radius * 0.3,
-    0,
-    0,
-    Math.PI * 2,
-  );
-  ctx.fill();
 
   if (hovered || focused || zoom > 2) {
     ctx.globalAlpha = 1;
