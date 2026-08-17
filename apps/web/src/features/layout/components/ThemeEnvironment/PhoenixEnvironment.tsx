@@ -27,7 +27,11 @@ import {
   type PhoenixCamera,
   type PhoenixNode,
 } from "./phoenixWorld";
-import { useEnvironmentCanvas, resolveEnvironmentQualityTier } from "./shared";
+import {
+  useEnvironmentCanvas,
+  resolveEnvironmentQualityTier,
+  resolveEnvironmentThrottling,
+} from "./shared";
 import styles from "./phoenixEnvironment.module.css";
 
 export interface PhoenixEnvironmentProps {
@@ -101,7 +105,7 @@ const playEmberChime = (type: "pin" | "focus" = "pin"): void => {
 export const PhoenixEnvironment = ({
   isDarkMode,
   motionMode = "full",
-  qualityTier = "high",
+  qualityTier,
   paused,
   randomSeed,
   fixedTimestamp,
@@ -170,9 +174,12 @@ export const PhoenixEnvironment = ({
     };
   };
 
-  const isRunning = !paused && !reducedMotion && fixedTimestamp === undefined;
-  const frameThrottleMs =
-    PHOENIX_FRAME_BUDGET_MS[resolvedQuality] === 0 ? 0 : 1000 / 30;
+  const { isRunning, frameThrottleMs } = resolveEnvironmentThrottling(
+    resolvedQuality,
+    paused,
+    reducedMotion,
+    fixedTimestamp,
+  );
 
   const updateSparks = (deltaSeconds: number): void => {
     const sparks = dragSparksRef.current;

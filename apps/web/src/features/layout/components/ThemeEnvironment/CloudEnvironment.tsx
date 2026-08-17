@@ -74,7 +74,7 @@ const cloudAdapter = {
 export const CloudEnvironment = ({
   isDarkMode,
   motionMode = "full",
-  qualityTier = "high",
+  qualityTier,
   paused,
   randomSeed,
   fixedTimestamp,

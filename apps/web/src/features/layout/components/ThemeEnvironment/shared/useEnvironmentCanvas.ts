@@ -83,6 +83,19 @@ export function useEnvironmentCanvas({
   const drawRef = useRef(draw);
   drawRef.current = draw;
 
+  // Stable repaint function whose identity never changes, avoiding
+  // repeated effect runs in components that depend on it (e.g.
+  // HighveldEnvironment's font-loading and focus-change repaints).
+  const stableRepaint = useRef<() => void>(() => repaintRef.current());
+  if (!stableRepaint.current) {
+    stableRepaint.current = (): void => repaintRef.current();
+  }
+
+  // Persistent animation time origin: stays stable across effect runs so
+  // dependency changes (pinnedNodes, adapter updates, etc.) don't reset
+  // the animation clock mid-playback.
+  const startTimeRef = useRef<number>(performance.now());
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) {
@@ -97,7 +110,7 @@ export function useEnvironmentCanvas({
     let frameId = 0;
     let lastMark = 0;
     let lastTimestamp = performance.now();
-    const start = performance.now();
+    const start = startTimeRef.current;
 
     const resize = (): void => {
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -160,6 +173,6 @@ export function useEnvironmentCanvas({
 
   return {
     canvasRef,
-    repaint: (): void => repaintRef.current(),
+    repaint: stableRepaint.current,
   };
 }

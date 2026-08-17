@@ -7,7 +7,7 @@ the single entry point: it looks up the active theme's definition in
 `registry.ts` and mounts the matching renderer.
 
 This doc describes what's actually true today, after the
-theme-consolidation epic (Phases 0–2). It is not aspirational — if a claim
+theme-consolidation epic. It is not aspirational — if a claim
 here stops matching the code, fix the doc, don't leave it stale.
 
 ## The contract

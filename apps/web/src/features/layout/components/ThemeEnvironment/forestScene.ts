@@ -102,6 +102,83 @@ export interface ForestScene {
   hills: Array<{ y: number; height: number; depth: number }>;
 }
 
+// Gradient cache: keyed by palette identity (dark/light mode), rounded
+// radius, gradient type, and color palette. Reused across frames for
+// unchanged nodes, avoiding per-frame createRadialGradient/
+// createLinearGradient calls.
+const gradientCache = new Map<string, CanvasGradient>();
+
+const getCachedClumpGradient = (
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  light: string,
+  mid: string,
+  dark: string,
+): CanvasGradient => {
+  const roundedR = Math.round(r * 10) / 10;
+  const key = `clump:${roundedR}:${light}:${mid}:${dark}`;
+  let gradient = gradientCache.get(key);
+  if (!gradient) {
+    gradient = ctx.createRadialGradient(
+      cx - r * 0.35,
+      cy - r * 0.4,
+      r * 0.05,
+      cx,
+      cy,
+      r * 1.05,
+    );
+    gradient.addColorStop(0, light);
+    gradient.addColorStop(0.6, mid);
+    gradient.addColorStop(1, dark);
+    gradientCache.set(key, gradient);
+  }
+  return gradient;
+};
+
+const getCachedAccentGradient = (
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  size: number,
+  color: string,
+): CanvasGradient => {
+  const roundedSize = Math.round(size * 10) / 10;
+  const key = `accent:${roundedSize}:${color}`;
+  let gradient = gradientCache.get(key);
+  if (!gradient) {
+    gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, size);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, `${color}00`);
+    gradientCache.set(key, gradient);
+  }
+  return gradient;
+};
+
+const getCachedPineGradient = (
+  ctx: CanvasRenderingContext2D,
+  tierW: number,
+  tierY: number,
+  tierH: number,
+  light: string,
+  mid: string,
+  dark: string,
+): CanvasGradient => {
+  const roundedW = Math.round(tierW * 10) / 10;
+  const roundedH = Math.round(tierH * 10) / 10;
+  const key = `pine:${roundedW}:${roundedH}:${light}:${mid}:${dark}`;
+  let gradient = gradientCache.get(key);
+  if (!gradient) {
+    gradient = ctx.createLinearGradient(-tierW, tierY, tierW, tierY + tierH);
+    gradient.addColorStop(0, light);
+    gradient.addColorStop(0.55, mid);
+    gradient.addColorStop(1, dark);
+    gradientCache.set(key, gradient);
+  }
+  return gradient;
+};
+
 export interface DrawForestSceneOptions {
   ctx: CanvasRenderingContext2D;
   width: number;
@@ -380,17 +457,7 @@ const fillForestClump = (
   mid: string,
   dark: string,
 ): void => {
-  const gradient = ctx.createRadialGradient(
-    cx - r * 0.35,
-    cy - r * 0.4,
-    r * 0.05,
-    cx,
-    cy,
-    r * 1.05,
-  );
-  gradient.addColorStop(0, light);
-  gradient.addColorStop(0.6, mid);
-  gradient.addColorStop(1, dark);
+  const gradient = getCachedClumpGradient(ctx, cx, cy, r, light, mid, dark);
   ctx.fillStyle = gradient;
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -417,9 +484,7 @@ const drawForestClumpAccents = (
     const color = rng() < 0.7 ? palette.leafB : palette.leafC;
     // Dappled light: a soft radial fade to transparent, not a flat dot,
     // so it reads as a highlight rather than a pasted-on sticker.
-    const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, size);
-    gradient.addColorStop(0, color);
-    gradient.addColorStop(1, `${color}00`);
+    const gradient = getCachedAccentGradient(ctx, cx, cy, size, color);
     ctx.globalAlpha = color === palette.leafC ? 0.5 : 0.4;
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -528,15 +593,15 @@ const drawForestPine = (
     const rightY = tierY + tierH;
     const leftX = -tierW;
     const light = t === tiers - 1 ? palette.pineLight : palette.pineMid;
-    const gradient = ctx.createLinearGradient(
-      -tierW,
-      tierY,
+    const gradient = getCachedPineGradient(
+      ctx,
       tierW,
-      tierY + tierH,
+      tierY,
+      tierH,
+      light,
+      palette.pineMid,
+      palette.pineDark,
     );
-    gradient.addColorStop(0, light);
-    gradient.addColorStop(0.55, palette.pineMid);
-    gradient.addColorStop(1, palette.pineDark);
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(apexX, apexY);

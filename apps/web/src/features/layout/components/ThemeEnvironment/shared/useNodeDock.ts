@@ -43,6 +43,7 @@ export interface UseNodeDockResult<TNode> {
   tooltip: TooltipState<TNode> | null;
   setTooltip: (tooltip: TooltipState<TNode> | null) => void;
   pinnedNodes: TNode[];
+  targetZoom: number;
   handleTogglePin: (node: TNode) => void;
   handleUnpin: (nodeId: string) => void;
   handleCloseAllPinned: () => void;
@@ -66,6 +67,7 @@ export function useNodeDock<TNode extends DockableNode>({
 }: UseNodeDockOptions<TNode>): UseNodeDockResult<TNode> {
   const [tooltip, setTooltip] = useState<TooltipState<TNode> | null>(null);
   const [pinnedNodes, setPinnedNodes] = useState<TNode[]>([]);
+  const [targetZoom, setTargetZoom] = useState<number>(overviewCamera.zoom);
 
   const handleTogglePin = (node: TNode): void => {
     onPin?.(node);
@@ -84,6 +86,7 @@ export function useNodeDock<TNode extends DockableNode>({
 
   const handleCloseAllPinned = (): void => {
     setPinnedNodes([]);
+    setTargetZoom(overviewCamera.zoom);
     cameraRef.current = {
       ...cameraRef.current,
       target: { ...overviewCamera },
@@ -92,6 +95,7 @@ export function useNodeDock<TNode extends DockableNode>({
 
   const handleFocusNode = (node: TNode): void => {
     onFocus?.(node);
+    setTargetZoom(focusZoom);
     cameraRef.current = {
       ...cameraRef.current,
       target: { cx: node.x, cy: node.y, zoom: focusZoom },
@@ -99,6 +103,7 @@ export function useNodeDock<TNode extends DockableNode>({
   };
 
   const handleResetCamera = (): void => {
+    setTargetZoom(overviewCamera.zoom);
     cameraRef.current = {
       ...cameraRef.current,
       target: { ...overviewCamera },
@@ -109,6 +114,7 @@ export function useNodeDock<TNode extends DockableNode>({
     tooltip,
     setTooltip,
     pinnedNodes,
+    targetZoom,
     handleTogglePin,
     handleUnpin,
     handleCloseAllPinned,

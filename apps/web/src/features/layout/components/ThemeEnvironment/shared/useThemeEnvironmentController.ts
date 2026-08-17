@@ -124,7 +124,7 @@ export function useThemeEnvironmentController<
   adapter,
   isDarkMode,
   motionMode = "full",
-  qualityTier = "high",
+  qualityTier,
   paused,
   randomSeed,
   fixedTimestamp,
@@ -148,14 +148,15 @@ export function useThemeEnvironmentController<
   );
   const scene = useMemo(
     () => adapter.createScene(seed, resolvedQuality),
-    [adapter, seed, resolvedQuality],
+    [adapter.createScene, seed, resolvedQuality],
   );
-  const nodes = useMemo(() => adapter.createNodes(), [adapter]);
+  const nodes = useMemo(() => adapter.createNodes(), [adapter.createNodes]);
 
   const {
     tooltip,
     setTooltip,
     pinnedNodes,
+    targetZoom,
     handleTogglePin,
     handleUnpin,
     handleCloseAllPinned,
@@ -180,8 +181,11 @@ export function useThemeEnvironmentController<
     fixedTimestamp === undefined &&
     adapter.frameBudgetMs[resolvedQuality] > 0;
 
+  const frameThrottleMs = adapter.frameBudgetMs[resolvedQuality];
+
   const { canvasRef } = useEnvironmentCanvas({
     isRunning,
+    frameThrottleMs,
     fixedTimestamp,
     draw: (context, { width, height, timeMs, deltaSeconds }) => {
       const targetMode = isDarkMode ? 1.0 : 0.0;
@@ -217,7 +221,8 @@ export function useThemeEnvironmentController<
       });
     },
     deps: [
-      adapter,
+      adapter.drawScene,
+      adapter.lerpCamera,
       isDarkMode,
       reducedMotion,
       paused,
@@ -307,7 +312,7 @@ export function useThemeEnvironmentController<
     "data-seed": seed,
     "data-time": fixedTimestamp ?? 0,
     "data-frame-budget": adapter.frameBudgetMs[resolvedQuality],
-    [`data-${adapter.themeKey}-zoom`]: cameraRef.current.zoom.toFixed(2),
+    [`data-${adapter.themeKey}-zoom`]: targetZoom.toFixed(2),
     [`data-${adapter.themeKey}-node-count`]: nodes.length,
   };
 

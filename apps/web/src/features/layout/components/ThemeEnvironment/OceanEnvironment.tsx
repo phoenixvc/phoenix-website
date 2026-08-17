@@ -74,7 +74,7 @@ const oceanAdapter = {
 export const OceanEnvironment = ({
   isDarkMode,
   motionMode = "full",
-  qualityTier = "high",
+  qualityTier,
   paused,
   randomSeed,
   fixedTimestamp,

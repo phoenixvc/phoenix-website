@@ -24,7 +24,11 @@ import {
   type ForestCamera,
   type ForestNode,
 } from "./forestWorld";
-import { useEnvironmentCanvas, resolveEnvironmentQualityTier } from "./shared";
+import {
+  useEnvironmentCanvas,
+  resolveEnvironmentQualityTier,
+  resolveEnvironmentThrottling,
+} from "./shared";
 import styles from "./forestEnvironment.module.css";
 
 interface ForestEnvironmentProps {
@@ -66,9 +70,12 @@ const ForestEnvironment = ({
   const focusedIdRef = useRef<string | null>(null);
   focusedIdRef.current = focusedId;
 
-  const isRunning = !paused && !reducedMotion && fixedTimestamp === undefined;
-  const frameThrottleMs =
-    FOREST_FRAME_BUDGET_MS[resolvedQuality] === 0 ? 0 : 1000 / 30;
+  const { isRunning, frameThrottleMs } = resolveEnvironmentThrottling(
+    resolvedQuality,
+    paused,
+    reducedMotion,
+    fixedTimestamp,
+  );
 
   const { canvasRef } = useEnvironmentCanvas({
     isRunning,

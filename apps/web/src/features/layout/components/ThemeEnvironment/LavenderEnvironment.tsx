@@ -74,7 +74,7 @@ const lavenderAdapter = {
 export const LavenderEnvironment = ({
   isDarkMode,
   motionMode = "full",
-  qualityTier = "high",
+  qualityTier,
   paused,
   randomSeed,
   fixedTimestamp,

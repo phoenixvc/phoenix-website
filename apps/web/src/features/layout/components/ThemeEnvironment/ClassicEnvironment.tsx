@@ -74,7 +74,7 @@ const classicAdapter = {
 export const ClassicEnvironment = ({
   isDarkMode,
   motionMode = "full",
-  qualityTier = "high",
+  qualityTier,
   paused,
   randomSeed,
   fixedTimestamp,

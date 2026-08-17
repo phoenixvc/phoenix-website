@@ -125,6 +125,7 @@ export function EnvironmentTooltipDock<TNode extends DockableTooltipNode>({
                   size="unstyled"
                   className={styles.dockCardRemove}
                   onClick={() => onUnpin(pNode.id)}
+                  aria-label={`Unpin ${pNode.name}`}
                 >
                   ×
                 </Button>

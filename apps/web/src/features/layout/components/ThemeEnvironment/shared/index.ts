@@ -20,6 +20,7 @@ export {
   type EnvironmentTooltipDockProps,
 } from "./EnvironmentTooltipDock";
 export { resolveEnvironmentQualityTier } from "./resolveEnvironmentQualityTier";
+export { resolveEnvironmentThrottling } from "./resolveEnvironmentThrottling";
 export {
   createThemeTonePlayer,
   type ThemeToneConfig,
