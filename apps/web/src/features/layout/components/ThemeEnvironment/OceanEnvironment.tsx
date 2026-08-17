@@ -49,6 +49,28 @@ const playOceanTone = createThemeTonePlayer({
   vibrateMs: 10,
 });
 
+/**
+ * Built once at module scope (like `playOceanTone` above) rather than as an
+ * inline object literal inside the component: every field here is already a
+ * stable module-level reference, so a fresh literal on each render would
+ * just defeat `useThemeEnvironmentController`'s internal `useMemo`s (keyed
+ * on `adapter`) and force its canvas effect to tear down/rebuild every
+ * render for no reason.
+ */
+const oceanAdapter = {
+  themeKey: "ocean",
+  defaultSeed: OCEAN_DEFAULT_SEED,
+  frameBudgetMs: OCEAN_FRAME_BUDGET_MS,
+  overviewCamera: OCEAN_OVERVIEW_CAMERA,
+  createScene: createOceanScene,
+  createNodes: createOceanNodes,
+  drawScene: drawOceanScene,
+  lerpCamera: lerpOceanCamera,
+  pickNode: pickOceanNode,
+  worldToScreen,
+  playTone: playOceanTone,
+};
+
 export const OceanEnvironment = ({
   isDarkMode,
   motionMode = "full",
@@ -77,19 +99,7 @@ export const OceanEnvironment = ({
     paused,
     randomSeed,
     fixedTimestamp,
-    adapter: {
-      themeKey: "ocean",
-      defaultSeed: OCEAN_DEFAULT_SEED,
-      frameBudgetMs: OCEAN_FRAME_BUDGET_MS,
-      overviewCamera: OCEAN_OVERVIEW_CAMERA,
-      createScene: createOceanScene,
-      createNodes: createOceanNodes,
-      drawScene: drawOceanScene,
-      lerpCamera: lerpOceanCamera,
-      pickNode: pickOceanNode,
-      worldToScreen,
-      playTone: playOceanTone,
-    },
+    adapter: oceanAdapter,
   });
 
   return (

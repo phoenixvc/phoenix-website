@@ -49,6 +49,28 @@ const playLavenderTone = createThemeTonePlayer({
   vibrateMs: 10,
 });
 
+/**
+ * Built once at module scope (like `playLavenderTone` above) rather than as
+ * an inline object literal inside the component: every field here is
+ * already a stable module-level reference, so a fresh literal on each
+ * render would just defeat `useThemeEnvironmentController`'s internal
+ * `useMemo`s (keyed on `adapter`) and force its canvas effect to tear
+ * down/rebuild every render for no reason.
+ */
+const lavenderAdapter = {
+  themeKey: "lavender",
+  defaultSeed: LAVENDER_DEFAULT_SEED,
+  frameBudgetMs: LAVENDER_FRAME_BUDGET_MS,
+  overviewCamera: LAVENDER_OVERVIEW_CAMERA,
+  createScene: createLavenderScene,
+  createNodes: createLavenderNodes,
+  drawScene: drawLavenderScene,
+  lerpCamera: lerpLavenderCamera,
+  pickNode: pickLavenderNode,
+  worldToScreen,
+  playTone: playLavenderTone,
+};
+
 export const LavenderEnvironment = ({
   isDarkMode,
   motionMode = "full",
@@ -77,19 +99,7 @@ export const LavenderEnvironment = ({
     paused,
     randomSeed,
     fixedTimestamp,
-    adapter: {
-      themeKey: "lavender",
-      defaultSeed: LAVENDER_DEFAULT_SEED,
-      frameBudgetMs: LAVENDER_FRAME_BUDGET_MS,
-      overviewCamera: LAVENDER_OVERVIEW_CAMERA,
-      createScene: createLavenderScene,
-      createNodes: createLavenderNodes,
-      drawScene: drawLavenderScene,
-      lerpCamera: lerpLavenderCamera,
-      pickNode: pickLavenderNode,
-      worldToScreen,
-      playTone: playLavenderTone,
-    },
+    adapter: lavenderAdapter,
   });
 
   return (

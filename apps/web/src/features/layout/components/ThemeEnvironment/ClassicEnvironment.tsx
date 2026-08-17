@@ -49,6 +49,28 @@ const playClassicTone = createThemeTonePlayer({
   vibrateMs: 8,
 });
 
+/**
+ * Built once at module scope (like `playClassicTone` above) rather than as
+ * an inline object literal inside the component: every field here is
+ * already a stable module-level reference, so a fresh literal on each
+ * render would just defeat `useThemeEnvironmentController`'s internal
+ * `useMemo`s (keyed on `adapter`) and force its canvas effect to tear
+ * down/rebuild every render for no reason.
+ */
+const classicAdapter = {
+  themeKey: "classic",
+  defaultSeed: CLASSIC_DEFAULT_SEED,
+  frameBudgetMs: CLASSIC_FRAME_BUDGET_MS,
+  overviewCamera: CLASSIC_OVERVIEW_CAMERA,
+  createScene: createClassicScene,
+  createNodes: createClassicNodes,
+  drawScene: drawClassicScene,
+  lerpCamera: lerpClassicCamera,
+  pickNode: pickClassicNode,
+  worldToScreen,
+  playTone: playClassicTone,
+};
+
 export const ClassicEnvironment = ({
   isDarkMode,
   motionMode = "full",
@@ -77,19 +99,7 @@ export const ClassicEnvironment = ({
     paused,
     randomSeed,
     fixedTimestamp,
-    adapter: {
-      themeKey: "classic",
-      defaultSeed: CLASSIC_DEFAULT_SEED,
-      frameBudgetMs: CLASSIC_FRAME_BUDGET_MS,
-      overviewCamera: CLASSIC_OVERVIEW_CAMERA,
-      createScene: createClassicScene,
-      createNodes: createClassicNodes,
-      drawScene: drawClassicScene,
-      lerpCamera: lerpClassicCamera,
-      pickNode: pickClassicNode,
-      worldToScreen,
-      playTone: playClassicTone,
-    },
+    adapter: classicAdapter,
   });
 
   return (

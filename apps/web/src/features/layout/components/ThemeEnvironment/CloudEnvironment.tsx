@@ -49,6 +49,28 @@ const playCloudTone = createThemeTonePlayer({
   vibrateMs: 10,
 });
 
+/**
+ * Built once at module scope (like `playCloudTone` above) rather than as an
+ * inline object literal inside the component: every field here is already a
+ * stable module-level reference, so a fresh literal on each render would
+ * just defeat `useThemeEnvironmentController`'s internal `useMemo`s (keyed
+ * on `adapter`) and force its canvas effect to tear down/rebuild every
+ * render for no reason.
+ */
+const cloudAdapter = {
+  themeKey: "cloud",
+  defaultSeed: CLOUD_DEFAULT_SEED,
+  frameBudgetMs: CLOUD_FRAME_BUDGET_MS,
+  overviewCamera: CLOUD_OVERVIEW_CAMERA,
+  createScene: createCloudScene,
+  createNodes: createCloudNodes,
+  drawScene: drawCloudScene,
+  lerpCamera: lerpCloudCamera,
+  pickNode: pickCloudNode,
+  worldToScreen,
+  playTone: playCloudTone,
+};
+
 export const CloudEnvironment = ({
   isDarkMode,
   motionMode = "full",
@@ -77,19 +99,7 @@ export const CloudEnvironment = ({
     paused,
     randomSeed,
     fixedTimestamp,
-    adapter: {
-      themeKey: "cloud",
-      defaultSeed: CLOUD_DEFAULT_SEED,
-      frameBudgetMs: CLOUD_FRAME_BUDGET_MS,
-      overviewCamera: CLOUD_OVERVIEW_CAMERA,
-      createScene: createCloudScene,
-      createNodes: createCloudNodes,
-      drawScene: drawCloudScene,
-      lerpCamera: lerpCloudCamera,
-      pickNode: pickCloudNode,
-      worldToScreen,
-      playTone: playCloudTone,
-    },
+    adapter: cloudAdapter,
   });
 
   return (
