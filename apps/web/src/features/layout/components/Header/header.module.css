@@ -844,26 +844,44 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Theme color indicators */
-.themeColorIndicator[data-theme="classic"] {
-  background: linear-gradient(135deg, #6c757d, #212529);
-}
-
+/* Theme color indicators — one per THEME_CATALOG_ORDER entry (catalog.ts).
+   Previously only classic/cosmic-frontier/forest had a swatch: "forest",
+   "ocean-depths", and "neon-city" were leftover ids from a prior naming
+   scheme (none match a current ThemeName), and highveld/phoenix/ocean/
+   cloud/lavender never got a rule added at all, so those five rendered
+   with no color. Each pairs the theme's own primary accent (from its
+   theme/constants/themes/*.ts color scheme) with its dark-mode
+   background, matching the style already used for forest/classic. */
 .themeColorIndicator[data-theme="cosmic-frontier"] {
   background: linear-gradient(135deg, #9333ea, #7c3aed);
 }
 
-.themeColorIndicator[data-theme="neon-city"] {
-  background: linear-gradient(135deg, #00ffcc, #0077ff);
-}
-
-.themeColorIndicator[data-theme="forest-calm"],
 .themeColorIndicator[data-theme="forest"] {
   background: linear-gradient(135deg, #3f8f5a, #0a1610);
 }
 
-.themeColorIndicator[data-theme="ocean-depths"] {
-  background: linear-gradient(135deg, #03a9f4, #0d47a1);
+.themeColorIndicator[data-theme="highveld"] {
+  background: linear-gradient(135deg, #e0653a, #241f17);
+}
+
+.themeColorIndicator[data-theme="phoenix"] {
+  background: linear-gradient(135deg, #f97316, #1c130d);
+}
+
+.themeColorIndicator[data-theme="ocean"] {
+  background: linear-gradient(135deg, #00f0ff, #0a2540);
+}
+
+.themeColorIndicator[data-theme="cloud"] {
+  background: linear-gradient(135deg, #60a5fa, #0f172a);
+}
+
+.themeColorIndicator[data-theme="lavender"] {
+  background: linear-gradient(135deg, #c084fc, #1e1b4b);
+}
+
+.themeColorIndicator[data-theme="classic"] {
+  background: linear-gradient(135deg, #6c757d, #212529);
 }
 
 .comingSoonBadge {
