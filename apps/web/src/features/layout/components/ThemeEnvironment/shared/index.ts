@@ -20,3 +20,15 @@ export {
   type EnvironmentTooltipDockProps,
 } from "./EnvironmentTooltipDock";
 export { resolveEnvironmentQualityTier } from "./resolveEnvironmentQualityTier";
+export {
+  createThemeTonePlayer,
+  type ThemeToneConfig,
+  type ThemeToneStage,
+} from "./createThemeTonePlayer";
+export {
+  useThemeEnvironmentController,
+  type ThemeEnvironmentAdapter,
+  type ThemeEnvironmentSceneArgs,
+  type UseThemeEnvironmentControllerOptions,
+  type UseThemeEnvironmentControllerResult,
+} from "./useThemeEnvironmentController";
