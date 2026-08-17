@@ -2,61 +2,31 @@ import {
   FOCUS_AREA_CONFIG,
   PORTFOLIO_PROJECTS,
 } from "@/constants/portfolioData";
+import {
+  ENVIRONMENT_OVERVIEW_CAMERA,
+  ringPoint,
+  worldToScreen,
+  pickEnvironmentNode,
+  lerpEnvironmentCamera,
+  type EnvironmentCamera,
+  type EnvironmentNodeBase,
+} from "./shared";
 
 export type ClassicNodeKind = "schematic" | "node" | "vector";
 
-export interface ClassicNode {
-  id: string;
+export interface ClassicNode extends EnvironmentNodeBase {
   kind: ClassicNodeKind;
-  name: string;
-  subtitle: string;
-  description: string;
-  x: number;
-  y: number;
   elevation: number;
-  radius: number;
-  accent: string;
-  glow: string;
-  href: string;
-  metric?: string;
-  parentId?: string;
-  initials?: string;
 }
 
-export interface ClassicCamera {
-  cx: number;
-  cy: number;
-  zoom: number;
-  target?: {
-    cx: number;
-    cy: number;
-    zoom: number;
-  };
-}
+export type ClassicCamera = EnvironmentCamera;
 
 export const CLASSIC_OVERVIEW_CAMERA: ClassicCamera = {
-  cx: 0.5,
-  cy: 0.5,
-  zoom: 1,
+  ...ENVIRONMENT_OVERVIEW_CAMERA,
 };
 
 export const CLASSIC_SCHEMATIC_ZOOM = 2.4;
 export const CLASSIC_DETAIL_ZOOM = 3.8;
-
-const ringPoint = (
-  cx: number,
-  cy: number,
-  radius: number,
-  index: number,
-  total: number,
-  offset = -Math.PI / 2,
-): { x: number; y: number } => {
-  const angle = offset + (index / Math.max(total, 1)) * Math.PI * 2;
-  return {
-    x: cx + Math.cos(angle) * radius,
-    y: cy + Math.sin(angle) * radius,
-  };
-};
 
 export const createClassicNodes = (): ClassicNode[] => {
   const nodes: ClassicNode[] = [];
@@ -114,18 +84,7 @@ export const createClassicNodes = (): ClassicNode[] => {
   return nodes;
 };
 
-export const worldToScreen = (
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  camera: ClassicCamera,
-): { x: number; y: number; scale: number } => {
-  const scale = camera.zoom;
-  const screenX = width * 0.5 + (x - camera.cx) * width * scale;
-  const screenY = height * 0.5 + (y - camera.cy) * height * scale;
-  return { x: screenX, y: screenY, scale };
-};
+export { worldToScreen };
 
 export const pickClassicNode = (
   screenX: number,
@@ -134,36 +93,10 @@ export const pickClassicNode = (
   height: number,
   camera: ClassicCamera,
   nodes: ClassicNode[],
-): ClassicNode | null => {
-  for (let i = nodes.length - 1; i >= 0; i--) {
-    const node = nodes[i];
-    const pos = worldToScreen(node.x, node.y, width, height, camera);
-    const hitRadius = (node.radius + 14) * pos.scale;
-    const dx = screenX - pos.x;
-    const dy = screenY - pos.y;
-    if (dx * dx + dy * dy <= hitRadius * hitRadius) {
-      return node;
-    }
-  }
-  return null;
-};
+): ClassicNode | null =>
+  pickEnvironmentNode(screenX, screenY, width, height, camera, nodes);
 
 export const lerpClassicCamera = (
   camera: ClassicCamera,
   speed = 0.08,
-): ClassicCamera => {
-  const target = camera.target ?? {
-    cx: camera.cx,
-    cy: camera.cy,
-    zoom: camera.zoom,
-  };
-  const cx = camera.cx + (target.cx - camera.cx) * speed;
-  const cy = camera.cy + (target.cy - camera.cy) * speed;
-  const zoom = camera.zoom + (target.zoom - camera.zoom) * speed;
-  return {
-    cx,
-    cy,
-    zoom,
-    target: camera.target,
-  };
-};
+): ClassicCamera => lerpEnvironmentCamera(camera, speed);

@@ -32,3 +32,12 @@ export {
   type UseThemeEnvironmentControllerOptions,
   type UseThemeEnvironmentControllerResult,
 } from "./useThemeEnvironmentController";
+export {
+  ENVIRONMENT_OVERVIEW_CAMERA,
+  ringPoint,
+  worldToScreen,
+  pickEnvironmentNode,
+  lerpEnvironmentCamera,
+  type EnvironmentCamera,
+  type EnvironmentNodeBase,
+} from "./environmentWorldMath";
