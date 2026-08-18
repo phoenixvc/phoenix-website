@@ -339,7 +339,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     projects: ["PR Analysis", "Issue Management", "Multi-Agent Collaboration"],
     skills: ["AI", "Automation", "GitHub", "DevOps", "Python"],
     relatedProjects: ["cognitivemesh", "mystira", "sluice"],
-    product: "https://github.com/phoenixvc/codeflow-engine",
+    product: "https://github.com/celladore/codeflow-engine",
     focusArea: "ai-ml",
   },
   {
