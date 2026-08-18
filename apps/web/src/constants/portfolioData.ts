@@ -193,7 +193,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     ],
     skills: ["Multi-Agent", "Enterprise", "Security", "Governance"],
     relatedProjects: ["mystira", "nexamesh"],
-    product: "https://github.com/phoenixvc/cognitive-mesh",
+    product: "https://github.com/neuralliquid/cognitive-mesh",
     focusArea: "ai-ml",
   },
 
@@ -339,7 +339,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     projects: ["PR Analysis", "Issue Management", "Multi-Agent Collaboration"],
     skills: ["AI", "Automation", "GitHub", "DevOps", "Python"],
     relatedProjects: ["cognitivemesh", "mystira", "sluice"],
-    product: "https://github.com/phoenixvc/codeflow-engine",
+    product: "https://github.com/celladore/codeflow-engine",
     focusArea: "ai-ml",
   },
   {
@@ -362,7 +362,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     projects: ["Model Routing", "Cost Controls", "Provider Abstraction"],
     skills: ["AI", "Gateway", "LiteLLM", "Azure", "Infrastructure"],
     relatedProjects: ["docket", "autopr", "cognitivemesh"],
-    product: "https://github.com/phoenixvc/sluice",
+    product: "https://github.com/celladore/sluice",
     focusArea: "ai-ml",
   },
   {
@@ -481,7 +481,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     projects: ["Shared Task Graph", "Agent Coordination", "Repository Sync"],
     skills: ["Agents", "MCP", "Planning", "Coordination"],
     relatedProjects: ["cognitivemesh", "convolens", "house-of-veritas"],
-    product: "https://github.com/phoenixvc/baton",
+    product: "https://github.com/celladore/baton",
     focusArea: "infrastructure",
   },
   {
