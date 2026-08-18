@@ -31,6 +31,8 @@ interface NonCosmicEnvironmentProps {
   paused: boolean;
   randomSeed?: number;
   fixedTimestamp?: number;
+  /** Current sidebar width in px, from Layout. Only Forest consumes this today (to re-center its camera-framed scene); other renderers may ignore it. */
+  sidebarWidth?: number;
 }
 
 /**
@@ -51,7 +53,7 @@ const NON_COSMIC_RENDERERS: Record<
 };
 
 const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
-  ({ themeName, isDarkMode, fixture, ...runtimeProps }, ref) => {
+  ({ themeName, isDarkMode, fixture, sidebarWidth, ...runtimeProps }, ref) => {
     const prefersReducedMotion = useReducedMotion();
     const [pageVisible, setPageVisible] = useState(
       () => typeof document === "undefined" || !document.hidden,
@@ -98,6 +100,7 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
             paused={paused}
             randomSeed={fixture?.seed}
             fixedTimestamp={fixture?.timeMs}
+            sidebarWidth={sidebarWidth}
           />
         )}
         {definition.rendererId === "cosmic-starfield" && (
@@ -110,6 +113,7 @@ const ThemeEnvironment = forwardRef<StarfieldRef, ThemeEnvironmentProps>(
             qualityTier={fixture?.qualityTier}
             randomSeed={fixture?.seed}
             fixedTimestamp={fixture?.timeMs}
+            sidebarWidth={sidebarWidth}
           />
         )}
       </div>

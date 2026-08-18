@@ -163,14 +163,20 @@ export const lerpForestCamera = (
   return next;
 };
 
+// `centerOffsetX` shifts the world's screen-space origin off the canvas's
+// true horizontal center. The forest canvas spans the full viewport behind
+// the sidebar, so without this the camera-framed scene centers on the whole
+// window instead of the content area actually visible next to it — pass
+// half the sidebar's width to re-center on the visible area.
 export const worldToScreen = (
   x: number,
   y: number,
   camera: ForestCamera,
   width: number,
   height: number,
+  centerOffsetX = 0,
 ): { x: number; y: number } => ({
-  x: (x - camera.cx) * camera.zoom * width + width / 2,
+  x: (x - camera.cx) * camera.zoom * width + width / 2 + centerOffsetX,
   y: (y - camera.cy) * camera.zoom * height + height / 2,
 });
 
@@ -180,8 +186,9 @@ export const screenToWorld = (
   camera: ForestCamera,
   width: number,
   height: number,
+  centerOffsetX = 0,
 ): { x: number; y: number } => ({
-  x: camera.cx + (x - width / 2) / (camera.zoom * width),
+  x: camera.cx + (x - width / 2 - centerOffsetX) / (camera.zoom * width),
   y: camera.cy + (y - height / 2) / (camera.zoom * height),
 });
 
@@ -192,13 +199,14 @@ export const pickForestNode = (
   camera: ForestCamera,
   width: number,
   height: number,
+  centerOffsetX = 0,
 ): ForestNode | null => {
   let closest: ForestNode | null = null;
   let closestDistance = Number.POSITIVE_INFINITY;
   const minSize = Math.min(width, height);
 
   nodes.forEach((node) => {
-    const screen = worldToScreen(node.x, node.y, camera, width, height);
+    const screen = worldToScreen(node.x, node.y, camera, width, height, centerOffsetX);
     const radius = Math.max(36, node.radius * camera.zoom * minSize);
     const distance = Math.hypot(pointerX - screen.x, pointerY - screen.y);
     if (distance <= radius && distance < closestDistance) {

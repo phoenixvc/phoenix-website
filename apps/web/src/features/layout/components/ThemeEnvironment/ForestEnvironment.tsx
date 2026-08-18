@@ -38,6 +38,8 @@ interface ForestEnvironmentProps {
   paused: boolean;
   randomSeed?: number;
   fixedTimestamp?: number;
+  /** Current sidebar width in px, from Layout — used to re-center the camera-framed scene on the visible content area. */
+  sidebarWidth?: number;
 }
 
 const ForestEnvironment = ({
@@ -47,10 +49,15 @@ const ForestEnvironment = ({
   paused,
   randomSeed,
   fixedTimestamp,
+  sidebarWidth,
 }: ForestEnvironmentProps): ReactElement => {
   const pointerRef = useRef<ForestPointer | null>(null);
   const cameraRef = useRef<ForestCamera>(FOREST_OVERVIEW_CAMERA);
   const nodes = useMemo(() => createForestNodes(), []);
+  // The canvas spans the full viewport behind the sidebar, so the camera's
+  // screen-space origin needs shifting right by half the sidebar's width
+  // to stay centered on the content area actually visible beside it.
+  const centerOffsetX = (sidebarWidth ?? 0) / 2;
   const reducedMotion = motionMode === "reduced";
   const seed = randomSeed ?? FOREST_DEFAULT_SEED;
   const resolvedQuality = useMemo(
@@ -103,9 +110,18 @@ const ForestEnvironment = ({
         qualityTier: resolvedQuality,
         pointer: pointerRef.current,
         reducedMotion,
+        centerOffsetX,
       });
     },
-    deps: [isDarkMode, nodes, paused, reducedMotion, resolvedQuality, scene],
+    deps: [
+      centerOffsetX,
+      isDarkMode,
+      nodes,
+      paused,
+      reducedMotion,
+      resolvedQuality,
+      scene,
+    ],
   });
 
   const focusNode = useCallback(
@@ -156,6 +172,7 @@ const ForestEnvironment = ({
         cameraRef.current,
         canvas.clientWidth,
         canvas.clientHeight,
+        centerOffsetX,
       );
       hoveredIdRef.current = node?.id ?? null;
       setHovered(node);
@@ -181,6 +198,7 @@ const ForestEnvironment = ({
         cameraRef.current,
         canvas.clientWidth,
         canvas.clientHeight,
+        centerOffsetX,
       );
       if (!node) {
         // No dedicated "whole forest" button anymore — clicking empty
@@ -231,7 +249,16 @@ const ForestEnvironment = ({
       window.removeEventListener("wheel", onWheel, true);
       document.body.style.cursor = "";
     };
-  }, [canvasRef, focusNode, navigate, nodes, paused, reducedMotion, resetView]);
+  }, [
+    canvasRef,
+    centerOffsetX,
+    focusNode,
+    navigate,
+    nodes,
+    paused,
+    reducedMotion,
+    resetView,
+  ]);
 
   return (
     <>
