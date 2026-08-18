@@ -187,12 +187,15 @@ test.describe("Forest theme contract", () => {
     // directly on canvas, matching the Ocean/Cloud/Lavender/Classic
     // quartet's interaction pattern. Coordinates are for the deterministic
     // static fixture (seed 20260809) at the default 1280x720 test
-    // viewport: (880, 190) lands on the "Portfolio Glade" grove,
+    // viewport with the sidebar open (220px, not mobile): the camera's
+    // screen origin is offset right by half that width (110px) so the
+    // scene centers on the visible content area rather than the full
+    // window — (1006, 259) lands on the "Portfolio Glade" grove's center,
     // (1250, 650) is empty canopy (clear of both the header and any node).
     await page.goto(forestFixtureUrl, { waitUntil: "domcontentloaded" });
     const canopy = page.locator("[data-forest-canopy]");
     await expect(canopy.locator("canvas")).toBeVisible();
-    await page.mouse.click(880, 190);
+    await page.mouse.click(1006, 259);
     await expect(canopy).toHaveAttribute(
       "data-forest-focus",
       "portfolio-grove",

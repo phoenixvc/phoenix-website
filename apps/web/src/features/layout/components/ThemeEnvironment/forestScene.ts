@@ -11,10 +11,13 @@ export const FOREST_FRAME_BUDGET_MS = {
   high: 8,
 } as const;
 
+// `leaves` and `fireflies` (pixel motes of kind "firefly") are halved from
+// their original densities per request. `pixels` now covers only the
+// pollen/spore/seed motes — see the firefly split in createForestScene.
 export const FOREST_SCENE_LIMITS = {
-  low: { leaves: 24, insects: 2, shafts: 3, pixels: 90, parallax: 0.15 },
-  medium: { leaves: 52, insects: 10, shafts: 4, pixels: 240, parallax: 0.4 },
-  high: { leaves: 84, insects: 16, shafts: 5, pixels: 420, parallax: 0.75 },
+  low: { leaves: 12, insects: 2, shafts: 3, pixels: 65, fireflies: 13, parallax: 0.15 },
+  medium: { leaves: 26, insects: 10, shafts: 4, pixels: 173, fireflies: 34, parallax: 0.4 },
+  high: { leaves: 42, insects: 16, shafts: 5, pixels: 302, fireflies: 59, parallax: 0.75 },
 } as const;
 
 export const FOREST_DAY_CYCLE_MS = 60_000;
@@ -193,6 +196,8 @@ export interface DrawForestSceneOptions {
   qualityTier: EnvironmentQualityTier;
   pointer: ForestPointer | null;
   reducedMotion: boolean;
+  /** Half the sidebar width, in px — re-centers the camera-framed scene on the visible content area instead of the full viewport. See worldToScreen in forestWorld.ts. */
+  centerOffsetX?: number;
 }
 
 const createRng = (seed: number): (() => number) => {
@@ -330,32 +335,45 @@ export const createForestScene = (
     alpha: 0.08 + rng() * 0.1,
   }));
 
-  const pixels: PixelMote[] = Array.from({ length: limits.pixels }, () => {
-    const roll = rng();
-    const kind: PixelMote["kind"] =
-      roll > 0.72
-        ? "firefly"
-        : roll > 0.42
-          ? "pollen"
-          : roll > 0.18
-            ? "spore"
-            : "seed";
-    return {
-      kind,
+  // Fireflies get their own dedicated count (FOREST_SCENE_LIMITS.fireflies)
+  // instead of being a probabilistic slice of the shared pixel-mote pool,
+  // so their density can be halved independently without disturbing
+  // pollen/spore/seed. Those three keep their original relative shares
+  // (pollen 30 : spore 24 : seed 18 of the old 100% roll) renormalized
+  // over the remaining 72%.
+  const fireflies: PixelMote[] = Array.from(
+    { length: limits.fireflies },
+    () => ({
+      kind: "firefly" as const,
       x: rng(),
       y: rng(),
-      size:
-        kind === "spore"
-          ? 2.4 + rng() * 3.2
-          : kind === "seed"
-            ? 1.6 + rng() * 1.4
-            : kind === "firefly"
-              ? 1.3 + rng() * 1.8
-              : 0.7 + rng() * 0.9,
+      size: 1.3 + rng() * 1.8,
       phase: rng() * Math.PI * 2,
-      speed: 0.003 + rng() * (kind === "spore" ? 0.006 : 0.016),
-    };
-  });
+      speed: 0.003 + rng() * 0.016,
+    }),
+  );
+
+  const pixels: PixelMote[] = [
+    ...fireflies,
+    ...Array.from({ length: limits.pixels }, () => {
+      const roll = rng();
+      const kind: PixelMote["kind"] =
+        roll > 7 / 12 ? "pollen" : roll > 0.25 ? "spore" : "seed";
+      return {
+        kind,
+        x: rng(),
+        y: rng(),
+        size:
+          kind === "spore"
+            ? 2.4 + rng() * 3.2
+            : kind === "seed"
+              ? 1.6 + rng() * 1.4
+              : 0.7 + rng() * 0.9,
+        phase: rng() * Math.PI * 2,
+        speed: 0.003 + rng() * (kind === "spore" ? 0.006 : 0.016),
+      };
+    }),
+  ];
 
   return {
     seed,
@@ -862,6 +880,7 @@ export const drawForestScene = ({
   qualityTier,
   pointer,
   reducedMotion,
+  centerOffsetX = 0,
 }: DrawForestSceneOptions): void => {
   const phase = resolveForestDayPhase(timeMs);
   const palette = createForestPalette(isDarkMode, phase, scene.weather);
@@ -944,7 +963,14 @@ export const drawForestScene = ({
   });
 
   nodes.forEach((node) => {
-    const screen = worldToScreen(node.x, node.y, camera, width, height);
+    const screen = worldToScreen(
+      node.x,
+      node.y,
+      camera,
+      width,
+      height,
+      centerOffsetX,
+    );
     if (
       screen.x < -120 ||
       screen.y < -120 ||
