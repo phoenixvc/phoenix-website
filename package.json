@@ -54,7 +54,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-storybook": "10.5.7",
     "framer-motion": "^12.4.3",
-    "glob": "^10.3.10",
+    "glob": "^14.0.0",
     "globals": "^13.24.0",
     "husky": "^9.1.7",
     "package": "^1.0.1",
